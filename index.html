@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forrest Li — Mechanical Engineering @ Duke</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════ */
+    :root {
+      --bg:        #04080f;
+      --bg-2:      #080e1a;
+      --bg-3:      #0c1526;
+      --surface:   #111c2e;
+      --surface-2: #162235;
+      --border:    rgba(79, 136, 255, 0.15);
+      --border-hi: rgba(79, 136, 255, 0.35);
+
+      --amber:     #f59e0b;
+      --amber-dim: rgba(245, 158, 11, 0.15);
+      --amber-glow: rgba(245, 158, 11, 0.4);
+      --blue:      #3b82f6;
+      --blue-dim:  rgba(59, 130, 246, 0.12);
+      --cyan:      #06b6d4;
+      --red:       #ef4444;
+
+      --text:      #e2e8f2;
+      --text-2:    #94a3b8;
+      --text-3:    #4a5568;
+      --white:     #f8fafc;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body:    'Barlow', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --radius: 4px;
+      --radius-lg: 8px;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* Blueprint grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scan line effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      opacity: 0.4;
+      animation: scanline 8s linear infinite;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    @keyframes scanline {
+      0%   { top: -2px; opacity: 0; }
+      5%   { opacity: 0.4; }
+      95%  { opacity: 0.4; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: rgba(4, 8, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+    }
+
+    .nav-logo span { color: var(--text-2); }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
+      padding: 0.4rem 1rem;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover {
+      color: var(--amber);
+      border-color: var(--amber-dim);
+      background: var(--amber-dim);
+    }
+
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--amber) !important;
+      border: 1px solid var(--amber) !important;
+      padding: 0.3rem 0.8rem !important;
+    }
+    .nav-cta:hover {
+      background: var(--amber) !important;
+      color: var(--bg) !important;
+    }
+
+    /* ═══════════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem 4rem 4rem;
+      overflow: hidden;
+    }
+
+    /* Corner bracket decorations */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      opacity: 0.5;
+    }
+    .hero::before {
+      top: 80px; left: 2rem;
+      border-top: 2px solid var(--amber);
+      border-left: 2px solid var(--amber);
+    }
+    .hero::after {
+      bottom: 2rem; right: 2rem;
+      border-bottom: 2px solid var(--blue);
+      border-right: 2px solid var(--blue);
+    }
+
+    /* Radial glow behind hero text */
+    .hero-glow {
+      position: absolute;
+      top: 50%; left: 25%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--amber);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--amber);
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name .highlight {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--amber);
+    }
+
+    .hero-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+      font-weight: 500;
+      color: var(--text-2);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+    }
+
+    .hero-tagline .rotating-text {
+      color: var(--cyan);
+      font-weight: 700;
+      display: inline-block;
+      min-width: 240px;
+    }
+
+    /* Spec row */
+    .hero-specs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border);
+      width: fit-content;
+      background: var(--bg-2);
+    }
+
+    .spec-item {
+      padding: 0.75rem 1.75rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .spec-item:last-child { border-right: none; }
+
+    .spec-value {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--amber);
+      line-height: 1;
+      display: block;
+    }
+
+    .spec-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    /* Hero buttons */
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.75rem;
+      background: var(--amber);
+      color: var(--bg);
+      font-weight: 600;
+      border: 2px solid var(--amber);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--amber);
+    }
+
+    .btn-secondary {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.75rem;
+      border: 1px solid var(--border-hi);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-secondary:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    /* Hero side status panel */
+    .hero-status {
+      position: absolute;
+      top: 50%;
+      right: 4rem;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-3);
+      line-height: 2;
+      letter-spacing: 0.05em;
+      border-left: 1px solid var(--border);
+      padding-left: 1rem;
+    }
+
+    .hero-status .status-on {
+      color: #22c55e;
+    }
+    .hero-status .blink {
+      animation: blink 1.4s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--border-hi), transparent);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-arrow::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 10px;
+      background: var(--amber);
+      animation: scroll-flow 1.5s ease-in-out infinite;
+    }
+    @keyframes scroll-flow {
+      0%   { top: -10px; }
+      100% { top: 100%; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       SECTION UTILITY
+    ═══════════════════════════════════════════════ */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--white);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--border-hi), transparent);
+    }
+
+    /* ═══════════════════════════════════════════════
+       PROJECT CAROUSEL
+    ═══════════════════════════════════════════════ */
+    .projects-section {
+      padding: 5rem 0 5rem;
+    }
+
+    .projects-header {
+      padding: 0 4rem;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1rem 4rem 2.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-hi) transparent;
+      cursor: grab;
+    }
+    .carousel-track:active { cursor: grabbing; }
+
+    .carousel-track::-webkit-scrollbar { height: 3px; }
+    .carousel-track::-webkit-scrollbar-track { background: transparent; }
+    .carousel-track::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+    /* Project card */
+    .project-card {
+      flex: 0 0 380px;
+      scroll-snap-align: start;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s var(--ease-out);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-4px);
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, var(--amber));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease-out);
+    }
+    .project-card:hover::before { transform: scaleX(1); }
+
+    /* Image placeholder */
+    .card-img {
+      width: 100%;
+      height: 200px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-img-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%);
+      background-size: 10px 10px;
+    }
+
+    .card-img-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      z-index: 1;
+    }
+
+    .card-img-icon {
+      font-size: 2.5rem;
+      z-index: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--bg-2));
+    }
+
+    .card-tag-row {
+      position: absolute;
+      bottom: 0.75rem;
+      left: 0.75rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .card-body {
+      padding: 1.25rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-meta {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.6rem;
+      line-height: 1.15;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    /* Impact metric */
+    .card-metric {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--amber-dim);
+      border-left: 2px solid var(--amber);
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--amber);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+    }
+
+    .tag-blue { border-color: rgba(59, 130, 246, 0.3); color: var(--blue); background: rgba(59, 130, 246, 0.08); }
+    .tag-amber { border-color: rgba(245, 158, 11, 0.3); color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+    .tag-cyan { border-color: rgba(6, 182, 212, 0.3); color: var(--cyan); background: rgba(6, 182, 212, 0.08); }
+    .tag-red { border-color: rgba(239, 68, 68, 0.3); color: var(--red); background: rgba(239, 68, 68, 0.08); }
+
+    .card-link {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .card-link:hover {
+      color: var(--amber);
+      border-color: var(--amber);
+      background: var(--amber-dim);
+    }
+
+    .card-link .arrow {
+      transition: transform 0.2s;
+    }
+    .card-link:hover .arrow { transform: translateX(3px); }
+
+    /* Carousel nav */
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 4rem;
+      margin-top: 0.5rem;
+    }
+
+    .carousel-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border-hi);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .carousel-btn:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: var(--amber-dim);
+    }
+
+    .carousel-hint {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+
+    /* Project filter */
+    .project-filters {
+      display: flex;
+      gap: 0;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      width: fit-content;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.2rem;
+      border: none;
+      border-right: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:last-child { border-right: none; }
+    .filter-btn:hover { color: var(--text-2); background: var(--surface); }
+    .filter-btn.active {
+      background: var(--amber-dim);
+      color: var(--amber);
+      border-color: var(--amber-dim);
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESEARCH SECTION
+    ═══════════════════════════════════════════════ */
+    .research-section {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .research-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s var(--ease-out);
+    }
+
+    .research-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-3px);
+    }
+
+    .research-card-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .research-card-inner {
+      padding: 1.75rem 2rem 2rem;
+    }
+
+    .research-org {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .research-org::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .research-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .research-desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+    }
+
+    .research-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .r-stat-value {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--cyan);
+      display: block;
+    }
+
+    .r-stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .research-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .research-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      padding: 0.5rem 1.25rem;
+      transition: all 0.2s;
+    }
+    .research-link:hover {
+      background: rgba(6, 182, 212, 0.1);
+      border-color: var(--cyan);
+    }
+    .research-link .arrow { transition: transform 0.2s; }
+    .research-link:hover .arrow { transform: translateX(3px); }
+
+    /* ═══════════════════════════════════════════════
+       ABOUT + SKILLS
+    ═══════════════════════════════════════════════ */
+    .about-section {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+    }
+
+    .about-bio {
+      font-size: 1.05rem;
+      color: var(--text-2);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-bio strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .education-block {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber);
+    }
+
+    .edu-school {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .edu-detail {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-2);
+      margin-top: 0.25rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Skills bubbles */
+    .skills-panel {}
+
+    .skill-bubbles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .skill-bucket {
+      position: relative;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1.25rem 1rem;
+      cursor: default;
+      overflow: hidden;
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    .skill-bucket::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--bucket-color, var(--amber));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    .skill-bucket:hover {
+      border-color: var(--border-hi);
+      background: var(--surface);
+    }
+
+    .skill-bucket:hover::after {
+      transform: scaleX(1);
+    }
+
+    .bucket-label {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s;
+    }
+
+    .bucket-label .bucket-icon {
+      font-size: 1rem;
+    }
+
+    .bucket-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: max-height 0.4s var(--ease-out), opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .skill-bucket:hover .bucket-chips {
+      max-height: 120px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .chip {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.55rem;
+      border: 1px solid var(--bucket-color, var(--border));
+      color: var(--bucket-color, var(--text-2));
+      background: color-mix(in srgb, var(--bucket-color, var(--text-2)) 8%, transparent);
+      white-space: nowrap;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .skill-bucket:hover .chip {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger chip appearance */
+    .skill-bucket:hover .chip:nth-child(1) { transition-delay: 0.05s; }
+    .skill-bucket:hover .chip:nth-child(2) { transition-delay: 0.1s; }
+    .skill-bucket:hover .chip:nth-child(3) { transition-delay: 0.15s; }
+    .skill-bucket:hover .chip:nth-child(4) { transition-delay: 0.2s; }
+    .skill-bucket:hover .chip:nth-child(5) { transition-delay: 0.25s; }
+    .skill-bucket:hover .chip:nth-child(6) { transition-delay: 0.3s; }
+
+    .bucket-hint {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+
+    .skill-bucket:hover .bucket-hint { opacity: 0; }
+
+    /* ═══════════════════════════════════════════════
+       EXPERIENCE TIMELINE
+    ═══════════════════════════════════════════════ */
+    .experience-section {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--amber), var(--blue), transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -3.3rem;
+      top: 0.45rem;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--amber);
+      background: var(--bg);
+      transform: rotate(45deg);
+    }
+
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .timeline-role {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 0.04em;
+    }
+
+    .timeline-org {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      margin-top: 0.15rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════════
+       ACHIEVEMENTS
+    ═══════════════════════════════════════════════ */
+    .achievements-section {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .achievement-card {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: border-color 0.2s;
+    }
+    .achievement-card:hover { border-color: var(--border-hi); }
+
+    .ach-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .ach-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+    }
+
+    .ach-detail {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════════
+       CONTACT
+    ═══════════════════════════════════════════════ */
+    .contact-section {
+      padding: 5rem 4rem 6rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .contact-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+    }
+
+    .contact-headline .outline {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--border-hi);
+    }
+
+    .contact-sub {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .contact-link-item {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border);
+      margin-bottom: -1px;
+      transition: all 0.2s;
+      color: var(--text-2);
+    }
+    .contact-link-item:hover {
+      background: var(--surface);
+      border-color: var(--border-hi);
+      color: var(--white);
+      z-index: 1;
+      position: relative;
+    }
+
+    .contact-link-icon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-link-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    .contact-link-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .contact-link-arrow {
+      margin-left: auto;
+      color: var(--text-3);
+      transition: transform 0.2s, color 0.2s;
+    }
+    .contact-link-item:hover .contact-link-arrow {
+      transform: translateX(4px);
+      color: var(--amber);
+    }
+
+    /* ═══════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ═══════════════════════════════════════════════
+       HERO TYPING ANIMATION
+    ═══════════════════════════════════════════════ */
+    .cursor-blink {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--cyan);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.8s step-end infinite;
+    }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .hero { padding: 6rem 2rem 4rem; }
+      .hero-status { display: none; }
+      .hero-specs { flex-wrap: wrap; }
+      .about-section { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-section { grid-template-columns: 1fr; gap: 3rem; }
+      .research-grid { grid-template-columns: 1fr; }
+      .projects-header,
+      .projects-section .carousel-controls,
+      .research-section,
+      .about-section,
+      .experience-section,
+      .achievements-section,
+      .contact-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .carousel-track { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .project-card { flex: 0 0 320px; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAVIGATION ═══ -->
+  <nav>
+    <div class="nav-logo">FL<span>_v2.1</span></div>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="home">
+    <div class="hero-glow"></div>
+
+    <div class="hero-label">Duke University · Class of 2029</div>
+
+    <h1 class="hero-name">
+      Forrest<br><span class="highlight">Li</span>
+    </h1>
+
+    <p class="hero-tagline">
+      Building systems for&nbsp;
+      <span class="rotating-text" id="rotating-text">Aerospace</span>
+      <span class="cursor-blink"></span>
+    </p>
+
+    <div class="hero-specs">
+      <div class="spec-item">
+        <span class="spec-value">4</span>
+        <span class="spec-label">Eng. Projects</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-value">2</span>
+        <span class="spec-label">Research Labs</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-value">3.9</span>
+        <span class="spec-label">GPA</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-value" style="font-size:1.1rem;padding-top:0.3rem;">SUM '25</span>
+        <span class="spec-label">Open to Intern</span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">
+        View Projects <span>↓</span>
+      </a>
+      <a href="#contact" class="btn-secondary">
+        Get in Touch <span>→</span>
+      </a>
+      <a href="resume.pdf" class="btn-secondary" target="_blank">
+        Résumé <span>↗</span>
+      </a>
+    </div>
+
+    <!-- Side status panel -->
+    <div class="hero-status">
+      <div>STATUS <span class="status-on">■ ACTIVE</span></div>
+      <div>SCHOOL&nbsp;&nbsp;&nbsp;DUKE MEMS</div>
+      <div>FOCUS&nbsp;&nbsp;&nbsp;&nbsp;AERO + ROBOTICS</div>
+      <div>AVAIL&nbsp;&nbsp;&nbsp;&nbsp;SUMMER 2025</div>
+      <div>LOCATION DURHAM, NC</div>
+      <div>&nbsp;</div>
+      <div>LAST_UPDATED <span class="blink">_</span></div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURED PROJECTS CAROUSEL ═══ -->
+  <section class="projects-section" id="projects">
+    <div class="projects-header">
+      <div class="section-header reveal">
+        <span class="section-num">01 //</span>
+        <h2 class="section-title">Engineering Projects</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="project-filters reveal">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="extracurricular">Extracurricular</button>
+        <button class="filter-btn" data-filter="personal">Personal</button>
+        <button class="filter-btn" data-filter="coursework">Coursework</button>
+      </div>
+    </div>
+
+    <div class="carousel-wrapper">
+      <div class="carousel-track" id="carousel">
+
+        <!-- Card 1: AERO Recovery System -->
+        <div class="project-card reveal" style="--card-accent: #f59e0b;" data-category="extracurricular">
+          <div class="card-img">
+            <div class="card-img-pattern"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;z-index:1;">
+              <div class="card-img-icon">🚀</div>
+              <span class="card-img-label">Duke AERO · Recovery System</span>
+            </div>
+            <div class="card-img-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Aerospace · Duke AERO Club</div>
+            <h3 class="card-title">Blast Disk Recovery System</h3>
+            <p class="card-desc">Designed an apogee-activated recovery mechanism for high-power rocketry. Engineered custom blast disks, charge sizing calculations, and drogue/main chute deployment sequencing.</p>
+            <div class="card-metric">
+              <span class="metric-value">98%</span>
+              <span class="metric-label">Deployment reliability in ground tests</span>
+            </div>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tag tag-amber">SolidWorks</span>
+                <span class="tag tag-amber">Pyrotechnics</span>
+                <span class="tag">CFD</span>
+              </div>
+              <a href="project-blast-disk.html" class="card-link">View <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: SLAM Rover -->
+        <div class="project-card reveal reveal-delay-1" style="--card-accent: #3b82f6;" data-category="extracurricular">
+          <div class="card-img">
+            <div class="card-img-pattern"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;z-index:1;">
+              <div class="card-img-icon">🤖</div>
+              <span class="card-img-label">ROS2 · Autonomous Navigation</span>
+            </div>
+            <div class="card-img-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Robotics · Autonomous Systems</div>
+            <h3 class="card-title">SLAM Autonomous Rover</h3>
+            <p class="card-desc">Built a ground rover with full ROS2 navigation stack, LiDAR-based simultaneous localization and mapping, and obstacle avoidance in unstructured environments.</p>
+            <div class="card-metric">
+              <span class="metric-value">&lt;3cm</span>
+              <span class="metric-label">Localization error in mapped environment</span>
+            </div>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tag tag-blue">ROS2</span>
+                <span class="tag tag-blue">C++</span>
+                <span class="tag">LiDAR</span>
+              </div>
+              <a href="project-slam-rover.html" class="card-link">View <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: IMU VBT -->
+        <div class="project-card reveal reveal-delay-2" style="--card-accent: #06b6d4;" data-category="personal">
+          <div class="card-img">
+            <div class="card-img-pattern"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;z-index:1;">
+              <div class="card-img-icon">📡</div>
+              <span class="card-img-label">IMU · Velocity-Based Training</span>
+            </div>
+            <div class="card-img-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Embedded Systems · Personal Build</div>
+            <h3 class="card-title">IMU Velocity-Based Trainer</h3>
+            <p class="card-desc">Developed a wearable device using IMU sensor fusion and a Kalman filter to measure bar velocity in real time during resistance training, replacing $500+ commercial units.</p>
+            <div class="card-metric">
+              <span class="metric-value">±0.02m/s</span>
+              <span class="metric-label">Velocity accuracy vs. high-end encoder</span>
+            </div>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tag tag-cyan">Kalman</span>
+                <span class="tag tag-cyan">Arduino</span>
+                <span class="tag">Python</span>
+              </div>
+              <a href="project-imu-vbt.html" class="card-link">View <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Assistive Arm -->
+        <div class="project-card reveal reveal-delay-3" style="--card-accent: #a78bfa;" data-category="coursework">
+          <div class="card-img">
+            <div class="card-img-pattern"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;z-index:1;">
+              <div class="card-img-icon">🦾</div>
+              <span class="card-img-label">Medical Device · Human-Centered</span>
+            </div>
+            <div class="card-img-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Mechanical Design · Coursework</div>
+            <h3 class="card-title">Pediatric Assistive Arm</h3>
+            <p class="card-desc">Designed a low-cost upper-limb assistive device for pediatric users with brachial plexus injuries, using a double-diamond design framework with clinical user testing.</p>
+            <div class="card-metric">
+              <span class="metric-value">$34</span>
+              <span class="metric-label">BOM cost vs. $3,000+ commercial units</span>
+            </div>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tag" style="border-color:rgba(167,139,250,0.3);color:#a78bfa;background:rgba(167,139,250,0.08);">CAD</span>
+                <span class="tag" style="border-color:rgba(167,139,250,0.3);color:#a78bfa;background:rgba(167,139,250,0.08);">FDM</span>
+                <span class="tag">User Research</span>
+              </div>
+              <a href="project-assistive-arm.html" class="card-link">View <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Robot Artist -->
+        <div class="project-card reveal reveal-delay-3" style="--card-accent: #f43f5e;" data-category="personal">
+          <div class="card-img">
+            <div class="card-img-pattern"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;z-index:1;">
+              <div class="card-img-icon">🎨</div>
+              <span class="card-img-label">Robotic Arm · Generative Art</span>
+            </div>
+            <div class="card-img-overlay"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Mechatronics · Personal Build</div>
+            <h3 class="card-title">Robot Artist</h3>
+            <p class="card-desc">Built a 2-DOF pen-plotting robotic arm that generates and draws algorithmic art from scratch. Custom kinematics solver, G-code pipeline, and generative pattern engine in Python.</p>
+            <div class="card-metric">
+              <span class="metric-value">±1mm</span>
+              <span class="metric-label">Repeatability on A4 canvas</span>
+            </div>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span class="tag" style="border-color:rgba(244,63,94,0.3);color:#f43f5e;background:rgba(244,63,94,0.08);">Kinematics</span>
+                <span class="tag" style="border-color:rgba(244,63,94,0.3);color:#f43f5e;background:rgba(244,63,94,0.08);">Python</span>
+                <span class="tag">Servo</span>
+              </div>
+              <a href="project-robot-artist.html" class="card-link">View <span class="arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /carousel-track -->
+    </div>
+
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="prev-btn" onclick="scrollCarousel(-1)">←</button>
+      <button class="carousel-btn" id="next-btn" onclick="scrollCarousel(1)">→</button>
+      <span class="carousel-hint">Drag or arrow to scroll</span>
+    </div>
+  </section>
+
+  <!-- ═══ RESEARCH ═══ -->
+  <section class="research-section" id="research">
+    <div class="section-header reveal">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Research</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="research-grid">
+
+      <!-- Research: Cellular Senescence -->
+      <div class="research-card reveal">
+        <div class="research-card-accent" style="background: linear-gradient(90deg, #06b6d4, #3b82f6);"></div>
+        <div class="research-card-inner">
+          <div class="research-org">Duke Biostatistics Lab · 2024–Present</div>
+          <h3 class="research-title">AI Detection of Cellular Senescence</h3>
+          <p class="research-desc">
+            Developing machine learning pipelines to classify senescent cells from single-cell RNA sequencing data using Scanpy and scikit-learn. Applying SHAP interpretability to validate biological relevance of model features.
+          </p>
+          <div class="research-stats">
+            <div>
+              <span class="r-stat-value">12K+</span>
+              <span class="r-stat-label">Cells analyzed</span>
+            </div>
+            <div>
+              <span class="r-stat-value">91%</span>
+              <span class="r-stat-label">F1 classification score</span>
+            </div>
+            <div>
+              <span class="r-stat-value">scRNA-seq</span>
+              <span class="r-stat-label">Data modality</span>
+            </div>
+          </div>
+          <div class="research-tags">
+            <span class="tag tag-cyan">Python</span>
+            <span class="tag tag-cyan">Scanpy</span>
+            <span class="tag tag-cyan">SHAP</span>
+            <span class="tag">scRNA-seq</span>
+            <span class="tag">Random Forest</span>
+          </div>
+          <a href="research-senescence.html" class="research-link">
+            Full Write-Up <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Research: ICF Sensor Fusion -->
+      <div class="research-card reveal reveal-delay-1">
+        <div class="research-card-accent" style="background: linear-gradient(90deg, #f59e0b, #ef4444);"></div>
+        <div class="research-card-inner">
+          <div class="research-org">Independent Research · High School · 2022–2023</div>
+          <h3 class="research-title">ICF Sensor Fusion Benchmarking</h3>
+          <p class="research-desc">
+            Benchmarked Invariant Complementary Filter (ICF) against Extended Kalman Filter for IMU attitude estimation on SO(3) Lie groups. Demonstrated superior accuracy and computational efficiency of ICF for embedded systems.
+          </p>
+          <div class="research-stats">
+            <div>
+              <span class="r-stat-value">40%</span>
+              <span class="r-stat-label">Reduced compute vs EKF</span>
+            </div>
+            <div>
+              <span class="r-stat-value">SO(3)</span>
+              <span class="r-stat-label">Lie group formulation</span>
+            </div>
+            <div>
+              <span class="r-stat-value">MATLAB</span>
+              <span class="r-stat-label">Benchmark framework</span>
+            </div>
+          </div>
+          <div class="research-tags">
+            <span class="tag tag-amber">MATLAB</span>
+            <span class="tag tag-amber">IMU</span>
+            <span class="tag tag-amber">EKF</span>
+            <span class="tag">Lie Groups</span>
+            <span class="tag">State Estimation</span>
+          </div>
+          <a href="research-icf.html" class="research-link">
+            Full Write-Up <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT + SKILLS ═══ -->
+  <section class="about-section" id="about">
+    <div>
+      <div class="section-header reveal">
+        <span class="section-num">03 //</span>
+        <h2 class="section-title">About</h2>
+      </div>
+      <p class="about-bio reveal">
+        I'm a <strong>first-year Mechanical Engineering student at Duke</strong> (Class of 2029) building systems that push into aerospace, autonomous robotics, and precision instrumentation. My work spans the full stack — from CAD to embedded firmware to ML pipelines.
+      </p>
+      <p class="about-bio reveal reveal-delay-1">
+        I care about <strong>making things that actually work in the real world</strong> — not just in simulation. Whether that's a recovery system on a rocket, a rover navigating debris, or a pen-plotter drawing algorithmic art, I want the system to ship.
+      </p>
+
+      <div class="education-block reveal reveal-delay-2">
+        <div class="edu-school">Duke University</div>
+        <div class="edu-detail">B.S. Mechanical Engineering · Class of 2029</div>
+        <div class="edu-detail" style="margin-top:0.5rem;">GPA 3.9 · Dean's List · Duke AERO · ME Design Club</div>
+      </div>
+    </div>
+
+    <div class="skills-panel">
+      <div class="section-header reveal">
+        <span class="section-num">04 //</span>
+        <h2 class="section-title">Skills</h2>
+      </div>
+
+      <div class="skill-bubbles reveal">
+
+        <div class="skill-bucket" style="--bucket-color: #3b82f6;">
+          <div class="bucket-label"><span class="bucket-icon">💻</span> Programming</div>
+          <div class="bucket-hint">Hover to expand</div>
+          <div class="bucket-chips">
+            <span class="chip">Python</span>
+            <span class="chip">C / C++</span>
+            <span class="chip">MATLAB</span>
+            <span class="chip">ROS2</span>
+            <span class="chip">Bash</span>
+          </div>
+        </div>
+
+        <div class="skill-bucket" style="--bucket-color: #f59e0b;">
+          <div class="bucket-label"><span class="bucket-icon">📐</span> Design & Sim</div>
+          <div class="bucket-hint">Hover to expand</div>
+          <div class="bucket-chips">
+            <span class="chip">SolidWorks</span>
+            <span class="chip">ANSYS FEA</span>
+            <span class="chip">AutoCAD</span>
+            <span class="chip">CFD</span>
+            <span class="chip">GD&T</span>
+          </div>
+        </div>
+
+        <div class="skill-bucket" style="--bucket-color: #06b6d4;">
+          <div class="bucket-label"><span class="bucket-icon">🔬</span> Data & ML</div>
+          <div class="bucket-hint">Hover to expand</div>
+          <div class="bucket-chips">
+            <span class="chip">scikit-learn</span>
+            <span class="chip">Scanpy</span>
+            <span class="chip">SHAP</span>
+            <span class="chip">NumPy</span>
+            <span class="chip">Kalman Filter</span>
+          </div>
+        </div>
+
+        <div class="skill-bucket" style="--bucket-color: #a78bfa;">
+          <div class="bucket-label"><span class="bucket-icon">🔧</span> Fabrication</div>
+          <div class="bucket-hint">Hover to expand</div>
+          <div class="bucket-chips">
+            <span class="chip">FDM / SLA</span>
+            <span class="chip">Machining</span>
+            <span class="chip">Soldering</span>
+            <span class="chip">PCB Layout</span>
+            <span class="chip">Laser Cut</span>
+          </div>
+        </div>
+
+        <div class="skill-bucket" style="--bucket-color: #22c55e; grid-column: span 2;">
+          <div class="bucket-label"><span class="bucket-icon">🤖</span> Robotics & Embedded</div>
+          <div class="bucket-hint">Hover to expand</div>
+          <div class="bucket-chips">
+            <span class="chip">ROS2 Nav Stack</span>
+            <span class="chip">LiDAR / SLAM</span>
+            <span class="chip">Arduino</span>
+            <span class="chip">Raspberry Pi</span>
+            <span class="chip">IMU Fusion</span>
+            <span class="chip">Motor Control</span>
+          </div>
+        </div>
+
+      </div>
+  </section>
+
+  <!-- ═══ EXPERIENCE ═══ -->
+  <section class="experience-section" id="experience">
+    <div class="section-header reveal">
+      <span class="section-num">05 //</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2024 – Present</div>
+        <div class="timeline-role">Undergraduate Researcher</div>
+        <div class="timeline-org">Duke Biostatistics & Bioinformatics Lab · Durham, NC</div>
+        <p class="timeline-desc">Developing ML pipelines for cellular senescence classification from scRNA-seq data. First-author contributions to methodology. Tools: Python, Scanpy, SHAP, scikit-learn.</p>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-1">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2024 – Present</div>
+        <div class="timeline-role">Propulsion & Recovery Engineer</div>
+        <div class="timeline-org">Duke AERO (Rocketry Club) · Durham, NC</div>
+        <p class="timeline-desc">Designing and testing pyrotechnic recovery systems for high-power competition rockets. Led blast disk sizing and deployment sequencing sub-team.</p>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-2">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">2022 – 2023</div>
+        <div class="timeline-role">Independent Research — Sensor Fusion</div>
+        <div class="timeline-org">Self-Directed · ICF vs. EKF Benchmarking Study</div>
+        <p class="timeline-desc">Conducted independent benchmarking of attitude estimation algorithms on SO(3) manifolds. Presented findings in a structured technical report; formed foundation for current embedded projects.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ACHIEVEMENTS ═══ -->
+  <section class="achievements-section" id="achievements">
+    <div class="section-header reveal">
+      <span class="section-num">06 //</span>
+      <h2 class="section-title">Achievements</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="achievements-grid">
+      <div class="achievement-card reveal">
+        <div class="ach-icon">🏆</div>
+        <div>
+          <div class="ach-title">Dean's List</div>
+          <div class="ach-detail">Pratt School of Engineering, Duke University · 2024</div>
+        </div>
+      </div>
+      <div class="achievement-card reveal reveal-delay-1">
+        <div class="ach-icon">🚀</div>
+        <div>
+          <div class="ach-title">AERO Recovery Lead</div>
+          <div class="ach-detail">Led sub-team of 4 on competition rocketry recovery systems · Spring 2025</div>
+        </div>
+      </div>
+      <div class="achievement-card reveal reveal-delay-2">
+        <div class="ach-icon">🤖</div>
+        <div>
+          <div class="ach-title">Robotics Design Award</div>
+          <div class="ach-detail">Best autonomous navigation solution · Duke ME Design Challenge · 2024</div>
+        </div>
+      </div>
+      <div class="achievement-card reveal reveal-delay-3">
+        <div class="ach-icon">📄</div>
+        <div>
+          <div class="ach-title">First-Author Research</div>
+          <div class="ach-detail">Contributing to AI senescence detection methodology write-up · Duke Biostats Lab</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section class="contact-section" id="contact">
+    <div>
+      <div class="contact-headline reveal">
+        <span>LET'S</span><br>
+        <span class="outline">BUILD</span><br>
+        <span>SOMETHING.</span>
+      </div>
+      <p class="contact-sub reveal reveal-delay-1">
+        Open to internships, research collaborations, and engineering conversations. I'm especially interested in aerospace, autonomous systems, and anything at the edge of mechanical and software.
+      </p>
+    </div>
+
+    <div class="contact-links reveal reveal-delay-2">
+      <a href="mailto:forrest.li@duke.edu" class="contact-link-item">
+        <div class="contact-link-icon">✉</div>
+        <div>
+          <span class="contact-link-label">Email</span>
+          <span class="contact-link-value">forrest.li@duke.edu</span>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a href="https://linkedin.com/in/forrest-li" target="_blank" class="contact-link-item">
+        <div class="contact-link-icon">in</div>
+        <div>
+          <span class="contact-link-label">LinkedIn</span>
+          <span class="contact-link-value">linkedin.com/in/forrest-li</span>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a href="https://github.com/forrest-li" target="_blank" class="contact-link-item">
+        <div class="contact-link-icon">⌥</div>
+        <div>
+          <span class="contact-link-label">GitHub</span>
+          <span class="contact-link-value">github.com/forrest-li</span>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a href="resume.pdf" target="_blank" class="contact-link-item">
+        <div class="contact-link-icon">↗</div>
+        <div>
+          <span class="contact-link-label">Résumé</span>
+          <span class="contact-link-value">Download PDF</span>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <span class="footer-logo">FORREST_LI · DUKE_MEMS_2029</span>
+    <span class="footer-copy">Built from scratch · No frameworks · Just engineering</span>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script>
+    // ── Rotating tagline ──
+    const phrases = ['Aerospace', 'Robotics', 'Automation', 'Autonomous Systems', 'Rocketry', 'Sensor Fusion'];
+    let idx = 0;
+    const el = document.getElementById('rotating-text');
+
+    function typePhrase(phrase, callback) {
+      let i = 0;
+      el.textContent = '';
+      const timer = setInterval(() => {
+        el.textContent += phrase[i++];
+        if (i >= phrase.length) { clearInterval(timer); setTimeout(callback, 1800); }
+      }, 60);
+    }
+
+    function erasePhrase(callback) {
+      const timer = setInterval(() => {
+        el.textContent = el.textContent.slice(0, -1);
+        if (el.textContent.length === 0) { clearInterval(timer); callback(); }
+      }, 35);
+    }
+
+    function loop() {
+      typePhrase(phrases[idx], () => {
+        erasePhrase(() => {
+          idx = (idx + 1) % phrases.length;
+          loop();
+        });
+      });
+    }
+    loop();
+
+    // ── Carousel drag ──
+    const track = document.getElementById('carousel');
+    let isDown = false, startX, scrollLeft;
+
+    track.addEventListener('mousedown', e => {
+      isDown = true;
+      track.style.cursor = 'grabbing';
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+    track.addEventListener('mouseleave', () => { isDown = false; track.style.cursor = 'grab'; });
+    track.addEventListener('mouseup', () => { isDown = false; track.style.cursor = 'grab'; });
+    track.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    // ── Carousel arrow buttons ──
+    function scrollCarousel(dir) {
+      const cardWidth = 380 + 24; // card width + gap
+      track.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
+    }
+
+    // ── Project filter ──
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          const cat = card.dataset.category;
+          const show = filter === 'all' || cat === filter;
+          card.style.transition = 'opacity 0.3s, transform 0.3s';
+          if (show) {
+            card.style.display = 'flex';
+            requestAnimationFrame(() => {
+              card.style.opacity = '1';
+              card.style.transform = '';
+            });
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => { card.style.display = 'none'; }, 300);
+          }
+        });
+      });
+    });
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── Update hero status timestamp ──
+    const now = new Date();
+    const stamp = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+    document.querySelector('.hero-status .blink').parentElement.innerHTML =
+      `LAST_UPDATED ${stamp} <span class="blink">_</span>`;
+  </script>
+
+</body>
+</html>
