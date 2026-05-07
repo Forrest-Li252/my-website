@@ -607,52 +607,48 @@
       },
     ],
 
-    /* ── Research cards ─────────────────────────────────────────── */
-    /*
-     * accentGradient: CSS gradient string for the colored top bar
-     * stats: up to 3 { value, label } objects
-     * tags: same format as project tags
-     */
-    research: [
-      {
-        accentGradient: "linear-gradient(90deg, #06b6d4, #3b82f6)",
-        org:   "Duke Biostatistics Lab · 2024–Present",
-        title: "AI Detection of Cellular Senescence",
-        desc:  "Developing machine learning pipelines to classify senescent cells from single-cell RNA sequencing data using Scanpy and scikit-learn. Applying SHAP interpretability to validate biological relevance of model features.",
-        stats: [
-          { value: "12K+",   label: "Cells analyzed"          },
-          { value: "91%",    label: "F1 classification score" },
-          { value: "scRNA-seq", label: "Data modality"        },
-        ],
-        tags: [
-          { text: "Python",        color: "cyan" },
-          { text: "Scanpy",        color: "cyan" },
-          { text: "SHAP",          color: "cyan" },
-          { text: "scRNA-seq",     color: "" },
-          { text: "Random Forest", color: "" },
-        ],
-        link: { label: "Full Write-Up", href: "research-senescence.html" },
-      },
-      {
-        accentGradient: "linear-gradient(90deg, #f59e0b, #ef4444)",
-        org:   "Independent Research · High School · 2022–2023",
-        title: "ICF Sensor Fusion Benchmarking",
-        desc:  "Benchmarked Invariant Complementary Filter (ICF) against Extended Kalman Filter for IMU attitude estimation on SO(3) Lie groups. Demonstrated superior accuracy and computational efficiency of ICF for embedded systems.",
-        stats: [
-          { value: "40%",    label: "Reduced compute vs EKF" },
-          { value: "SO(3)",  label: "Lie group formulation"  },
-          { value: "MATLAB", label: "Benchmark framework"    },
-        ],
-        tags: [
-          { text: "MATLAB",         color: "amber" },
-          { text: "IMU",            color: "amber" },
-          { text: "EKF",            color: "amber" },
-          { text: "Lie Groups",     color: "" },
-          { text: "State Estimation", color: "" },
-        ],
-        link: { label: "Full Write-Up", href: "/papers/icf-paper.pdf" },
-      },
-    ],
+      research: [
+    {
+      accentGradient: "linear-gradient(90deg, #06b6d4, #3b82f6)",
+      org:   "Duke Biostatistics Lab · 2024–Present",
+      title: "AI Detection of Cellular Senescence",
+      status: "In Progress",
+      desc:  "Developing machine learning pipelines to classify senescent cells from single-cell RNA sequencing data using Scanpy and scikit-learn. Applying SHAP interpretability to validate biological relevance of model features.",
+      stats: [
+        { value: "12K+",   label: "Cells analyzed"          },
+        { value: "91%",    label: "F1 classification score" },
+        { value: "scRNA-seq", label: "Data modality"        },
+      ],
+      tags: [
+        { text: "Python",        color: "cyan" },
+        { text: "Scanpy",        color: "cyan" },
+        { text: "SHAP",          color: "cyan" },
+        { text: "scRNA-seq",     color: "" },
+        { text: "Random Forest", color: "" },
+      ],
+      link: { label: "Full Write-Up", href: "research-senescence.html" },
+    },
+    {
+      accentGradient: "linear-gradient(90deg, #f59e0b, #ef4444)",
+      org:   "Independent Research · High School · 2022–2023",
+      title: "ICF Sensor Fusion Benchmarking",
+      status: "In Use (March 2025 · Ge-Doped Ablators)",
+      desc:  "Benchmarked Invariant Complementary Filter (ICF) against Extended Kalman Filter for IMU attitude estimation on SO(3) Lie groups. Demonstrated superior accuracy and computational efficiency of ICF for embedded systems.",
+      stats: [
+        { value: "40%",    label: "Reduced compute vs EKF" },
+        { value: "SO(3)",  label: "Lie group formulation"  },
+        { value: "MATLAB", label: "Benchmark framework"    },
+      ],
+      tags: [
+        { text: "MATLAB",         color: "amber" },
+        { text: "IMU",            color: "amber" },
+        { text: "EKF",            color: "amber" },
+        { text: "Lie Groups",     color: "" },
+        { text: "State Estimation", color: "" },
+      ],
+      link: { label: "Full Write-Up", href: "/papers/icf-paper.pdf" },
+    },
+  ],
 
     /* ── About section ──────────────────────────────────────────── */
     /*
