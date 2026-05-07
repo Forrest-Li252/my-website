@@ -332,31 +332,40 @@
   </section>
 
   <section class="content-section" style="background:var(--bg-2);padding:80px 0;">
-    <div class="container">
-      <div class="section-label reveal">Reflection</div>
-      <h2 class="content-h2 reveal reveal-delay-1">Lessons &amp; takeaways</h2>
-      <div class="lessons-grid">
-        <div class="lesson-card reveal">
-          <div class="lesson-icon">🔗</div>
-          <div class="lesson-title">Interfaces Drive the Design</div>
-          <div class="lesson-text">The disk could not be designed as an isolated part. Its geometry was dictated by avionics access, shock cord routing, coupler dimensions, shear pin behavior, and pressure sealing requirements.</div>
-        </div>
-        <div class="lesson-card reveal reveal-delay-1">
-          <div class="lesson-icon">📊</div>
-          <div class="lesson-title">FEA Needs Test Data</div>
-          <div class="lesson-text">Simulation helped validate stress margins, but the true pressure environment during separation is difficult to predict. Instrumented testing was necessary to refine the design beyond analytical estimates.</div>
-        </div>
-        <div class="lesson-card reveal">
-          <div class="lesson-icon">🔧</div>
-          <div class="lesson-title">Manufacturing Constraints Matter</div>
-          <div class="lesson-text">The shoulder, lip, and pass-throughs had to be machinable from HDPE stock while maintaining tight enough dimensions to slide smoothly and seal effectively during deployment.</div>
-        </div>
-        <div class="lesson-card reveal reveal-delay-1">
-          <div class="lesson-icon">🚀</div>
-          <div class="lesson-title">Reliability Is a Systems Problem</div>
-          <div class="lesson-text">Improving recovery reliability was not just about making one stronger part. It required understanding pressure generation, volume, sealing, shear pins, wiring, and mechanical separation as one coupled system.</div>
+    <div class="lessons-grid">
+
+      <div class="lesson-card reveal">
+        <div class="lesson-icon">🛠️</div>
+        <div class="lesson-title">Works in CAD ≠ works in reality</div>
+        <div class="lesson-text">
+          Designing the blast disk required accounting for real machining constraints. Features that were trivial in CAD had to be simplified or reworked to be manufacturable on a lathe while maintaining tolerances and proper fit.
         </div>
       </div>
+
+      <div class="lesson-card reveal reveal-delay-1">
+        <div class="lesson-icon">🤝</div>
+        <div class="lesson-title">Communication enables design</div>
+        <div class="lesson-text">
+          Early coordination with the avionics team directly impacted what was possible. Switching from a U-bolt to an eye bolt created the space and routing needed for the blast disk to function within the recovery system.
+        </div>
+      </div>
+
+      <div class="lesson-card reveal">
+        <div class="lesson-icon">🧪</div>
+        <div class="lesson-title">Simulation has limits in dynamic systems</div>
+        <div class="lesson-text">
+          While FEA validated structural integrity, the actual pressure during separation depended on transient gas behavior and volume effects that were difficult to model. Instrumented testing was required to understand real performance.
+        </div>
+      </div>
+
+      <div class="lesson-card reveal reveal-delay-1">
+        <div class="lesson-icon">💨</div>
+        <div class="lesson-title">Pressure effectiveness is driven by volume</div>
+        <div class="lesson-text">
+          Improving separation was not about generating more pressure, but about reducing the volume being pressurized. This allowed the CO₂ system to more efficiently translate energy into shear pin failure.
+        </div>
+      </div>
+
     </div>
   </section>
 
