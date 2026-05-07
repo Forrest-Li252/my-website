@@ -642,24 +642,24 @@
     },
     {
       accentGradient: "linear-gradient(90deg, #f59e0b, #ef4444)",
-      org:   "Independent Research · High School · 2022–2023",
-      title: "ICF Sensor Fusion Benchmarking",
-      status: "In Use (March 2025 · Ge-Doped Ablators)",
-      desc:  "Benchmarked Invariant Complementary Filter (ICF) against Extended Kalman Filter for IMU attitude estimation on SO(3) Lie groups. Demonstrated superior accuracy and computational efficiency of ICF for embedded systems.",
+      org:   "Laboratory for Laser Energetics (LLE) · University of Rochester · 2024",
+      title: "ICF Implosion Diagnostics via Self-Emission Radiography",
+      status: "In Use · Ge-Doped Ablator Experiments (Mar 2025)",
+      desc:  "Developed an automated MATLAB pipeline to extract implosion trajectories from time-resolved x-ray self-emission images in direct-drive inertial confinement fusion. Implemented circle detection, polar unwrapping, and Abel inversion to recover radial emission profiles and track shell position over time. Validated results against 1D LILAC simulations, demonstrating strong agreement prior to stagnation.",
       stats: [
-        { value: "40%",    label: "Reduced compute vs EKF" },
-        { value: "SO(3)",  label: "Lie group formulation"  },
-        { value: "MATLAB", label: "Benchmark framework"    },
+        { value: "16×",   label: "Frame extraction pipeline" },
+        { value: "<3.3ns", label: "Simulation agreement regime" },
+        { value: "Abel Inv.", label: "Core reconstruction method" },
       ],
       tags: [
         { text: "MATLAB",         color: "amber" },
-        { text: "IMU",            color: "amber" },
-        { text: "EKF",            color: "amber" },
-        { text: "Lie Groups",     color: "" },
-        { text: "State Estimation", color: "" },
+        { text: "ICF Physics",    color: "amber" },
+        { text: "Image Processing", color: "amber" },
+        { text: "Abel Inversion", color: "" },
+        { text: "LILAC Simulations", color: "" },
       ],
-      link: { label: "Full Write-Up", href: "papers/icf-paper.pdf" },
-    },
+      link: { label: "Full Paper", href: "papers/icf-paper.pdf" },
+    }
   ],
 
     /* ── About section ──────────────────────────────────────────── */
