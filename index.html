@@ -269,6 +269,18 @@
     .research-org::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
     .research-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--white); margin-bottom: 0.75rem; line-height: 1.2; }
+    .research-status {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.08);
+      padding: 0.25rem 0.55rem;
+      margin-bottom: 0.9rem;
+    }
     .research-desc { font-size: 0.9rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.5rem; }
     .research-stats { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding: 0.75rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .r-stat-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--cyan); display: block; }
@@ -906,9 +918,10 @@
     <div class="research-card reveal${delay}">
       <div class="research-card-accent" style="background:${r.accentGradient};"></div>
       <div class="research-card-inner">
-        <div class="research-org">${r.org}</div>
-        <h3 class="research-title">${r.title}</h3>
-        <p class="research-desc">${r.desc}</p>
+      <div class="research-org">${r.org}</div>
+      <h3 class="research-title">${r.title}</h3>
+      ${r.status ? `<div class="research-status">${r.status}</div>` : ''}
+      <p class="research-desc">${r.desc}</p>
         <div class="research-stats">
           ${r.stats.map(s => `<div><span class="r-stat-value">${s.value}</span><span class="r-stat-label">${s.label}</span></div>`).join('')}
         </div>
