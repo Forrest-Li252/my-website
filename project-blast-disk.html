@@ -79,7 +79,19 @@
     .img-placeholder-md{height:280px;}
     .img-placeholder-lg{height:360px;}
     .img-placeholder svg{opacity:.2;}
-    .img-caption{color:rgba(232,234,240,0.65); /* soft but readable */}
+    .img-caption{
+    font-family:var(--font-mono);
+    font-size:.6rem;
+    letter-spacing:.1em;
+
+    color:rgba(232,234,240,0.65); /* your brighter color */
+
+    text-align:center;
+    display:block;
+    width:100%;
+
+    margin:12px auto 32px auto;
+  }
 
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:32px 0;}
     .callout{background:var(--surface);border:1px solid var(--border-med);border-left:3px solid var(--accent);border-radius:var(--radius-lg);padding:24px 28px;margin:32px 0;}
