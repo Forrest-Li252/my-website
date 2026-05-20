@@ -1,0 +1,391 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .mc { background: #040d14; color: #c8e8ff; font-family: 'Rajdhani', sans-serif; font-size: 13px; height: 620px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .mc::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.025) 3px,rgba(0,0,0,0.025) 4px); pointer-events: none; z-index: 10; }
+  .mono { font-family: 'Share Tech Mono', monospace; }
+
+  /* Header */
+  .mc-bar { background: #020a12; border-bottom: 1px solid rgba(0,160,255,0.2); padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .mc-bar-left { display: flex; align-items: center; gap: 14px; }
+  .mc-logo { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #0af; letter-spacing: 0.14em; }
+  .mc-op { font-size: 18px; font-weight: 700; letter-spacing: 0.1em; color: #fff; }
+  .mc-op span { color: #0af; }
+  .live { display: flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.5); }
+  .ldot { width: 6px; height: 6px; border-radius: 50%; background: #1d9e75; box-shadow: 0 0 5px #1d9e75; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+  /* Layout */
+  .mc-body { display: grid; grid-template-columns: 150px 1fr 170px; flex: 1; overflow: hidden; }
+
+  /* Left index */
+  .idx { border-right: 1px solid rgba(0,160,255,0.12); overflow-y: auto; }
+  .idx-hdr { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.4); letter-spacing: 0.1em; padding: 8px 10px 4px; border-bottom: 1px solid rgba(0,160,255,0.08); }
+  .msn { padding: 8px 10px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; }
+  .msn:hover { background: rgba(0,160,255,0.06); }
+  .msn.on { background: rgba(0,160,255,0.1); border-left-color: #0af; }
+  .msn-id { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.4); letter-spacing: 0.08em; }
+  .msn-name { font-size: 12px; font-weight: 600; color: #c8e8ff; margin-top: 1px; line-height: 1.2; }
+  .msn-tag { font-size: 10px; margin-top: 3px; }
+  .ok { color: #1d9e75; } .wip { color: #ef9f27; } .arc { color: rgba(0,200,255,0.35); }
+  .idx-sep { border: none; border-top: 1px solid rgba(0,160,255,0.08); margin: 4px 0; }
+
+  /* Center dossier */
+  .dossier { overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* Hero image area */
+  .hero { position: relative; height: 160px; flex-shrink: 0; background: #081824; overflow: hidden; cursor: pointer; }
+  .hero-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; display: block; }
+  .hero-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,160,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,160,255,0.06) 1px,transparent 1px); background-size: 24px 24px; }
+  .hero-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 60px; height: 60px; opacity: 0.15; }
+  .hero-crosshair::before, .hero-crosshair::after { content: ''; position: absolute; background: #0af; }
+  .hero-crosshair::before { width: 100%; height: 1px; top: 50%; }
+  .hero-crosshair::after { height: 100%; width: 1px; left: 50%; }
+  .hero-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(4,13,20,0.95)); padding: 20px 14px 10px; }
+  .hero-msn { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.5); letter-spacing: 0.1em; }
+  .hero-title { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.06em; text-transform: uppercase; }
+  .hero-img-hint { position: absolute; top: 10px; right: 10px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.3); background: rgba(0,0,0,0.4); padding: 3px 7px; border: 1px solid rgba(0,160,255,0.15); border-radius: 2px; }
+
+  /* Tabs */
+  .tabs { display: flex; border-bottom: 1px solid rgba(0,160,255,0.12); flex-shrink: 0; background: rgba(0,10,20,0.6); }
+  .tab { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.06em; padding: 7px 14px; cursor: pointer; color: rgba(0,200,255,0.4); border-bottom: 2px solid transparent; transition: all 0.12s; }
+  .tab:hover { color: rgba(0,200,255,0.7); }
+  .tab.on { color: #0af; border-bottom-color: #0af; background: rgba(0,160,255,0.05); }
+
+  /* Dossier content */
+  .dcontent { padding: 14px; flex: 1; }
+
+  /* Overview tab */
+  .telem-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  .tcard { background: rgba(0,160,255,0.06); border: 1px solid rgba(0,160,255,0.12); border-radius: 3px; padding: 8px 10px; }
+  .tcard-val { font-family: 'Share Tech Mono', monospace; font-size: 18px; color: #0af; line-height: 1; }
+  .tcard-lbl { font-size: 10px; color: rgba(200,232,255,0.45); margin-top: 3px; }
+
+  .section-hdr { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .section-hdr::after { content: ''; flex: 1; height: 1px; background: rgba(0,160,255,0.12); }
+
+  .desc-text { font-size: 13px; line-height: 1.65; color: rgba(200,232,255,0.7); margin-bottom: 14px; }
+
+  /* Image grid */
+  .img-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+  .img-slot { aspect-ratio: 16/10; background: #081824; border: 1px solid rgba(0,160,255,0.12); border-radius: 3px; overflow: hidden; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .img-slot:hover { border-color: rgba(0,160,255,0.35); }
+  .img-slot-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.3); text-align: center; padding: 4px; }
+  .img-slot-icon { font-size: 20px; color: rgba(0,160,255,0.2); margin-bottom: 4px; }
+  .img-tag { position: absolute; bottom: 4px; left: 4px; font-family: 'Share Tech Mono', monospace; font-size: 8px; color: rgba(0,200,255,0.5); background: rgba(0,0,0,0.6); padding: 2px 5px; }
+
+  /* Log tab */
+  .log-entry { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(0,160,255,0.07); }
+  .log-time-col { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.35); flex-shrink: 0; width: 50px; padding-top: 1px; }
+  .log-body { flex: 1; }
+  .log-event { font-size: 12px; font-weight: 600; color: #c8e8ff; }
+  .log-detail { font-size: 11px; color: rgba(200,232,255,0.5); margin-top: 2px; line-height: 1.4; }
+  .log-img { margin-top: 6px; height: 60px; background: #081824; border: 1px solid rgba(0,160,255,0.12); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.3); }
+
+  /* Tag row */
+  .tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mc-tag { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.65); background: rgba(0,160,255,0.07); border: 1px solid rgba(0,160,255,0.18); border-radius: 2px; padding: 2px 7px; }
+
+  /* Right panel */
+  .rpanel { border-left: 1px solid rgba(0,160,255,0.12); overflow-y: auto; display: flex; flex-direction: column; }
+  .rp-hdr { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.4); letter-spacing: 0.1em; padding: 8px 10px 5px; border-bottom: 1px solid rgba(0,160,255,0.08); }
+  .prop-row { display: flex; justify-content: space-between; padding: 5px 10px; border-bottom: 1px solid rgba(0,160,255,0.05); }
+  .prop-k { font-size: 11px; color: rgba(200,232,255,0.4); }
+  .prop-v { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: #0af; }
+  .prop-v.ok { color: #1d9e75; }
+  .prop-v.warn { color: #ef9f27; }
+
+  .links-block { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .link-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: rgba(0,200,255,0.7); background: rgba(0,160,255,0.07); border: 1px solid rgba(0,160,255,0.15); border-radius: 3px; padding: 6px 10px; cursor: pointer; letter-spacing: 0.03em; }
+  .link-btn:hover { background: rgba(0,160,255,0.14); color: #0af; }
+  .link-btn i { font-size: 14px; }
+
+  .badge { font-family: 'Share Tech Mono', monospace; font-size: 9px; padding: 2px 7px; border-radius: 2px; border: 1px solid; letter-spacing: 0.05em; display: inline-block; }
+  .badge-g { color: #1d9e75; border-color: rgba(29,158,117,0.35); background: rgba(29,158,117,0.08); }
+  .badge-a { color: #ef9f27; border-color: rgba(239,159,39,0.35); background: rgba(239,159,39,0.08); }
+
+  .rp-gap { flex: 1; }
+
+  /* Hidden tab panels */
+  .tab-panel { display: none; }
+  .tab-panel.on { display: block; }
+</style>
+
+<div class="mc">
+  <div class="mc-bar">
+    <div class="mc-bar-left">
+      <div class="mc-logo">MC // PORTFOLIO</div>
+      <div class="mc-op">FORREST <span>LI</span></div>
+    </div>
+    <div class="live"><span class="ldot"></span>SYSTEMS NOMINAL &nbsp;|&nbsp; <span class="mono" id="clock">MET 00:00:00</span></div>
+  </div>
+
+  <div class="mc-body">
+
+    <!-- Mission index -->
+    <nav class="idx">
+      <div class="idx-hdr">MISSIONS</div>
+      <div class="msn on" onclick="selectMission(0)">
+        <div class="msn-id">MSN-001</div>
+        <div class="msn-name">SLAM Rover</div>
+        <div class="msn-tag ok">▲ COMPLETE</div>
+      </div>
+      <div class="msn" onclick="selectMission(1)">
+        <div class="msn-id">MSN-002</div>
+        <div class="msn-name">VBT Device</div>
+        <div class="msn-tag ok">▲ COMPLETE</div>
+      </div>
+      <div class="msn" onclick="selectMission(2)">
+        <div class="msn-id">MSN-003</div>
+        <div class="msn-name">Recovery Sep.</div>
+        <div class="msn-tag arc">◆ ARCHIVED</div>
+      </div>
+      <div class="msn" onclick="selectMission(3)">
+        <div class="msn-id">MSN-004</div>
+        <div class="msn-name">Senior Design</div>
+        <div class="msn-tag wip">● IN PROGRESS</div>
+      </div>
+      <div class="idx-sep"></div>
+      <div class="idx-hdr">OPERATOR</div>
+      <div style="padding:8px 10px;">
+        <div style="font-size:11px;font-weight:600;color:#c8e8ff;margin-bottom:6px;">Forrest Li</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(0,200,255,0.4);line-height:1.8;">Duke Univ<br>BME + ECE<br>Class of 2025</div>
+      </div>
+    </nav>
+
+    <!-- Dossier -->
+    <div class="dossier">
+      <div class="hero" id="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-crosshair"></div>
+        <div class="hero-img-hint">IMG_SLOT: HERO</div>
+        <div class="hero-label">
+          <div class="hero-msn" id="hero-msn">MSN-001 // DUKE ECE // 2024</div>
+          <div class="hero-title" id="hero-title">Autonomous SLAM Rover</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab on" onclick="selectTab('overview')">OVERVIEW</div>
+        <div class="tab" onclick="selectTab('gallery')">GALLERY</div>
+        <div class="tab" onclick="selectTab('log')">MISSION LOG</div>
+      </div>
+
+      <div class="dcontent">
+
+        <!-- OVERVIEW -->
+        <div class="tab-panel on" id="tab-overview">
+          <div class="telem-row" id="telem-row"></div>
+          <div class="section-hdr">MISSION BRIEF</div>
+          <div class="desc-text" id="desc-text"></div>
+          <div class="section-hdr">TECHNOLOGIES</div>
+          <div class="tag-row" id="tag-row"></div>
+        </div>
+
+        <!-- GALLERY -->
+        <div class="tab-panel" id="tab-gallery">
+          <div class="section-hdr">ASSET MANIFEST</div>
+          <div class="img-grid">
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-photo img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">CAD render<br>/ hero shot</div>
+              </div>
+              <div class="img-tag">IMG_01</div>
+            </div>
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-chart-dots img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">Data plot<br>/ graph</div>
+              </div>
+              <div class="img-tag">IMG_02</div>
+            </div>
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-brand-youtube img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">Demo video<br>/ GIF</div>
+              </div>
+              <div class="img-tag">VID_01</div>
+            </div>
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-file-description img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">Schematic<br>/ diagram</div>
+              </div>
+              <div class="img-tag">DWG_01</div>
+            </div>
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-photo img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">Build photo<br>/ bench shot</div>
+              </div>
+              <div class="img-tag">IMG_03</div>
+            </div>
+            <div class="img-slot">
+              <div style="text-align:center">
+                <i class="ti ti-plus img-slot-icon" aria-hidden="true"></i>
+                <div class="img-slot-label">Add asset</div>
+              </div>
+            </div>
+          </div>
+          <div class="section-hdr">NOTES</div>
+          <div class="desc-text" style="font-size:12px;">Each slot above maps to a real image or embed. Drop in a CAD render, a plot from your writeup, a short GIF of the system running — whatever tells the story best.</div>
+        </div>
+
+        <!-- LOG -->
+        <div class="tab-panel" id="tab-log">
+          <div class="section-hdr">MISSION TIMELINE</div>
+          <div id="log-entries"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right properties -->
+    <div class="rpanel">
+      <div class="rp-hdr">PROPERTIES</div>
+      <div id="props-body"></div>
+      <div class="rp-gap"></div>
+      <div class="rp-hdr">LINKS</div>
+      <div class="links-block">
+        <div class="link-btn"><i class="ti ti-brand-github" aria-hidden="true"></i> GitHub</div>
+        <div class="link-btn"><i class="ti ti-file-text" aria-hidden="true"></i> Writeup / PDF</div>
+        <div class="link-btn"><i class="ti ti-player-play" aria-hidden="true"></i> Demo Video</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const missions = [
+  {
+    id: 'MSN-001', title: 'Autonomous SLAM Rover', meta: 'DUKE ECE // 2024',
+    badge: ['COMPLETE', 'g'],
+    desc: 'Simultaneous localization and mapping system built on ROS2. LiDAR + IMU sensor fusion for real-time 2D mapping of unknown environments. Competed at IEEE SoutheastCon 2024. Designed, fabricated, and programmed by a team of four over two semesters.',
+    telem: [
+      {val:'87%', lbl:'Map Coverage'}, {val:'±2cm', lbl:'Localization'}, {val:'4WD', lbl:'Drive Config'}, {val:'Top 25%', lbl:'Competition'}
+    ],
+    tags: ['ROS2','C++','LiDAR','SLAM','IMU','SolidWorks','FEA'],
+    props: [
+      {k:'Status', v:'COMPLETE', cls:'ok'}, {k:'Year', v:'2024'}, {k:'Team', v:'4 members'}, {k:'Dept', v:'ECE'}, {k:'Mass', v:'2.4 kg'}, {k:'Wheelbase', v:'280mm'}, {k:'Sensor', v:'RPLiDAR A1'}
+    ],
+    log: [
+      {t:'T+00:00', e:'Project kickoff', d:'Team formed, requirements defined, initial SolidWorks chassis concept drafted.'},
+      {t:'T+03wk', e:'Chassis fabricated', d:'Aluminum frame cut and assembled. Wheel encoders mounted and tested.', img:true},
+      {t:'T+06wk', e:'ROS2 stack running', d:'Node graph operational. LiDAR publishing scan data at 10Hz.'},
+      {t:'T+10wk', e:'SLAM tuned', d:'Hector SLAM configured. Mapping accuracy validated in lab corridor.', img:true},
+      {t:'T+14wk', e:'IEEE SoutheastCon', d:'Competed. Robot completed autonomous run. Ranked in top 25% of field.'},
+    ]
+  },
+  {
+    id: 'MSN-002', title: 'Velocity-Based Training Device', meta: 'DUKE BME // 2023',
+    badge: ['COMPLETE', 'g'],
+    desc: 'Wearable IMU-based device for real-time barbell velocity measurement during strength training. Validated against a commercial Tendo unit (r²=0.97). Custom 3D-printed enclosure, FEA-tested snap-fit. Low-power embedded firmware in C.',
+    telem: [
+      {val:'r²=.97', lbl:'vs Tendo'}, {val:'<5ms', lbl:'Latency'}, {val:'HDPE', lbl:'Material'}, {val:'Solo', lbl:'Team'}
+    ],
+    tags: ['Embedded C','IMU','BLE','SolidWorks','FEA','3D Print','Python'],
+    props: [
+      {k:'Status', v:'COMPLETE', cls:'ok'}, {k:'Year', v:'2023'}, {k:'Team', v:'Solo'}, {k:'Dept', v:'BME'}, {k:'MCU', v:'STM32'}, {k:'Battery', v:'48hr'}, {k:'Weight', v:'31g'}
+    ],
+    log: [
+      {t:'T+00:00', e:'Clinical need identified', d:'Surveyed coaches and athletes. Defined accuracy and latency requirements.'},
+      {t:'T+02wk', e:'IMU selection', d:'Benchmarked 3 IMUs. Selected MPU-6050 for noise floor and cost.'},
+      {t:'T+05wk', e:'Enclosure v1', d:'First SolidWorks design printed. Snap-fit failed under load — redesigned.', img:true},
+      {t:'T+08wk', e:'Firmware complete', d:'Kalman filter tuned. BLE streaming to companion iOS app.'},
+      {t:'T+11wk', e:'Validation study', d:'Side-by-side with Tendo unit. r²=0.97 across 6 athletes.', img:true},
+    ]
+  },
+  {
+    id: 'MSN-003', title: 'Recovery Separation System', meta: 'DUKE AERO // 2023',
+    badge: ['ARCHIVED', 'a'],
+    desc: 'HDPE blast disk separation system for high-power rocketry recovery deployment. Designed to shear at a calibrated pressure threshold. Validated via FEA stress analysis in SolidWorks Simulation.',
+    telem: [
+      {val:'HDPE', lbl:'Material'}, {val:'FEA', lbl:'Validated'}, {val:'2023', lbl:'Year'}, {val:'ARC', lbl:'Status'}
+    ],
+    tags: ['SolidWorks','FEA','HDPE','Rocketry','Stress Analysis'],
+    props: [
+      {k:'Status', v:'ARCHIVED', cls:'arc'}, {k:'Year', v:'2023'}, {k:'Part', v:'BLAST_DISK'}, {k:'Method', v:'FEA'}, {k:'Material', v:'HDPE'}
+    ],
+    log: [
+      {t:'T+00:00', e:'Design requirements', d:'Defined shear threshold from rocket apogee and deployment conditions.'},
+      {t:'T+02wk', e:'Geometry locked', d:'Final SLDPRT file. Thin-wall shear ring dimensioned.', img:true},
+      {t:'T+04wk', e:'FEA complete', d:'Stress concentrations confirmed at shear ring. Safety factor 1.4×.'},
+      {t:'T+06wk', e:'Archived', d:'Project concluded. Part filed for reference in future recovery system designs.'},
+    ]
+  },
+  {
+    id: 'MSN-004', title: 'Senior Design', meta: 'DUKE // 2025',
+    badge: ['IN PROGRESS', 'a'],
+    desc: 'Details classified. Senior capstone project in progress — update this with your actual project description.',
+    telem: [
+      {val:'WIP', lbl:'Status'}, {val:'2025', lbl:'Year'}, {val:'TBD', lbl:'Metric A'}, {val:'TBD', lbl:'Metric B'}
+    ],
+    tags: ['TBD'],
+    props: [
+      {k:'Status', v:'IN PROGRESS', cls:'warn'}, {k:'Year', v:'2025'}, {k:'Team', v:'TBD'}, {k:'Dept', v:'TBD'}
+    ],
+    log: [
+      {t:'T+00:00', e:'Project initiated', d:'Kickoff meeting held. Requirements gathering in progress.'},
+    ]
+  }
+];
+
+let currentTab = 'overview';
+
+function selectMission(i) {
+  document.querySelectorAll('.msn').forEach((el,j) => el.classList.toggle('on', i===j));
+  const m = missions[i];
+  document.getElementById('hero-msn').textContent = m.id + ' // ' + m.meta;
+  document.getElementById('hero-title').textContent = m.title;
+
+  // telem
+  document.getElementById('telem-row').innerHTML = m.telem.map(t =>
+    `<div class="tcard"><div class="tcard-val">${t.val}</div><div class="tcard-lbl">${t.lbl}</div></div>`
+  ).join('');
+
+  document.getElementById('desc-text').textContent = m.desc;
+  document.getElementById('tag-row').innerHTML = m.tags.map(t => `<span class="mc-tag">${t}</span>`).join('');
+
+  // props
+  document.getElementById('props-body').innerHTML = m.props.map(p =>
+    `<div class="prop-row"><span class="prop-k">${p.k}</span><span class="prop-v ${p.cls||''}">${p.v}</span></div>`
+  ).join('');
+
+  // log
+  document.getElementById('log-entries').innerHTML = m.log.map(l =>
+    `<div class="log-entry">
+      <div class="log-time-col">${l.t}</div>
+      <div class="log-body">
+        <div class="log-event">${l.e}</div>
+        <div class="log-detail">${l.d}</div>
+        ${l.img ? `<div class="log-img"><i class="ti ti-photo" aria-hidden="true" style="font-size:16px;margin-right:6px;color:rgba(0,160,255,0.3)"></i>IMG_SLOT — photo or diagram here</div>` : ''}
+      </div>
+    </div>`
+  ).join('');
+
+  selectTab(currentTab);
+}
+
+function selectTab(t) {
+  currentTab = t;
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('on', el.textContent.toLowerCase() === t));
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.toggle('on', el.id === 'tab-' + t));
+}
+
+// Clock
+let s = 0;
+setInterval(() => {
+  s++;
+  const hh = String(Math.floor(s/3600)).padStart(2,'0');
+  const mm = String(Math.floor((s%3600)/60)).padStart(2,'0');
+  const ss = String(s%60).padStart(2,'0');
+  document.getElementById('clock').textContent = `MET ${hh}:${mm}:${ss}`;
+}, 1000);
+
+selectMission(0);
+</script>
