@@ -1,333 +1,516 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forrest Li // Mission Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body { height: 100%; margin: 0; padding: 0; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #040d14;
+      --acc:     #0af;
+      --acc2:    #0df;
+      --ok:      #1d9e75;
+      --warn:    #ef9f27;
+      --text:    #c8e8ff;
+      --muted:   rgba(200,232,255,0.45);
+      --border:  rgba(0,160,255,0.15);
+      --mono:    'Share Tech Mono', monospace;
+      --sans:    'Rajdhani', sans-serif;
+    }
 
-  .mc-root {
-    background: #040d14;
-    color: #c8e8ff;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 14px;
-    height: 100vh;
-    min-height: 560px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
-  }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow: hidden;
+    }
 
-  .mc-root::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,120,220,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
+    /* ── Scan line overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
 
-  .mono { font-family: 'Share Tech Mono', monospace; }
+    /* ── Star field canvas ── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
 
-  /* Top header bar */
-  .mc-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(0,160,255,0.2);
-    padding-bottom: 10px;
-    flex-shrink: 0;
-  }
-  .mc-callsign { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0,200,255,0.5); letter-spacing: 0.12em; }
-  .mc-name { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; color: #fff; text-transform: uppercase; }
-  .mc-name span { color: #0af; }
-  .mc-status-row { display: flex; align-items: center; gap: 16px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: rgba(0,200,255,0.6); }
-  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #1d9e75; box-shadow: 0 0 6px #1d9e75; display: inline-block; animation: pulse 2s infinite; margin-right: 4px; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    /* ── Grid overlay ── */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,160,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,160,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 1;
+    }
 
-  /* Three column layout */
-  .mc-body {
-    display: grid;
-    grid-template-columns: 160px 1fr 180px;
-    gap: 10px;
-    flex: 1;
-    min-height: 0;
-  }
+    /* ── Radial glow ── */
+    .glow-center {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse at center,
+        rgba(0,120,220,0.07) 0%,
+        transparent 65%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
 
-  /* Panel shared styles */
-  .panel {
-    border: 1px solid rgba(0,160,255,0.15);
-    border-radius: 4px;
-    background: rgba(0,20,40,0.6);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .panel-header {
-    background: rgba(0,100,200,0.12);
-    border-bottom: 1px solid rgba(0,160,255,0.15);
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: rgba(0,200,255,0.7);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-  .ph-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(0,200,255,0.4); flex-shrink: 0; }
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 40px;
+      background: rgba(2,10,18,0.9);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .topbar-logo {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--acc);
+      letter-spacing: 0.16em;
+    }
+    .topbar-nav {
+      display: flex;
+      gap: 2px;
+    }
+    .topbar-nav a {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(0,200,255,0.4);
+      text-decoration: none;
+      padding: 4px 10px;
+      letter-spacing: 0.06em;
+      transition: color 0.15s;
+    }
+    .topbar-nav a:hover { color: var(--acc); }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(0,200,255,0.4);
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ldot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-  /* Left: Mission index */
-  .mission-list { padding: 8px 0; overflow-y: auto; flex: 1; }
-  .mission-item { padding: 7px 10px; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; }
-  .mission-item:hover { background: rgba(0,160,255,0.07); border-left-color: rgba(0,160,255,0.3); }
-  .mission-item.active { background: rgba(0,160,255,0.12); border-left-color: #0af; }
-  .mi-id { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.5); letter-spacing: 0.06em; }
-  .mi-name { font-size: 13px; font-weight: 600; color: #c8e8ff; line-height: 1.2; margin-top: 1px; }
-  .mi-status { font-size: 10px; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
-  .status-ok  { color: #1d9e75; }
-  .status-wip { color: #ef9f27; }
-  .status-arc { color: rgba(0,200,255,0.4); }
+    /* ── Corner decorations ── */
+    .corner {
+      position: fixed;
+      width: 40px; height: 40px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .corner::before, .corner::after {
+      content: '';
+      position: absolute;
+      background: rgba(0,170,255,0.35);
+    }
+    .corner::before { width: 100%; height: 1px; top: 0; }
+    .corner::after  { width: 1px; height: 100%; left: 0; }
+    .corner.tl { top: 40px; left: 0; }
+    .corner.tr { top: 40px; right: 0; transform: scaleX(-1); }
+    .corner.bl { bottom: 0; left: 0; transform: scaleY(-1); }
+    .corner.br { bottom: 0; right: 0; transform: scale(-1); }
 
-  /* Center: Main display */
-  .main-display { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-  .main-display > .panel:first-child { flex: 1; min-height: 0; overflow-y: auto; }
+    /* ── Main layout ── */
+    .main {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 28px 28px;
+      gap: 0;
+    }
 
-  .mission-card { padding: 14px 16px; }
-  .mcard-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
-  .mcard-id { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.5); letter-spacing: 0.1em; }
-  .mcard-title { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.1; margin-top: 2px; }
-  .badge { font-family: 'Share Tech Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 2px; border: 1px solid; letter-spacing: 0.06em; flex-shrink: 0; }
-  .badge-green { color: #1d9e75; border-color: rgba(29,158,117,0.4); background: rgba(29,158,117,0.1); }
-  .badge-amber { color: #ef9f27; border-color: rgba(239,159,39,0.4); background: rgba(239,159,39,0.1); }
+    /* ── Pre-header label ── */
+    .pre-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(0,200,255,0.4);
+      letter-spacing: 0.18em;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+      animation-delay: 0.3s;
+    }
 
-  .mcard-desc { font-size: 13px; line-height: 1.6; color: rgba(200,232,255,0.7); margin-bottom: 12px; }
+    /* ── Name ── */
+    .name-block {
+      text-align: center;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards;
+      animation-delay: 0.55s;
+    }
+    .name-first {
+      font-size: clamp(52px, 8vw, 88px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      display: block;
+    }
+    .name-last {
+      font-size: clamp(52px, 8vw, 88px);
+      font-weight: 700;
+      color: var(--acc);
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      display: block;
+    }
 
-  /* Telemetry bars */
-  .telem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .telem-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(0,200,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
-  .telem-bar-bg { height: 4px; background: rgba(0,160,255,0.1); border-radius: 2px; overflow: hidden; }
-  .telem-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #0af, #0df); animation: fillIn 1.2s ease-out both; }
-  @keyframes fillIn { from { width: 0 !important; } }
-  .telem-val { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: #0af; margin-top: 3px; }
+    /* ── Divider line ── */
+    .divider {
+      width: 280px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--acc), transparent);
+      margin: 0 auto 28px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+      animation-delay: 0.9s;
+    }
 
-  /* Tags */
-  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; }
-  .mc-tag { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(0,200,255,0.7); background: rgba(0,160,255,0.08); border: 1px solid rgba(0,160,255,0.2); border-radius: 2px; padding: 2px 7px; letter-spacing: 0.04em; }
+    /* ── Statement ── */
+    .statement {
+      max-width: 560px;
+      text-align: center;
+      font-size: clamp(15px, 2vw, 17px);
+      font-weight: 500;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards;
+      animation-delay: 1.0s;
+    }
+    .statement em {
+      color: var(--text);
+      font-style: normal;
+    }
 
-  /* Log panel */
-  .log-panel-wrap { flex-shrink: 0; }
-  .log-panel { padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-size: 10px; overflow-y: auto; max-height: 110px; }
-  .log-line { color: rgba(0,200,255,0.5); margin-bottom: 3px; line-height: 1.5; }
-  .log-line .log-time { color: rgba(0,200,255,0.3); margin-right: 8px; }
-  .log-line .log-ok   { color: #1d9e75; }
-  .log-line .log-warn { color: #ef9f27; }
+    /* ── CTA button ── */
+    .cta-wrap {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+      animation-delay: 1.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--acc);
+      border: 1px solid rgba(0,170,255,0.35);
+      background: rgba(0,160,255,0.06);
+      padding: 14px 32px;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,160,255,0.08);
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+    }
+    .cta-btn:hover::before { transform: translateX(0); }
+    .cta-btn:hover {
+      border-color: rgba(0,170,255,0.7);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(0,160,255,0.12);
+    }
+    .cta-arrow {
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    .cta-btn:hover .cta-arrow { transform: translateX(4px); }
+    .cta-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(0,200,255,0.3);
+      letter-spacing: 0.1em;
+    }
 
-  /* Right: telemetry panels */
-  .right-col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-  .right-col .panel:last-child { flex: 1; min-height: 0; overflow-y: auto; }
+    /* ── Status strip ── */
+    .status-strip {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 32px;
+      background: rgba(2,10,18,0.85);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(0,200,255,0.35);
+      z-index: 50;
+      backdrop-filter: blur(6px);
+    }
+    .strip-left, .strip-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .strip-item { display: flex; align-items: center; gap: 6px; }
+    .strip-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .strip-dot.ok  { background: var(--ok);   box-shadow: 0 0 4px var(--ok); }
+    .strip-dot.acc { background: var(--acc);  box-shadow: 0 0 4px var(--acc); }
+    .strip-dot.warn{ background: var(--warn); box-shadow: 0 0 4px var(--warn); }
 
-  .stat-grid { padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .stat-cell { text-align: center; }
-  .stat-val { font-family: 'Share Tech Mono', monospace; font-size: 20px; color: #0af; line-height: 1; }
-  .stat-unit { font-size: 10px; color: rgba(0,200,255,0.4); }
-  .stat-lbl { font-size: 10px; color: rgba(200,232,255,0.5); margin-top: 2px; letter-spacing: 0.04em; }
-  .divider-h { border: none; border-top: 1px solid rgba(0,160,255,0.1); }
+    /* ── Reticle ── */
+    .reticle {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.06;
+    }
+    .reticle::before, .reticle::after {
+      content: '';
+      position: absolute;
+      background: var(--acc);
+    }
+    .reticle::before { width: 100%; height: 1px; top: 50%; }
+    .reticle::after  { height: 100%; width: 1px; left: 50%; }
 
-  .contact-block { padding: 10px; }
-  .contact-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; font-weight: 500; color: rgba(200,232,255,0.8); }
-  .contact-row i { font-size: 14px; color: rgba(0,200,255,0.5); }
-  .contact-row a { color: #0af; text-decoration: none; }
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
-  .skill-list { padding: 8px 10px; overflow-y: auto; }
-  .skill-row { margin-bottom: 7px; }
-  .skill-name { font-size: 11px; font-weight: 600; color: rgba(200,232,255,0.8); margin-bottom: 3px; }
-  .skill-bar-bg { height: 3px; background: rgba(0,160,255,0.1); border-radius: 2px; overflow: hidden; }
-  .skill-bar-fill { height: 100%; border-radius: 2px; background: rgba(0,170,255,0.6); animation: fillIn 1.4s ease-out both; }
+    /* ── Telemetry sidebar (right) ── */
+    .telem-sidebar {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 1.6s;
+    }
+    .telem-item {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: rgba(0,200,255,0.3);
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+      text-align: right;
+    }
+    .telem-val {
+      color: rgba(0,200,255,0.55);
+      font-size: 11px;
+    }
 
-  /* Scan line effect */
-  .mc-root::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
-    pointer-events: none;
-    z-index: 10;
-  }
-</style>
+    /* ── Left callsign ── */
+    .callsign-bar {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: rgba(0,200,255,0.2);
+      letter-spacing: 0.2em;
+      z-index: 20;
+      white-space: nowrap;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 1.8s;
+    }
+  </style>
+</head>
+<body>
 
-<div class="mc-root">
-  <header class="mc-header">
-    <div>
-      <div class="mc-callsign">MISSION CONTROL // PORTFOLIO_v2025</div>
-      <div class="mc-name">FORREST <span>LI</span></div>
+  <canvas id="stars"></canvas>
+  <div class="grid-bg"></div>
+  <div class="glow-center"></div>
+  <div class="reticle"></div>
+
+  <!-- Corner brackets -->
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">MC // PORTFOLIO</div>
+      <nav class="topbar-nav">
+        <a href="#">HOME</a>
+        <a href="missions.html">MISSIONS</a>
+        <a href="#">CONTACT</a>
+      </nav>
     </div>
-    <div class="mc-status-row">
-      <span><span class="live-dot"></span>ALL SYS NOMINAL</span>
-      <span class="mono" id="clock">MET 00:00:00</span>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="ldot"></span>SYS NOMINAL</div>
+      <span id="clock">MET 00:00:00</span>
     </div>
   </header>
 
-  <div class="mc-body">
+  <!-- Left callsign -->
+  <div class="callsign-bar">OPERATOR: FORREST_LI // DUKE_UNIV // CLASS_OF_2025</div>
 
-    <!-- Left mission index -->
-    <div class="panel">
-      <div class="panel-header"><span class="ph-dot"></span>MISSION INDEX</div>
-      <div class="mission-list">
-        <div class="mission-item">
-          <div class="mi-id">MSN-001</div>
-          <div class="mi-name">SLAM Rover</div>
-          <div class="mi-status status-ok"><span>▲</span> COMPLETE</div>
-        </div>
-        <div class="mission-item">
-          <div class="mi-id">MSN-002</div>
-          <div class="mi-name">VBT Device</div>
-          <div class="mi-status status-ok"><span>▲</span> COMPLETE</div>
-        </div>
-        <div class="mission-item active">
-          <div class="mi-id">MSN-003</div>
-          <div class="mi-name">Blast Disk</div>
-          <div class="mi-status status-ok"><span>▲</span> IN USE</div>
-        </div>
-        <div class="mission-item">
-          <div class="mi-id">MSN-004</div>
-          <div class="mi-name">Senior Design</div>
-          <div class="mi-status status-wip"><span>●</span> IN PROGRESS</div>
-        </div>
-      </div>
+  <!-- Right telemetry -->
+  <aside class="telem-sidebar" aria-hidden="true">
+    <div class="telem-item">MISSIONS<br><span class="telem-val">04 TOTAL</span></div>
+    <div class="telem-item">COMPLETE<br><span class="telem-val">03 / 04</span></div>
+    <div class="telem-item">ACTIVE<br><span class="telem-val">01</span></div>
+    <div class="telem-item">LOCATION<br><span class="telem-val">DURHAM NC</span></div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="pre-label">OPERATOR DOSSIER // INITIALIZED</div>
+
+    <div class="name-block">
+      <span class="name-first">FORREST</span>
+      <span class="name-last">LI</span>
     </div>
 
-    <!-- Center main display -->
-    <div class="main-display">
-      <div class="panel">
-        <div class="panel-header"><span class="ph-dot"></span>ACTIVE MISSION // MSN-003</div>
-        <div class="mission-card">
-          <div class="mcard-top">
-            <div>
-              <div class="mcard-id">DESIGNATION: BLAST_DISK.SLDASM // DUKE AERO // 2025-2026</div>
-              <div class="mcard-title">Blast Disk Recovery System</div>
-            </div>
-            <div class="badge badge-green">IN USE</div>
-          </div>
-          <div class="mcard-desc">
-            CO₂-driven main parachute separation mechanism for Duke AERO high-power rocketry. Previous system suffered unreliable separations from excessive pressurized volume. Custom HDPE sliding disk reduces pressurized volume 5×+, converting CO₂ expansion into shear pin force more efficiently. Integrates sealed cable gland (shock cord) and breakaway VGA connector (avionics wiring). FEA validated at 60 psi — factor of safety 1.95. Machined from 6″ OD HDPE stock.
-          </div>
+    <div class="divider"></div>
 
-          <div class="telem-grid">
-            <div class="telem-item">
-              <div class="telem-label">Volume Reduction</div>
-              <div class="telem-bar-bg"><div class="telem-bar-fill" style="width: 95%"></div></div>
-              <div class="telem-val">5×+</div>
-            </div>
-            <div class="telem-item">
-              <div class="telem-label">FEA Safety Factor</div>
-              <div class="telem-bar-bg"><div class="telem-bar-fill" style="width: 65%"></div></div>
-              <div class="telem-val">1.95 @ 60 psi</div>
-            </div>
-            <div class="telem-item">
-              <div class="telem-label">Pressure Range</div>
-              <div class="telem-bar-bg"><div class="telem-bar-fill" style="width: 80%"></div></div>
-              <div class="telem-val">21.5 – 180 psi</div>
-            </div>
-            <div class="telem-item">
-              <div class="telem-label">Disk OD (turned)</div>
-              <div class="telem-bar-bg"><div class="telem-bar-fill" style="width: 72%"></div></div>
-              <div class="telem-val">5.947 in</div>
-            </div>
-          </div>
+    <p class="statement">
+      <em>Biomedical &amp; Electrical engineer</em> based at Duke University —
+      building systems at the intersection of
+      <em>robotics, embedded hardware,</em> and <em>human health.</em>
+      I design things that work in the real world,
+      from autonomous rovers to clinical wearables.
+    </p>
 
-          <div class="tag-row">
-            <span class="mc-tag">Onshape CAD</span>
-            <span class="mc-tag">Ansys FEA</span>
-            <span class="mc-tag">Mill &amp; Lathe</span>
-            <span class="mc-tag">Fusion Toolpath</span>
-            <span class="mc-tag">Systems Eng.</span>
-            <span class="mc-tag">HDPE</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel log-panel-wrap">
-        <div class="panel-header"><span class="ph-dot"></span>MISSION LOG</div>
-        <div class="log-panel">
-          <div class="log-line"><span class="log-time">T+00:00</span><span class="log-ok">[OK]</span> Requirements locked — pressure range 21.5–180 psi, shear pin loads defined</div>
-          <div class="log-line"><span class="log-time">T+01wk</span><span class="log-ok">[OK]</span> Lip-shoulder geometry finalized — disk seats on coupler, shoulder inside tube</div>
-          <div class="log-line"><span class="log-time">T+02wk</span><span class="log-ok">[OK]</span> Pass-throughs integrated — cable gland + breakaway VGA, pressure seal verified</div>
-          <div class="log-line"><span class="log-time">T+03wk</span><span class="log-ok">[OK]</span> FEA complete — HDPE at 60 psi, FoS 1.95, structural integrity confirmed</div>
-          <div class="log-line"><span class="log-time">T+04wk</span><span class="log-warn">[PEND]</span> Separation test planned — instrumented CO₂ run to validate real pressure envelope</div>
-        </div>
-      </div>
+    <div class="cta-wrap">
+      <a href="missions.html" class="cta-btn">
+        EXPLORE MISSIONS <span class="cta-arrow">→</span>
+      </a>
+      <div class="cta-sub">4 MISSIONS ON RECORD</div>
     </div>
+  </main>
 
-    <!-- Right telemetry -->
-    <div class="right-col">
-      <div class="panel">
-        <div class="panel-header"><span class="ph-dot"></span>OPERATOR</div>
-        <div class="stat-grid">
-          <div class="stat-cell">
-            <div class="stat-val">4</div>
-            <div class="stat-lbl">Missions</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-val">3</div>
-            <div class="stat-lbl">Complete</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-val">2</div>
-            <div class="stat-lbl">Pubs</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-val">1<span class="stat-unit">×</span></div>
-            <div class="stat-lbl">Active</div>
-          </div>
-        </div>
-        <hr class="divider-h">
-        <div class="contact-block">
-          <div class="contact-row"><i class="ti ti-mail" aria-hidden="true"></i> forrest@duke.edu</div>
-          <div class="contact-row"><i class="ti ti-brand-github" aria-hidden="true"></i> <a href="#">github.com/forrestli</a></div>
-          <div class="contact-row"><i class="ti ti-map-pin" aria-hidden="true"></i> Durham, NC</div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-header"><span class="ph-dot"></span>CAPABILITIES</div>
-        <div class="skill-list">
-          <div class="skill-row">
-            <div class="skill-name">Mechanical Design</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-name">FEA / Simulation</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-name">Mill &amp; Lathe</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-name">Systems Eng.</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 82%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-name">CAD (Onshape)</div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%"></div></div>
-          </div>
-        </div>
-      </div>
+  <!-- Status strip -->
+  <footer class="status-strip">
+    <div class="strip-left">
+      <div class="strip-item"><div class="strip-dot ok"></div>SLAM ROVER — COMPLETE</div>
+      <div class="strip-item"><div class="strip-dot ok"></div>VBT DEVICE — COMPLETE</div>
+      <div class="strip-item"><div class="strip-dot acc"></div>RECOVERY SEP — ARCHIVED</div>
+      <div class="strip-item"><div class="strip-dot warn"></div>SENIOR DESIGN — IN PROGRESS</div>
     </div>
+    <div class="strip-right">
+      <span id="date-str"></span>
+    </div>
+  </footer>
 
-  </div>
-</div>
+  <script>
+    // Star field
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; drawStars(); }
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 180; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const r = Math.random() * 0.8 + 0.1;
+        const a = Math.random() * 0.4 + 0.05;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180,220,255,${a})`;
+        ctx.fill();
+      }
+    }
+    window.addEventListener('resize', resize);
+    resize();
 
-<script>
-  let s = 0;
-  setInterval(() => {
-    s++;
-    const hh = String(Math.floor(s / 3600)).padStart(2, '0');
-    const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
-    const ss = String(s % 60).padStart(2, '0');
-    document.getElementById('clock').textContent = `MET ${hh}:${mm}:${ss}`;
-  }, 1000);
-</script>
+    // Clock
+    let s = 0;
+    function tick() {
+      s++;
+      const h  = String(Math.floor(s / 3600)).padStart(2,'0');
+      const m  = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
+      const sc = String(s % 60).padStart(2,'0');
+      document.getElementById('clock').textContent = `MET ${h}:${m}:${sc}`;
+    }
+    setInterval(tick, 1000);
+
+    // Date
+    const d = new Date();
+    document.getElementById('date-str').textContent =
+      d.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}).toUpperCase();
+  </script>
+</body>
+</html>
