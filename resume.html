@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forrest Li // Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:    #020810;
+      --acc:   #0af;
+      --ok:    #1d9e75;
+      --warn:  #ef9f27;
+      --text:  #c8e8ff;
+      --muted: rgba(200,232,255,0.45);
+      --border:rgba(0,160,255,0.15);
+      --mono:  'Share Tech Mono', monospace;
+      --sans:  'Rajdhani', sans-serif;
+    }
+    html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--sans); }
+    body::after {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:200;
+      background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px);
+    }
+    #bg { position:fixed; inset:0; z-index:0; }
+    .grid-bg {
+      position:fixed; inset:0; z-index:1; pointer-events:none;
+      background-image: linear-gradient(rgba(0,160,255,0.035) 1px,transparent 1px), linear-gradient(90deg,rgba(0,160,255,0.035) 1px,transparent 1px);
+      background-size: 44px 44px;
+    }
+    .topbar {
+      position:fixed; top:0; left:0; right:0; height:40px; z-index:100;
+      background:rgba(2,8,16,0.88); border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; padding:0 24px;
+      backdrop-filter:blur(8px);
+    }
+    .topbar-logo { font-family:var(--mono); font-size:11px; color:var(--acc); letter-spacing:0.16em; }
+    .topbar-nav { display:flex; gap:2px; }
+    .topbar-nav a { font-family:var(--mono); font-size:10px; color:rgba(0,200,255,0.4); text-decoration:none; padding:4px 10px; letter-spacing:0.06em; transition:color .15s; }
+    .topbar-nav a:hover, .topbar-nav a.active { color:var(--acc); }
+    .topbar-right { display:flex; align-items:center; gap:14px; font-family:var(--mono); font-size:10px; color:rgba(0,200,255,0.4); }
+    .ldot { width:6px; height:6px; border-radius:50%; background:var(--ok); box-shadow:0 0 6px var(--ok); animation:blink 2s infinite; display:inline-block; margin-right:5px; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .corner { position:fixed; width:36px; height:36px; z-index:10; pointer-events:none; }
+    .corner::before,.corner::after { content:''; position:absolute; background:rgba(0,170,255,.3); }
+    .corner::before { width:100%; height:1px; top:0; }
+    .corner::after  { width:1px; height:100%; left:0; }
+    .corner.tl { top:40px; left:0; }
+    .corner.tr { top:40px; right:0; transform:scaleX(-1); }
+    .corner.bl { bottom:32px; left:0; transform:scaleY(-1); }
+    .corner.br { bottom:32px; right:0; transform:scale(-1); }
+
+    .page {
+      position:relative; z-index:10;
+      height: calc(100vh - 72px);
+      margin-top: 40px;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      padding: 14px 24px;
+      overflow: hidden;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: rgba(0,20,40,0.6);
+      overflow: hidden;
+      display:flex; flex-direction:column;
+    }
+    .panel-header {
+      background: rgba(0,100,200,0.12);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:6px;
+      font-family:var(--mono); font-size:10px;
+      color:rgba(0,200,255,0.7); letter-spacing:.08em;
+      flex-shrink:0;
+    }
+    .ph-dot { width:5px; height:5px; border-radius:50%; background:rgba(0,200,255,.4); flex-shrink:0; }
+    .ph-left { display:flex; align-items:center; gap:6px; }
+
+    .dl-btn {
+      font-family:var(--mono); font-size:9px; color:var(--acc);
+      border:1px solid rgba(0,160,255,.3); background:rgba(0,160,255,.07);
+      padding:3px 10px; border-radius:2px; text-decoration:none; letter-spacing:.06em;
+      transition:all .15s;
+    }
+    .dl-btn:hover { background:rgba(0,160,255,.15); border-color:rgba(0,160,255,.6); }
+
+    .left-col { display:flex; flex-direction:column; gap:12px; }
+
+    .sec-nav { padding:8px 0; flex:1; }
+    .sec-nav-item {
+      padding:7px 14px; cursor:pointer;
+      border-left:2px solid transparent;
+      font-family:var(--mono); font-size:10px;
+      color:rgba(0,200,255,.45); letter-spacing:.06em;
+      transition:all .15s;
+    }
+    .sec-nav-item:hover { background:rgba(0,160,255,.06); border-left-color:rgba(0,160,255,.3); color:rgba(0,200,255,.7); }
+    .sec-nav-item.active { background:rgba(0,160,255,.1); border-left-color:var(--acc); color:var(--acc); }
+
+    .stat-panel { padding:12px; display:flex; flex-direction:column; gap:8px; }
+    .stat-row { display:flex; justify-content:space-between; align-items:center; }
+    .stat-k { font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.4); letter-spacing:.06em; }
+    .stat-v { font-family:var(--mono); font-size:10px; color:var(--acc); }
+
+    .content-col { overflow-y:auto; display:flex; flex-direction:column; gap:0; }
+
+    .section { padding:16px 20px; border-bottom:1px solid rgba(0,160,255,.08); }
+    .section:last-child { border-bottom:none; }
+
+    .sec-title {
+      font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.4);
+      letter-spacing:.16em; margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .sec-title::after { content:''; flex:1; height:1px; background:rgba(0,160,255,.12); }
+
+    .entry { margin-bottom:14px; }
+    .entry:last-child { margin-bottom:0; }
+    .entry-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px; }
+    .entry-title { font-size:14px; font-weight:700; color:var(--text); letter-spacing:.04em; }
+    .entry-date { font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.4); flex-shrink:0; margin-top:2px; }
+    .entry-sub { font-size:12px; font-weight:600; color:var(--acc); margin-bottom:5px; }
+    .entry-body { font-size:12px; line-height:1.65; color:var(--muted); }
+    .entry-body li { margin-left:16px; margin-bottom:2px; }
+    .entry-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
+    .etag {
+      font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.6);
+      background:rgba(0,160,255,.07); border:1px solid rgba(0,160,255,.18);
+      border-radius:2px; padding:1px 6px;
+    }
+
+    .skill-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; }
+    .skill-row { }
+    .skill-top { display:flex; justify-content:space-between; margin-bottom:4px; }
+    .skill-name { font-size:12px; font-weight:600; color:var(--text); }
+    .skill-pct { font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.4); }
+    .skill-bar-bg { height:3px; background:rgba(0,160,255,.1); border-radius:2px; overflow:hidden; }
+    .skill-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#0af,rgba(0,200,255,.4)); animation:fillIn 1.4s ease-out both; }
+    @keyframes fillIn { from{width:0!important} }
+
+    .statusbar {
+      position:fixed; bottom:0; left:0; right:0; height:32px; z-index:100;
+      background:rgba(2,8,16,.88); border-top:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; padding:0 18px;
+      font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.35);
+      backdrop-filter:blur(6px);
+    }
+    .strip-items { display:flex; gap:18px; }
+    .strip-item { display:flex; align-items:center; gap:5px; }
+    .sdot { width:5px; height:5px; border-radius:50%; }
+    .sdot.ok  { background:var(--ok);  box-shadow:0 0 4px var(--ok); }
+    .sdot.acc { background:var(--acc); box-shadow:0 0 4px var(--acc); }
+    .sdot.warn{ background:var(--warn);box-shadow:0 0 4px var(--warn); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="grid-bg"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div class="topbar-logo">FL // PORTFOLIO</div>
+      <nav class="topbar-nav">
+        <a href="index.html">HOME</a>
+        <a href="projects.html">PROJECTS</a>
+        <a href="resume.html" class="active">RESUME</a>
+        <a href="contact.html">CONTACT</a>
+      </nav>
+    </div>
+    <div class="topbar-right">
+      <span><span class="ldot"></span>SYS NOMINAL</span>
+      <span id="clock">MET 00:00:00</span>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- Left nav -->
+    <div class="left-col">
+      <div class="panel">
+        <div class="panel-header"><span class="ph-dot"></span>SECTIONS</div>
+        <div class="sec-nav">
+          <div class="sec-nav-item active" onclick="navTo('edu', event)">EDUCATION</div>
+          <div class="sec-nav-item" onclick="navTo('exp', event)">EXPERIENCE</div>
+          <div class="sec-nav-item" onclick="navTo('proj', event)">PROJECTS</div>
+          <div class="sec-nav-item" onclick="navTo('skills', event)">CAPABILITIES</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="ph-dot"></span>OPERATOR STATS</div>
+        <div class="stat-panel">
+          <div class="stat-row"><span class="stat-k">INSTITUTION</span><span class="stat-v">DUKE</span></div>
+          <div class="stat-row"><span class="stat-k">DEGREE</span><span class="stat-v">BSE MECH-E</span></div>
+          <div class="stat-row"><span class="stat-k">CLASS</span><span class="stat-v">2029</span></div>
+          <div class="stat-row"><span class="stat-k">GPA</span><span class="stat-v" style="color:var(--ok)">3.96</span></div>
+          <div class="stat-row"><span class="stat-k">STATUS</span><span class="stat-v" style="color:var(--ok)">ACTIVE</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="ph-left"><span class="ph-dot"></span>DOSSIER FILE</div>
+          <a class="dl-btn" href="Forrest_Li_-_Resume.pdf" download>↓ PDF</a>
+        </div>
+        <div style="padding:10px 12px;font-family:var(--mono);font-size:9px;color:rgba(0,200,255,.3);line-height:1.7;">
+          FORREST_LI_RESUME.PDF<br>
+          LAST UPDATED: 2026-05<br>
+          CLEARANCE: PUBLIC
+        </div>
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="panel content-col">
+      <div class="panel-header">
+        <div class="ph-left"><span class="ph-dot"></span>OPERATOR DOSSIER // FORREST LI</div>
+        <span style="font-size:9px;color:rgba(0,200,255,.3);">MECH-E // DUKE // 2029</span>
+      </div>
+
+      <!-- Education -->
+      <div class="section" id="edu">
+        <div class="sec-title">EDUCATION</div>
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Duke University</div>
+            <div class="entry-date">AUG 2025 — MAY 2029</div>
+          </div>
+          <div class="entry-sub">B.S.E. Mechanical Engineering — Aerospace Certification | Minor: Financial Economics</div>
+          <div class="entry-body">
+            GPA: 3.96/4.00 · Durham, NC<br>
+            Relevant Coursework: Engineering Design &amp; Communication, Engineering Innovation, Mechanics of Solids
+          </div>
+          <div class="entry-tags">
+            <span class="etag">Mechanical Engineering</span><span class="etag">Aerospace</span><span class="etag">Durham, NC</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <div class="section" id="exp">
+        <div class="sec-title">RESEARCH &amp; EXPERIENCE</div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Duke Biostatistics &amp; Bioinformatics Dept.</div>
+            <div class="entry-date">SEP 2025 — PRESENT</div>
+          </div>
+          <div class="entry-sub">Undergraduate Volunteer Research Assistant — Durham, NC</div>
+          <div class="entry-body">
+            <ul>
+              <li>Benchmarking large language models (LLMs) and prompting strategies for code generation in data science applications.</li>
+              <li>Conducting large-scale single cell transcriptomics analysis across multi-organ human datasets (HuBMAP, hECA) to investigate senescence-associated gene expression patterns.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">Python</span><span class="etag">LLMs</span><span class="etag">Transcriptomics</span><span class="etag">Bioinformatics</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">University of Rochester — Lab of Laser Energetics</div>
+            <div class="entry-date">JUL 2024 — JAN 2025</div>
+          </div>
+          <div class="entry-sub">Project Assistant — Rochester, NY</div>
+          <div class="entry-body">
+            <ul>
+              <li>Developed a MATLAB program to extract implosion velocity in Inertial Confinement Fusion experiments.</li>
+              <li>Program utilized in March 2025 to benchmark simulations of Germanium-doped ablators.</li>
+              <li>Presented findings at University of Rochester Research Symposium; detailed in research paper.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">MATLAB</span><span class="etag">ICF</span><span class="etag">Signal Processing</span><span class="etag">Research</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Webster Thomas Rocketry Club</div>
+            <div class="entry-date">SEP 2023 — JUN 2025</div>
+          </div>
+          <div class="entry-sub">Founder &amp; President — Webster, NY</div>
+          <div class="entry-body">
+            <ul>
+              <li>Founded and led a 12-member student engineering team focused on model rocket design, manufacturing, and flight testing.</li>
+              <li>Designed and built a competition rocket for the American Rocketry Challenge using CAD and RockSim simulations.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">RockSim</span><span class="etag">CAD</span><span class="etag">Leadership</span><span class="etag">ARC</span></div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="section" id="proj">
+        <div class="sec-title">KEY PROJECTS</div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Rocket Separation Blast Disk</div>
+            <div class="entry-date">SEP 2025 — JUN 2026</div>
+          </div>
+          <div class="entry-sub">Duke AERO — Recovery Subteam</div>
+          <div class="entry-body">
+            <ul>
+              <li>Designed a CO₂-driven HDPE blast disk in Onshape to improve body separation reliability, reducing pressurized recovery volume by over 5× from prior design.</li>
+              <li>Performed ANSYS FEA under internal pressure loading to validate structural integrity; achieved theoretical FoS of 1.95.</li>
+              <li>Integrated sealed cable gland and breakaway VGA pass-through for pressure-tight avionics separation.</li>
+              <li>Fabricated prototypes using lathe &amp; mill machining with Fusion 360 toolpath generation.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">Onshape</span><span class="etag">ANSYS FEA</span><span class="etag">Fusion 360</span><span class="etag">Machining</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Autonomous Lunar Rover</div>
+            <div class="entry-date">JAN 2026 — MAY 2026</div>
+          </div>
+          <div class="entry-sub">Full Navigation Stack — ROS2</div>
+          <div class="entry-body">
+            <ul>
+              <li>Developed a full autonomous navigation stack using ROS2 Humble, Nav2, LiDAR-based SLAM, and Gazebo simulation.</li>
+              <li>Built a dimensionally accurate URDF rover model for physics-based simulation and autonomous navigation testing.</li>
+              <li>Evaluated sim-to-real deployment challenges including wheel slip, power constraints, and localization reliability.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">ROS2</span><span class="etag">Nav2</span><span class="etag">SLAM</span><span class="etag">Gazebo</span><span class="etag">URDF</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">VBT Wearable Device</div>
+            <div class="entry-date">MAR 2026 — PRESENT</div>
+          </div>
+          <div class="entry-sub">Velocity-Based Training Embedded System</div>
+          <div class="entry-body">
+            <ul>
+              <li>Developing a wearable device for real-time barbell velocity tracking in strength training applications.</li>
+              <li>Designed and assembled custom PCB integrating nRF52480 microcontroller and BMI270 IMU for portable data acquisition.</li>
+              <li>Created signal processing pipeline to derive mean concentric repetition velocity from IMU data.</li>
+              <li>Benchmarking device against commercial VBT products.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">PCB Design</span><span class="etag">nRF52480</span><span class="etag">BMI270 IMU</span><span class="etag">Embedded Systems</span></div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="section" id="skills">
+        <div class="sec-title">CAPABILITIES</div>
+        <div class="skill-grid">
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">CAD (SolidWorks / Onshape)</span><span class="skill-pct">90%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">Python / MATLAB</span><span class="skill-pct">87%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:87%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">ANSYS FEA / Simulation</span><span class="skill-pct">82%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">CNC / Lathe / Mill</span><span class="skill-pct">80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">ROS2 / Robotics</span><span class="skill-pct">80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">PCB Assembly / Embedded</span><span class="skill-pct">78%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">3D Printing / Laser Cutting</span><span class="skill-pct">85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">Bash / Linux / Git</span><span class="skill-pct">75%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="statusbar">
+    <div class="strip-items">
+      <div class="strip-item"><div class="sdot ok"></div>DOSSIER LOADED</div>
+      <div class="strip-item"><div class="sdot acc"></div>MECH-E + AEROSPACE // DUKE 2029</div>
+      <div class="strip-item"><div class="sdot warn"></div>VBT DEVICE — IN PROGRESS</div>
+    </div>
+    <span id="date-str"></span>
+  </footer>
+
+  <script>
+    function navTo(id, e) {
+      document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+      document.querySelectorAll('.sec-nav-item').forEach(el => el.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+    function resize() {
+      W = canvas.width = innerWidth; H = canvas.height = innerHeight;
+      stars = Array.from({length:200}, () => ({
+        x:Math.random()*W, y:Math.random()*H,
+        r:Math.random()*1.1+.1, a:Math.random()*.5+.05,
+        sp:Math.random()*.018+.004, ph:Math.random()*Math.PI*2
+      }));
+    }
+    let f=0;
+    function loop() {
+      requestAnimationFrame(loop);
+      ctx.clearRect(0,0,W,H);
+      const g=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,W*.45);
+      g.addColorStop(0,'rgba(0,60,140,0.05)'); g.addColorStop(1,'transparent');
+      ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      stars.forEach(s=>{
+        const a=s.a*(0.6+0.4*Math.sin(s.ph+f*s.sp));
+        ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(180,220,255,${a})`; ctx.fill();
+      });
+      f++;
+    }
+    window.addEventListener('resize', resize); resize(); loop();
+
+    let elapsed=0;
+    setInterval(()=>{
+      elapsed++;
+      const h=String(Math.floor(elapsed/3600)).padStart(2,'0');
+      const m=String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+      const s=String(elapsed%60).padStart(2,'0');
+      document.getElementById('clock').textContent=`MET ${h}:${m}:${s}`;
+    },1000);
+    document.getElementById('date-str').textContent =
+      new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}).toUpperCase();
+  </script>
+</body>
+</html>
