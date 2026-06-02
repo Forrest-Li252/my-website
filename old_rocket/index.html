@@ -66,14 +66,12 @@
     /* ── Page layout ── (two columns, off-center) */
     .page {
       position:relative; z-index:10;
-      height: calc(100vh - 72px);
-      margin-top: 40px;
+      height:100vh;
       display:grid;
-      grid-template-columns: 1fr min(380px, 30vw);
+      grid-template-columns: 1fr 420px;
       align-items:center;
-      padding: 12px min(60px,4vw) 12px min(80px,5vw);
-      gap: min(60px,4vw);
-      overflow: hidden;
+      padding: 40px 60px 32px 80px;
+      gap: 60px;
     }
 
     /* ── LEFT col ── */
@@ -136,15 +134,13 @@
 
     /* ── RIGHT col ── */
     .right-col {
-      display:flex; flex-direction:column; align-items:center; gap:clamp(10px,1.5vh,20px);
+      display:flex; flex-direction:column; align-items:center; gap:20px;
       opacity:0; animation:fadeIn .8s ease forwards; animation-delay:1.4s;
     }
 
     /* Photo frame */
     .photo-frame {
-      position:relative;
-      width: clamp(180px, 22vw, 260px);
-      height: clamp(200px, 30vh, 300px);
+      position:relative; width:260px; height:300px;
     }
     /* corner brackets on frame */
     .photo-frame::before,.photo-frame::after {
@@ -186,8 +182,7 @@
 
     /* HUD tag under photo */
     .photo-hud {
-      display:flex; flex-direction:column; gap:5px;
-      width: clamp(180px, 22vw, 260px);
+      display:flex; flex-direction:column; gap:5px; width:260px;
     }
     .hud-row {
       display:flex; justify-content:space-between;
@@ -234,8 +229,7 @@
       <nav class="topbar-nav">
         <a href="index.html">HOME</a>
         <a href="missions.html">MISSIONS</a>
-        <a href="resume.html">RESUME</a>
-        <a href="contact.html">CONTACT</a>
+        <a href="#">CONTACT</a>
       </nav>
     </div>
     <div class="topbar-right">
@@ -249,7 +243,7 @@
 
     <!-- LEFT: identity + CTA -->
     <div class="left-col">
-      <div class="pre-label">OPERATOR DOSSIER // INITIALIZED</div>
+      <div class="pre-label">Duke University // Class of 2029</div>
 
       <div class="name-block">
         <span class="name-first">FORREST</span>
@@ -259,11 +253,12 @@
       <div class="divider"></div>
 
       <p class="statement">
-        <em>Biomedical &amp; Electrical engineer</em> at Duke University —
-        building systems at the intersection of
-        <em>robotics, embedded hardware,</em> and <em>human health.</em>
-        I design things that work in the real world,
-        from autonomous rovers to clinical wearables.
+         Hi! My name is Forrest Li, a
+        <em>Mechanical Engineering</em> sophomore at Duke University
+        building systems in the realms of
+        <em>Aerospace, Rocketry,</em> and <em>Embedded Systems.</em>
+        I love working on projects that combine mechanical design,
+        electronics, and software into systems that operate in the real world.
       </p>
 
       <div class="cta-wrap">
@@ -315,7 +310,7 @@
     <div class="strip-items">
       <div class="strip-item"><div class="sdot ok"></div>SLAM ROVER — COMPLETE</div>
       <div class="strip-item"><div class="sdot ok"></div>VBT DEVICE — COMPLETE</div>
-      <div class="strip-item"><div class="sdot acc"></div>BLAST DISK — IN USE</div>
+      <div class="strip-item"><div class="sdot acc"></div>RECOVERY SEP — ARCHIVED</div>
       <div class="strip-item"><div class="sdot warn"></div>SENIOR DESIGN — IN PROGRESS</div>
     </div>
     <span id="date-str"></span>
@@ -471,36 +466,153 @@
 
   // Nebula glow
   function drawNebula() {
-    // Center glow
     const g1 = ctx.createRadialGradient(W*.38, H*.5, 0, W*.38, H*.5, W*.38);
     g1.addColorStop(0, 'rgba(0,80,160,0.055)');
     g1.addColorStop(1, 'transparent');
     ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
 
-    // Upper right accent
     const g2 = ctx.createRadialGradient(W*.78, H*.22, 0, W*.78, H*.22, W*.2);
     g2.addColorStop(0, 'rgba(0,120,200,0.04)');
     g2.addColorStop(1, 'transparent');
     ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
+  }
 
-    // Planet hint bottom right
-    const g3 = ctx.createRadialGradient(W*.88, H*.85, 0, W*.88, H*.85, 90);
-    g3.addColorStop(0,   'rgba(20,80,140,0.18)');
-    g3.addColorStop(0.6, 'rgba(10,40,80,0.1)');
-    g3.addColorStop(1,   'transparent');
-    ctx.fillStyle = g3;
-    ctx.beginPath();
-    ctx.arc(W*.88, H*.85, 90, 0, Math.PI*2);
-    ctx.fill();
-    // planet ring
+  function drawPlanet() {
+    const px = W * 0.84;
+    const py = H * 0.72;
+    const R  = 110;
+
     ctx.save();
-    ctx.translate(W*.88, H*.85);
-    ctx.rotate(-0.3);
+    ctx.translate(px, py);
+
+    // --- Back ring (behind planet) ---
+    ctx.save();
+    ctx.rotate(-0.22);
+    ctx.scale(1, 0.28);
+    // back half of ring (clipped to below centre = y>0 in rotated space)
     ctx.beginPath();
-    ctx.ellipse(0, 0, 130, 20, 0, 0, Math.PI*2);
-    ctx.strokeStyle = 'rgba(0,160,255,0.07)';
+    ctx.ellipse(0, 0, R * 2.1, R * 2.1, 0, Math.PI, Math.PI * 2); // top arc only = back
+    const ringGradBack = ctx.createLinearGradient(-R*2.1, 0, R*2.1, 0);
+    ringGradBack.addColorStop(0,   'rgba(30,100,180,0)');
+    ringGradBack.addColorStop(0.2, 'rgba(30,120,200,0.28)');
+    ringGradBack.addColorStop(0.45,'rgba(80,180,255,0.18)');
+    ringGradBack.addColorStop(0.55,'rgba(80,180,255,0.18)');
+    ringGradBack.addColorStop(0.8, 'rgba(30,120,200,0.28)');
+    ringGradBack.addColorStop(1,   'rgba(30,100,180,0)');
+    ctx.strokeStyle = ringGradBack;
+    ctx.lineWidth = 22;
+    ctx.stroke();
+    // inner ring gap
+    ctx.beginPath();
+    ctx.ellipse(0, 0, R * 1.65, R * 1.65, 0, Math.PI, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(30,120,200,0.1)';
     ctx.lineWidth = 8;
     ctx.stroke();
+    ctx.restore();
+
+    // --- Atmosphere outer glow ---
+    const atmoGrad = ctx.createRadialGradient(0, 0, R * 0.88, 0, 0, R * 1.18);
+    atmoGrad.addColorStop(0,   'rgba(0,160,255,0.0)');
+    atmoGrad.addColorStop(0.6, 'rgba(0,160,255,0.09)');
+    atmoGrad.addColorStop(1,   'rgba(0,200,255,0.0)');
+    ctx.beginPath();
+    ctx.arc(0, 0, R * 1.18, 0, Math.PI * 2);
+    ctx.fillStyle = atmoGrad;
+    ctx.fill();
+
+    // --- Planet body ---
+    const bodyGrad = ctx.createRadialGradient(-R*0.28, -R*0.28, R*0.05, 0, 0, R);
+    bodyGrad.addColorStop(0,    'rgba(60,130,220,1)');
+    bodyGrad.addColorStop(0.35, 'rgba(20,70,160,1)');
+    bodyGrad.addColorStop(0.7,  'rgba(8,35,90,1)');
+    bodyGrad.addColorStop(1,    'rgba(2,12,40,1)');
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // --- Surface bands (clipped to circle) ---
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.clip();
+
+    const bands = [
+      { y: -R*0.55, h: R*0.13, a: 0.07 },
+      { y: -R*0.22, h: R*0.09, a: 0.06 },
+      { y:  R*0.10, h: R*0.16, a: 0.08 },
+      { y:  R*0.44, h: R*0.10, a: 0.05 },
+    ];
+    bands.forEach(b => {
+      ctx.fillStyle = `rgba(120,200,255,${b.a})`;
+      ctx.beginPath();
+      ctx.ellipse(0, b.y, R, b.h, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Polar ice cap
+    const iceGrad = ctx.createRadialGradient(0, -R, 0, 0, -R, R*0.55);
+    iceGrad.addColorStop(0,   'rgba(200,235,255,0.22)');
+    iceGrad.addColorStop(1,   'rgba(200,235,255,0)');
+    ctx.fillStyle = iceGrad;
+    ctx.fillRect(-R, -R, R*2, R);
+
+    // Terminator shadow (dark side)
+    const shadowGrad = ctx.createRadialGradient(R*0.55, 0, R*0.1, R*0.9, 0, R*1.1);
+    shadowGrad.addColorStop(0,   'rgba(0,5,20,0)');
+    shadowGrad.addColorStop(0.5, 'rgba(0,5,20,0.35)');
+    shadowGrad.addColorStop(1,   'rgba(0,5,20,0.85)');
+    ctx.fillStyle = shadowGrad;
+    ctx.fillRect(-R, -R, R*2, R*2);
+
+    // Specular highlight
+    const specGrad = ctx.createRadialGradient(-R*0.32, -R*0.32, 0, -R*0.32, -R*0.32, R*0.55);
+    specGrad.addColorStop(0,   'rgba(180,225,255,0.14)');
+    specGrad.addColorStop(1,   'rgba(180,225,255,0)');
+    ctx.fillStyle = specGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+
+    // --- Front ring (in front of planet) ---
+    ctx.save();
+    ctx.rotate(-0.22);
+    ctx.scale(1, 0.28);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, R * 2.1, R * 2.1, 0, 0, Math.PI); // bottom arc = front
+    const ringGradFront = ctx.createLinearGradient(-R*2.1, 0, R*2.1, 0);
+    ringGradFront.addColorStop(0,   'rgba(30,100,180,0)');
+    ringGradFront.addColorStop(0.2, 'rgba(40,140,220,0.55)');
+    ringGradFront.addColorStop(0.45,'rgba(100,200,255,0.38)');
+    ringGradFront.addColorStop(0.55,'rgba(100,200,255,0.38)');
+    ringGradFront.addColorStop(0.8, 'rgba(40,140,220,0.55)');
+    ringGradFront.addColorStop(1,   'rgba(30,100,180,0)');
+    ctx.strokeStyle = ringGradFront;
+    ctx.lineWidth = 22;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, R * 1.65, R * 1.65, 0, 0, Math.PI);
+    ctx.strokeStyle = 'rgba(60,160,255,0.18)';
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    ctx.restore();
+
+    // --- Moon ---
+    const mAngle = frame * 0.008;
+    const mOrbitX = Math.cos(mAngle) * R * 1.85;
+    const mOrbitY = Math.sin(mAngle) * R * 0.45;
+    const mR = 12;
+    const moonGrad = ctx.createRadialGradient(mOrbitX - mR*0.3, mOrbitY - mR*0.3, mR*0.05, mOrbitX, mOrbitY, mR);
+    moonGrad.addColorStop(0,   'rgba(180,210,240,0.95)');
+    moonGrad.addColorStop(0.5, 'rgba(100,140,180,0.9)');
+    moonGrad.addColorStop(1,   'rgba(30,50,80,0.85)');
+    ctx.beginPath();
+    ctx.arc(mOrbitX, mOrbitY, mR, 0, Math.PI*2);
+    ctx.fillStyle = moonGrad;
+    ctx.fill();
+
     ctx.restore();
   }
 
@@ -509,6 +621,7 @@
     requestAnimationFrame(loop);
     ctx.clearRect(0, 0, W, H);
     drawNebula();
+    drawPlanet();
     drawStars(frame);
     maybeShoot();
     drawShooters();

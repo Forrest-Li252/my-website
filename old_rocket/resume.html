@@ -82,7 +82,6 @@
     .ph-dot { width:5px; height:5px; border-radius:50%; background:rgba(0,200,255,.4); flex-shrink:0; }
     .ph-left { display:flex; align-items:center; gap:6px; }
 
-    /* Download button in header */
     .dl-btn {
       font-family:var(--mono); font-size:9px; color:var(--acc);
       border:1px solid rgba(0,160,255,.3); background:rgba(0,160,255,.07);
@@ -91,7 +90,6 @@
     }
     .dl-btn:hover { background:rgba(0,160,255,.15); border-color:rgba(0,160,255,.6); }
 
-    /* Left: nav + stats */
     .left-col { display:flex; flex-direction:column; gap:12px; }
 
     .sec-nav { padding:8px 0; flex:1; }
@@ -110,7 +108,6 @@
     .stat-k { font-family:var(--mono); font-size:9px; color:rgba(0,200,255,.4); letter-spacing:.06em; }
     .stat-v { font-family:var(--mono); font-size:10px; color:var(--acc); }
 
-    /* Right: content */
     .content-col { overflow-y:auto; display:flex; flex-direction:column; gap:0; }
 
     .section { padding:16px 20px; border-bottom:1px solid rgba(0,160,255,.08); }
@@ -123,7 +120,6 @@
     }
     .sec-title::after { content:''; flex:1; height:1px; background:rgba(0,160,255,.12); }
 
-    /* Entry rows */
     .entry { margin-bottom:14px; }
     .entry:last-child { margin-bottom:0; }
     .entry-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px; }
@@ -139,7 +135,6 @@
       border-radius:2px; padding:1px 6px;
     }
 
-    /* Skills grid */
     .skill-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; }
     .skill-row { }
     .skill-top { display:flex; justify-content:space-between; margin-bottom:4px; }
@@ -175,10 +170,10 @@
 
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:20px;">
-      <div class="topbar-logo">MC // PORTFOLIO</div>
+      <div class="topbar-logo">FL // PORTFOLIO</div>
       <nav class="topbar-nav">
         <a href="index.html">HOME</a>
-        <a href="missions.html">MISSIONS</a>
+        <a href="projects.html">PROJECTS</a>
         <a href="resume.html" class="active">RESUME</a>
         <a href="contact.html">CONTACT</a>
       </nav>
@@ -196,11 +191,10 @@
       <div class="panel">
         <div class="panel-header"><span class="ph-dot"></span>SECTIONS</div>
         <div class="sec-nav">
-          <div class="sec-nav-item active" onclick="scrollTo('edu')">EDUCATION</div>
-          <div class="sec-nav-item" onclick="scrollTo('exp')">EXPERIENCE</div>
-          <div class="sec-nav-item" onclick="scrollTo('proj')">PROJECTS</div>
-          <div class="sec-nav-item" onclick="scrollTo('skills')">CAPABILITIES</div>
-          <div class="sec-nav-item" onclick="scrollTo('awards')">AWARDS</div>
+          <div class="sec-nav-item active" onclick="navTo('edu', event)">EDUCATION</div>
+          <div class="sec-nav-item" onclick="navTo('exp', event)">EXPERIENCE</div>
+          <div class="sec-nav-item" onclick="navTo('proj', event)">PROJECTS</div>
+          <div class="sec-nav-item" onclick="navTo('skills', event)">CAPABILITIES</div>
         </div>
       </div>
 
@@ -208,9 +202,9 @@
         <div class="panel-header"><span class="ph-dot"></span>OPERATOR STATS</div>
         <div class="stat-panel">
           <div class="stat-row"><span class="stat-k">INSTITUTION</span><span class="stat-v">DUKE</span></div>
-          <div class="stat-row"><span class="stat-k">DEGREE</span><span class="stat-v">BME + ECE</span></div>
-          <div class="stat-row"><span class="stat-k">CLASS</span><span class="stat-v">2026</span></div>
-          <div class="stat-row"><span class="stat-k">MISSIONS</span><span class="stat-v">4</span></div>
+          <div class="stat-row"><span class="stat-k">DEGREE</span><span class="stat-v">BSE MECH-E</span></div>
+          <div class="stat-row"><span class="stat-k">CLASS</span><span class="stat-v">2029</span></div>
+          <div class="stat-row"><span class="stat-k">GPA</span><span class="stat-v" style="color:var(--ok)">3.96</span></div>
           <div class="stat-row"><span class="stat-k">STATUS</span><span class="stat-v" style="color:var(--ok)">ACTIVE</span></div>
         </div>
       </div>
@@ -218,11 +212,11 @@
       <div class="panel">
         <div class="panel-header">
           <div class="ph-left"><span class="ph-dot"></span>DOSSIER FILE</div>
-          <a class="dl-btn" href="resume.pdf" download>↓ PDF</a>
+          <a class="dl-btn" href="Forrest_Li_-_Resume.pdf" download>↓ PDF</a>
         </div>
         <div style="padding:10px 12px;font-family:var(--mono);font-size:9px;color:rgba(0,200,255,.3);line-height:1.7;">
           FORREST_LI_RESUME.PDF<br>
-          LAST UPDATED: 2025-12<br>
+          LAST UPDATED: 2026-05<br>
           CLEARANCE: PUBLIC
         </div>
       </div>
@@ -232,7 +226,7 @@
     <div class="panel content-col">
       <div class="panel-header">
         <div class="ph-left"><span class="ph-dot"></span>OPERATOR DOSSIER // FORREST LI</div>
-        <span style="font-size:9px;color:rgba(0,200,255,.3);">BME + ECE // DUKE // 2026</span>
+        <span style="font-size:9px;color:rgba(0,200,255,.3);">MECH-E // DUKE // 2029</span>
       </div>
 
       <!-- Education -->
@@ -241,73 +235,122 @@
         <div class="entry">
           <div class="entry-top">
             <div class="entry-title">Duke University</div>
-            <div class="entry-date">2022 — 2026</div>
+            <div class="entry-date">AUG 2025 — MAY 2029</div>
           </div>
-          <div class="entry-sub">B.S. Biomedical Engineering + B.S. Electrical &amp; Computer Engineering</div>
+          <div class="entry-sub">B.S.E. Mechanical Engineering — Aerospace Certification | Minor: Financial Economics</div>
           <div class="entry-body">
-            Dual-degree program with focus on embedded systems, medical devices, and robotics. Relevant coursework: Control Systems, Digital Signal Processing, Biomechanics, Medical Device Design, Machine Learning.
+            GPA: 3.96/4.00 · Durham, NC<br>
+            Relevant Coursework: Engineering Design &amp; Communication, Engineering Innovation, Mechanics of Solids
           </div>
           <div class="entry-tags">
-            <span class="etag">BME</span><span class="etag">ECE</span><span class="etag">Durham, NC</span>
+            <span class="etag">Mechanical Engineering</span><span class="etag">Aerospace</span><span class="etag">Durham, NC</span>
           </div>
         </div>
       </div>
 
       <!-- Experience -->
       <div class="section" id="exp">
-        <div class="sec-title">EXPERIENCE</div>
+        <div class="sec-title">RESEARCH &amp; EXPERIENCE</div>
+
         <div class="entry">
           <div class="entry-top">
-            <div class="entry-title">Duke AERO — Recovery Subteam</div>
-            <div class="entry-date">2024 — PRESENT</div>
+            <div class="entry-title">Duke Biostatistics &amp; Bioinformatics Dept.</div>
+            <div class="entry-date">SEP 2025 — PRESENT</div>
           </div>
-          <div class="entry-sub">Design Engineer</div>
+          <div class="entry-sub">Undergraduate Volunteer Research Assistant — Durham, NC</div>
           <div class="entry-body">
             <ul>
-              <li>Designed and FEA-validated HDPE blast disk recovery system, reducing pressurized volume 5×+</li>
-              <li>Machined parts from 6″ OD HDPE stock using mill and lathe; generated Fusion 360 toolpaths</li>
-              <li>Integrated sealed cable gland and breakaway VGA connector for avionics wiring pass-throughs</li>
+              <li>Benchmarking large language models (LLMs) and prompting strategies for code generation in data science applications.</li>
+              <li>Conducting large-scale single cell transcriptomics analysis across multi-organ human datasets (HuBMAP, hECA) to investigate senescence-associated gene expression patterns.</li>
             </ul>
           </div>
-          <div class="entry-tags"><span class="etag">Onshape</span><span class="etag">Ansys FEA</span><span class="etag">Machining</span></div>
+          <div class="entry-tags"><span class="etag">Python</span><span class="etag">LLMs</span><span class="etag">Transcriptomics</span><span class="etag">Bioinformatics</span></div>
         </div>
+
         <div class="entry">
           <div class="entry-top">
-            <div class="entry-title">IEEE SoutheastCon 2024</div>
-            <div class="entry-date">2023 — 2024</div>
+            <div class="entry-title">University of Rochester — Lab of Laser Energetics</div>
+            <div class="entry-date">JUL 2024 — JAN 2025</div>
           </div>
-          <div class="entry-sub">Robotics Team — SLAM &amp; Navigation Lead</div>
+          <div class="entry-sub">Project Assistant — Rochester, NY</div>
           <div class="entry-body">
             <ul>
-              <li>Built autonomous SLAM rover on ROS2 with LiDAR + IMU sensor fusion, achieving ±2.1 cm localization</li>
-              <li>Designed Kalman filter compensation pipeline for IMU drift correction in unknown environments</li>
-              <li>Competed at IEEE SoutheastCon 2024 — Top 25% finish</li>
+              <li>Developed a MATLAB program to extract implosion velocity in Inertial Confinement Fusion experiments.</li>
+              <li>Program utilized in March 2025 to benchmark simulations of Germanium-doped ablators.</li>
+              <li>Presented findings at University of Rochester Research Symposium; detailed in research paper.</li>
             </ul>
           </div>
-          <div class="entry-tags"><span class="etag">ROS2</span><span class="etag">C++</span><span class="etag">LiDAR</span><span class="etag">SLAM</span></div>
+          <div class="entry-tags"><span class="etag">MATLAB</span><span class="etag">ICF</span><span class="etag">Signal Processing</span><span class="etag">Research</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Webster Thomas Rocketry Club</div>
+            <div class="entry-date">SEP 2023 — JUN 2025</div>
+          </div>
+          <div class="entry-sub">Founder &amp; President — Webster, NY</div>
+          <div class="entry-body">
+            <ul>
+              <li>Founded and led a 12-member student engineering team focused on model rocket design, manufacturing, and flight testing.</li>
+              <li>Designed and built a competition rocket for the American Rocketry Challenge using CAD and RockSim simulations.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">RockSim</span><span class="etag">CAD</span><span class="etag">Leadership</span><span class="etag">ARC</span></div>
         </div>
       </div>
 
       <!-- Projects -->
       <div class="section" id="proj">
         <div class="sec-title">KEY PROJECTS</div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Rocket Separation Blast Disk</div>
+            <div class="entry-date">SEP 2025 — JUN 2026</div>
+          </div>
+          <div class="entry-sub">Duke AERO — Recovery Subteam</div>
+          <div class="entry-body">
+            <ul>
+              <li>Designed a CO₂-driven HDPE blast disk in Onshape to improve body separation reliability, reducing pressurized recovery volume by over 5× from prior design.</li>
+              <li>Performed ANSYS FEA under internal pressure loading to validate structural integrity; achieved theoretical FoS of 1.95.</li>
+              <li>Integrated sealed cable gland and breakaway VGA pass-through for pressure-tight avionics separation.</li>
+              <li>Fabricated prototypes using lathe &amp; mill machining with Fusion 360 toolpath generation.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">Onshape</span><span class="etag">ANSYS FEA</span><span class="etag">Fusion 360</span><span class="etag">Machining</span></div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-top">
+            <div class="entry-title">Autonomous Lunar Rover</div>
+            <div class="entry-date">JAN 2026 — MAY 2026</div>
+          </div>
+          <div class="entry-sub">Full Navigation Stack — ROS2</div>
+          <div class="entry-body">
+            <ul>
+              <li>Developed a full autonomous navigation stack using ROS2 Humble, Nav2, LiDAR-based SLAM, and Gazebo simulation.</li>
+              <li>Built a dimensionally accurate URDF rover model for physics-based simulation and autonomous navigation testing.</li>
+              <li>Evaluated sim-to-real deployment challenges including wheel slip, power constraints, and localization reliability.</li>
+            </ul>
+          </div>
+          <div class="entry-tags"><span class="etag">ROS2</span><span class="etag">Nav2</span><span class="etag">SLAM</span><span class="etag">Gazebo</span><span class="etag">URDF</span></div>
+        </div>
+
         <div class="entry">
           <div class="entry-top">
             <div class="entry-title">VBT Wearable Device</div>
-            <div class="entry-date">2024</div>
+            <div class="entry-date">MAR 2026 — PRESENT</div>
           </div>
           <div class="entry-sub">Velocity-Based Training Embedded System</div>
-          <div class="entry-body">Real-time barbell velocity tracking wearable. IMU-based motion capture with custom firmware and BLE data streaming to mobile app. Clinical-grade form feedback for strength training.</div>
-          <div class="entry-tags"><span class="etag">Embedded C</span><span class="etag">BLE</span><span class="etag">IMU</span><span class="etag">PCB Design</span></div>
-        </div>
-        <div class="entry">
-          <div class="entry-top">
-            <div class="entry-title">Senior Design Capstone</div>
-            <div class="entry-date">2025 — 2026</div>
+          <div class="entry-body">
+            <ul>
+              <li>Developing a wearable device for real-time barbell velocity tracking in strength training applications.</li>
+              <li>Designed and assembled custom PCB integrating nRF52480 microcontroller and BMI270 IMU for portable data acquisition.</li>
+              <li>Created signal processing pipeline to derive mean concentric repetition velocity from IMU data.</li>
+              <li>Benchmarking device against commercial VBT products.</li>
+            </ul>
           </div>
-          <div class="entry-sub">In Progress</div>
-          <div class="entry-body">Medical device capstone project. Details to follow upon project completion.</div>
-          <div class="entry-tags"><span class="etag">IN PROGRESS</span></div>
+          <div class="entry-tags"><span class="etag">PCB Design</span><span class="etag">nRF52480</span><span class="etag">BMI270 IMU</span><span class="etag">Embedded Systems</span></div>
         </div>
       </div>
 
@@ -316,56 +359,37 @@
         <div class="sec-title">CAPABILITIES</div>
         <div class="skill-grid">
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">Embedded C / C++</span><span class="skill-pct">90%</span></div>
+            <div class="skill-top"><span class="skill-name">CAD (SolidWorks / Onshape)</span><span class="skill-pct">90%</span></div>
             <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">Mechanical Design (CAD)</span><span class="skill-pct">88%</span></div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:88%"></div></div>
+            <div class="skill-top"><span class="skill-name">Python / MATLAB</span><span class="skill-pct">87%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:87%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">Python</span><span class="skill-pct">85%</span></div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">FEA / Simulation</span><span class="skill-pct">82%</span></div>
+            <div class="skill-top"><span class="skill-name">ANSYS FEA / Simulation</span><span class="skill-pct">82%</span></div>
             <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-name">CNC / Lathe / Mill</span><span class="skill-pct">80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
           </div>
           <div class="skill-row">
             <div class="skill-top"><span class="skill-name">ROS2 / Robotics</span><span class="skill-pct">80%</span></div>
             <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">PCB Design</span><span class="skill-pct">78%</span></div>
+            <div class="skill-top"><span class="skill-name">PCB Assembly / Embedded</span><span class="skill-pct">78%</span></div>
             <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">Mill &amp; Lathe</span><span class="skill-pct">80%</span></div>
-            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+            <div class="skill-top"><span class="skill-name">3D Printing / Laser Cutting</span><span class="skill-pct">85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-top"><span class="skill-name">MATLAB / Signal Proc.</span><span class="skill-pct">75%</span></div>
+            <div class="skill-top"><span class="skill-name">Bash / Linux / Git</span><span class="skill-pct">75%</span></div>
             <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:75%"></div></div>
           </div>
-        </div>
-      </div>
-
-      <!-- Awards -->
-      <div class="section" id="awards">
-        <div class="sec-title">AWARDS &amp; RECOGNITION</div>
-        <div class="entry">
-          <div class="entry-top">
-            <div class="entry-title">IEEE SoutheastCon 2024</div>
-            <div class="entry-date">2024</div>
-          </div>
-          <div class="entry-sub">Top 25% Finish — Autonomous Robotics Competition</div>
-        </div>
-        <div class="entry">
-          <div class="entry-top">
-            <div class="entry-title">Dean's List</div>
-            <div class="entry-date">2022 — PRESENT</div>
-          </div>
-          <div class="entry-sub">Duke University — Pratt School of Engineering</div>
         </div>
       </div>
 
@@ -375,17 +399,17 @@
   <footer class="statusbar">
     <div class="strip-items">
       <div class="strip-item"><div class="sdot ok"></div>DOSSIER LOADED</div>
-      <div class="strip-item"><div class="sdot acc"></div>BME + ECE // DUKE 2026</div>
-      <div class="strip-item"><div class="sdot warn"></div>SENIOR DESIGN — IN PROGRESS</div>
+      <div class="strip-item"><div class="sdot acc"></div>MECH-E + AEROSPACE // DUKE 2029</div>
+      <div class="strip-item"><div class="sdot warn"></div>VBT DEVICE — IN PROGRESS</div>
     </div>
     <span id="date-str"></span>
   </footer>
 
   <script>
-    function scrollTo(id) {
+    function navTo(id, e) {
       document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
       document.querySelectorAll('.sec-nav-item').forEach(el => el.classList.remove('active'));
-      event.target.classList.add('active');
+      e.target.classList.add('active');
     }
 
     const canvas = document.getElementById('bg');
