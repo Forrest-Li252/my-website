@@ -430,3 +430,64 @@ footer{
   border-bottom:1px solid var(--line-faint);
 }
 .tb-cell .v a:hover{color:var(--accent); border-color:var(--accent);}
+
+.hero-animation{
+
+    margin-top:42px;
+
+}
+
+.animation-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:12px;
+
+    color:var(--muted);
+
+    letter-spacing:.18em;
+
+}
+
+.writing-line{
+
+    position:relative;
+
+    display:inline-block;
+
+    min-width:320px;
+
+    padding-bottom:6px;
+
+    border-bottom:2px solid var(--line);
+
+}
+
+#animated-word{
+
+    display:inline-block;
+
+    font-size:1.35rem;
+
+    font-weight:600;
+
+    color:var(--ink);
+
+    white-space:nowrap;
+
+}
+
+#pencil{
+
+    position:absolute;
+
+    top:-4px;
+
+    left:0;
+
+    opacity:0;
+
+    transition:left .05s linear;
+}

@@ -52,6 +52,38 @@
       posture corrector. This sheet indexes the drawings below.
     </p>
 
+    <div class="hero-animation">
+
+      <span class="animation-label mono">
+          BUILDING SYSTEMS IN
+      </span>
+
+      <div class="writing-line">
+
+          <span id="animated-word"></span>
+
+          <svg id="pencil"
+              viewBox="0 0 64 64"
+              width="26"
+              height="26">
+
+              <path
+                  d="M8 48 L20 56 L56 20 L44 8 Z"
+                  fill="var(--accent)"
+              />
+
+              <path
+                  d="M44 8 L56 20"
+                  stroke="white"
+                  stroke-width="2"
+              />
+
+          </svg>
+
+      </div>
+
+  </div>
+
     <div class="dim-line mono">
       <span class="arrow">◄</span>
       <span class="track"></span>
@@ -185,6 +217,85 @@
       </div>
     </div>
   </footer>
+
+
+<script>
+
+const words=[
+
+"robotics",
+
+"embedded systems",
+
+"rocketry",
+
+"wearable devices",
+
+"CAD",
+
+"autonomous systems"
+
+];
+
+const word=document.getElementById("animated-word");
+
+const pencil=document.getElementById("pencil");
+
+let current=0;
+
+function sleep(ms){
+
+    return new Promise(r=>setTimeout(r,ms));
+
+}
+
+async function animateWord(text){
+
+    word.textContent="";
+
+    pencil.style.opacity=1;
+
+    for(let i=0;i<text.length;i++){
+
+        word.textContent+=text[i];
+
+        pencil.style.left=(word.offsetWidth+8)+"px";
+
+        await sleep(55);
+
+    }
+
+    await sleep(1800);
+
+    for(let i=text.length;i>=0;i--){
+
+        word.textContent=text.substring(0,i);
+
+        pencil.style.left=(word.offsetWidth+8)+"px";
+
+        await sleep(28);
+
+    }
+
+    pencil.style.opacity=0;
+
+    await sleep(400);
+
+}
+
+(async()=>{
+
+    while(true){
+
+        await animateWord(words[current]);
+
+        current=(current+1)%words.length;
+
+    }
+
+})();
+
+</script>
 
 </body>
 </html>
