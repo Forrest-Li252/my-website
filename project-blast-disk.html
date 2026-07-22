@@ -3,24 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DWG-01 — Blast Disk — [Your Name]</title>
+<title>DWG-01 — Blast Disk Recovery System — [Your Name]</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #18232d;
-    --bg-deep: #111a22;
-
-    --ink: #eef2f5;
-    --muted: #a7b5c2;
-
-    --line: #6d7f8f;
-    --line-faint: rgba(109,127,143,0.16);
-    --line-faint2: rgba(109,127,143,0.05);
-
-    --accent: #ff7a1a;
-
+    --bg: #0c3350;
+    --bg-deep: #082638;
+    --ink: #eaf2f7;
+    --line: #6fa8c9;
+    --line-faint: rgba(154,199,224,0.16);
+    --line-faint2: rgba(154,199,224,0.08);
+    --muted: #8db2cc;
+    --accent: #ff6a13;
+    --green: #4ce0a0;
     --grid: 42px;
   }
 
@@ -98,7 +95,7 @@
 
   /* ===== HERO ===== */
   .hero{
-    padding: 8vh 8vw 6vh;
+    padding: 8vh 8vw 5vh;
     border-bottom:1px solid var(--line-faint);
     position:relative;
   }
@@ -119,40 +116,47 @@
   }
 
   h1.stencil{
-    font-size:clamp(2.6rem, 7vw, 5.6rem);
+    font-size:clamp(2.4rem, 6.4vw, 5rem);
     font-weight:900;
-    line-height:0.9;
+    line-height:0.92;
     color:var(--ink);
+  }
+  h1.stencil .sub{
+    display:block;
+    -webkit-text-stroke: 1.2px var(--ink);
+    color:transparent;
+    font-size:0.55em;
   }
 
   .role-line{
-    margin-top:20px;
+    margin-top:22px;
     font-size:clamp(1rem, 1.6vw, 1.15rem);
     color:var(--muted);
-    max-width:640px;
+    max-width:680px;
     font-weight:400;
-    line-height:1.7;
+    line-height:1.75;
   }
   .role-line b{color:var(--ink); font-weight:600;}
 
-  .dim-line{
-    margin-top:44px;
+  /* meta row */
+  .meta-row{
+    margin-top:46px;
     display:flex;
-    align-items:center;
-    gap:14px;
-    color:var(--line);
-    font-size:12px;
-    max-width:520px;
+    flex-wrap:wrap;
+    gap:36px;
   }
-  .dim-line .arrow{color:var(--accent);}
-  .dim-line .track{
-    flex:1;
-    height:1px;
-    background:
-      repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+  .meta-item{display:flex;flex-direction:column;gap:6px;}
+  .meta-item .k{
+    font-size:9.5px;
+    color:var(--muted);
   }
+  .meta-item .v{
+    font-size:13px;
+    color:var(--ink);
+  }
+  .meta-item .v.live{color:var(--green);}
 
-  /* ===== SPEC STRIP (mini title block under hero) ===== */
+  /* ===== SPEC / IMPACT STRIP ===== */
   .spec-strip{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -164,7 +168,7 @@
   }
   .spec-cell{
     border-right:1px solid var(--line-faint);
-    padding:20px 8vw;
+    padding:26px 8vw;
   }
   .spec-cell:last-child{border-right:none;}
   .spec-cell .k{
@@ -174,15 +178,10 @@
     margin-bottom:8px;
   }
   .spec-cell .v{
-    font-size:20px;
-    color:var(--ink);
-    font-weight:600;
-  }
-  .spec-cell .v small{
-    font-size:11px;
-    color:var(--muted);
-    font-weight:400;
-    margin-left:4px;
+    font-size:26px;
+    color:var(--accent);
+    font-weight:700;
+    font-family:'Big Shoulders Stencil', sans-serif;
   }
 
   /* ===== GENERIC SECTION ===== */
@@ -219,13 +218,14 @@
     font-size:15px;
     line-height:1.85;
     color:var(--muted);
-    max-width:58ch;
+    max-width:60ch;
   }
   .body-copy p + p{margin-top:18px;}
   .body-copy b{color:var(--ink); font-weight:600;}
 
   .callout{
     border:1px solid var(--line-faint);
+    border-left:3px solid var(--accent);
     padding:26px 28px;
     height:fit-content;
   }
@@ -235,68 +235,78 @@
     display:block;
     margin-bottom:12px;
   }
-  .callout ul{
-    list-style:none;
-  }
-  .callout li{
-    font-size:13.5px;
+  .callout p{
+    font-size:14px;
+    line-height:1.75;
     color:var(--muted);
-    padding:9px 0;
-    border-top:1px solid var(--line-faint);
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
   }
-  .callout li:first-child{border-top:none;}
-  .callout li span:last-child{color:var(--ink); text-align:right;}
+  .callout p b{color:var(--ink); font-weight:600;}
 
-  /* ===== PROCESS TIMELINE ===== */
-  .timeline{
+  .callout.wide{margin-top:40px;}
+
+  /* ===== PROCESS — vertical stepped list ===== */
+  .process-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .process-step{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap:1px;
-    background:var(--line-faint);
+    grid-template-columns:52px 1fr;
+    gap:0;
+  }
+  .step-rail{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .step-no{
+    width:38px;height:38px;
     border:1px solid var(--line-faint);
-  }
-  @media(max-width:900px){
-    .timeline{grid-template-columns:1fr;}
-  }
-  .tl-step{
-    background:var(--bg);
-    padding:30px 26px;
-    position:relative;
-  }
-  .tl-step .no{
-    font-size:11px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
     color:var(--accent);
-    display:block;
-    margin-bottom:14px;
+    flex-shrink:0;
   }
-  .tl-step h4.stencil{
-    font-size:1.15rem;
+  .step-line{
+    flex:1;
+    width:1px;
+    background:var(--line-faint);
+    margin:6px 0;
+  }
+  .process-step:last-child .step-line{display:none;}
+  .step-body{
+    padding:2px 0 46px 20px;
+  }
+  .step-body h4.stencil{
+    font-size:1.2rem;
     font-weight:700;
     margin-bottom:10px;
   }
-  .tl-step p{
-    font-size:13px;
-    line-height:1.7;
+  .step-body p{
+    font-size:13.5px;
+    line-height:1.8;
     color:var(--muted);
+    max-width:64ch;
   }
 
   /* ===== GALLERY ===== */
   .gallery{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:2fr 1fr 1fr;
     gap:1px;
     background:var(--line-faint);
     border:1px solid var(--line-faint);
+    margin-bottom:2px;
   }
   @media(max-width:820px){
     .gallery{grid-template-columns:1fr;}
   }
   .plate{
     background:var(--bg-deep);
-    aspect-ratio: 4/3;
+    aspect-ratio: 16/10;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -304,44 +314,70 @@
     gap:14px;
     padding:20px;
   }
+  .gallery .plate:first-child{aspect-ratio:16/9;}
   .plate svg{
-    width:56px;height:56px;
+    width:52px;height:52px;
     stroke:var(--line);
     fill:none;
     stroke-width:1.3;
   }
-  .plate span{
-    font-size:11px;
+  .plate .fname{
+    font-size:10.5px;
     color:var(--muted);
     text-align:center;
   }
+  .fig-caption{
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    margin-top:10px;
+    margin-bottom:36px;
+  }
 
-  /* ===== RESULTS BAND ===== */
-  .results{
+  /* ===== LESSONS GRID ===== */
+  .lessons-grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:1px;
     background:var(--line-faint);
     border:1px solid var(--line-faint);
   }
   @media(max-width:820px){
-    .results{grid-template-columns:1fr;}
+    .lessons-grid{grid-template-columns:1fr;}
   }
-  .result-cell{
+  .lesson-card{
     background:var(--bg);
-    padding:34px 30px;
+    padding:28px 26px;
   }
-  .result-cell .big{
-    font-size:clamp(1.8rem, 3vw, 2.4rem);
-    font-weight:700;
+  .lesson-card .no{
+    font-size:11px;
     color:var(--accent);
-    font-family:'Big Shoulders Stencil', sans-serif;
+    display:block;
+    margin-bottom:12px;
   }
-  .result-cell p{
-    font-size:12.5px;
+  .lesson-card h4.stencil{
+    font-size:1.1rem;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .lesson-card p{
+    font-size:13px;
+    line-height:1.75;
     color:var(--muted);
-    margin-top:8px;
-    line-height:1.6;
+  }
+
+  /* ===== SKILLS ===== */
+  .skills-used{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .skill-tag{
+    font-size:11px;
+    color:var(--line);
+    border:1px solid var(--line-faint);
+    padding:8px 16px;
+    letter-spacing:0.04em;
   }
 
   /* ===== NEXT / FOOTER NAV ===== */
@@ -410,48 +446,59 @@
     </a>
     <div class="sheet-tag mono">
       REV <span>A</span> · SHT 01 OF 01<br>
-      DWG-01 / PROPULSION
+      DWG-01 / RECOVERY SYSTEMS
     </div>
   </div>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="eyebrow mono">PRESSURE VESSEL — DUKE AERO ROCKETRY</div>
+    <div class="eyebrow mono">AEROSPACE — RECOVERY SYSTEMS — DUKE AERO</div>
 
-    <h1 class="stencil">Blast Disk</h1>
+    <h1 class="stencil">Blast Disk <span class="sub">Recovery System</span></h1>
 
     <p class="role-line">
-      A rupture disk designed for a Duke AERO rocket's pressure relief system —
-      sized to <b>fail predictably</b> under overpressure and protect the
-      propulsion stack from a catastrophic tank or feed-line event.
+      A CO₂-driven main parachute separation mechanism for high-power rocketry —
+      designed to <b>reduce pressurized volume</b>, increase separation force, and
+      improve reliability through a custom HDPE sliding blast disk.
     </p>
 
-    <div class="dim-line mono">
-      <span class="arrow">◄</span>
-      <span class="track"></span>
-      <span>DESIGN → FEA → TEST → FLIGHT</span>
-      <span class="track"></span>
-      <span class="arrow">►</span>
+    <div class="meta-row mono">
+      <div class="meta-item">
+        <span class="k">TEAM</span>
+        <span class="v">Duke AERO Recovery Subteam</span>
+      </div>
+      <div class="meta-item">
+        <span class="k">TIMELINE</span>
+        <span class="v">2025–2026 School Year</span>
+      </div>
+      <div class="meta-item">
+        <span class="k">ROLE</span>
+        <span class="v">Design, Analysis &amp; Fabrication</span>
+      </div>
+      <div class="meta-item">
+        <span class="k">STATUS</span>
+        <span class="v live">● In Use</span>
+      </div>
     </div>
   </section>
 
-  <!-- SPEC STRIP -->
+  <!-- SPEC / IMPACT STRIP -->
   <div class="spec-strip mono">
     <div class="spec-cell">
-      <span class="k">BURST PRESSURE</span>
-      <span class="v">[XXX]<small>PSI</small></span>
+      <span class="k">VOLUME REDUCTION</span>
+      <span class="v">5×+</span>
+    </div>
+    <div class="spec-cell">
+      <span class="k">FEA FACTOR OF SAFETY</span>
+      <span class="v">1.95</span>
     </div>
     <div class="spec-cell">
       <span class="k">MATERIAL</span>
-      <span class="v">[Alloy]</span>
+      <span class="v">HDPE</span>
     </div>
     <div class="spec-cell">
-      <span class="k">DISK DIAMETER</span>
-      <span class="v">[X.X]<small>IN</small></span>
-    </div>
-    <div class="spec-cell">
-      <span class="k">SAFETY FACTOR</span>
-      <span class="v">[X.X]×</span>
+      <span class="k">PRESSURE RANGE</span>
+      <span class="v">21.5–180 PSI</span>
     </div>
   </div>
 
@@ -459,117 +506,236 @@
   <section class="section">
     <div class="section-head">
       <h2 class="stencil">Overview</h2>
-      <span class="tag mono">01 / PROBLEM &amp; APPROACH</span>
+      <span class="tag mono">01 / REDUCING VOLUME TO IMPROVE SEPARATION RELIABILITY</span>
     </div>
 
     <div class="two-col">
       <div class="body-copy">
         <p>
-          Describe the problem here — e.g. the rocket's pressure vessel needed a
-          <b>fail-safe relief point</b> so an overpressure event vents through a
-          controlled, predictable failure rather than a random rupture elsewhere
-          in the tank or feed system.
+          Duke AERO's previous recovery system had struggled with weak and
+          unreliable main parachute separations. The root issue was that the
+          CO₂ ejection system had to pressurize a relatively large internal
+          volume before generating enough force to shear the main coupler pins.
         </p>
         <p>
-          Explain your specific role and constraints — what pressure range you
-          designed for, what off-the-shelf disks couldn't do, and why a custom
-          disk was the right call for this vehicle.
+          To address this, I designed a custom <b>HDPE blast disk</b> positioned
+          between the aft avionics bulkhead and the main parachute. By reducing
+          the volume that must be pressurized, the system converts more of the
+          CO₂ expansion into useful force acting on the coupler, improving
+          separation performance without increasing charge energy.
+        </p>
+        <p>
+          The blast disk also had to integrate directly into the recovery
+          system architecture. It includes a sealed cable gland for the shock
+          cord and a breakaway VGA connector for avionics wiring, both of which
+          needed to maintain pressure integrity while allowing clean separation
+          during deployment.
         </p>
       </div>
       <div class="callout">
-        <span class="mono label">// KEY CONSTRAINTS</span>
-        <ul class="mono">
-          <li><span>Operating pressure</span><span>[XXX] psi</span></li>
-          <li><span>Target burst pressure</span><span>[XXX] psi</span></li>
-          <li><span>Envelope</span><span>[X.X] in dia</span></li>
-          <li><span>Material</span><span>[Alloy]</span></li>
-          <li><span>Manufacturing</span><span>[Process]</span></li>
-        </ul>
+        <span class="mono label">// CORE DESIGN CHALLENGE</span>
+        <p>
+          Improve main parachute separation reliability by
+          <b>reducing pressurized volume and efficiently transferring CO₂
+          pressure into shear pin failure</b>, while maintaining sealing and
+          mechanical compatibility with recovery system interfaces.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- PROCESS -->
+  <!-- DESIGN PROCESS -->
   <section class="section">
     <div class="section-head">
-      <h2 class="stencil">Process</h2>
-      <span class="tag mono">02 / DESIGN THROUGH TEST</span>
+      <h2 class="stencil">Design Process</h2>
+      <span class="tag mono">02 / FROM SEPARATION PROBLEM TO MECHANICAL INTERFACE</span>
     </div>
 
-    <div class="timeline">
-      <div class="tl-step">
-        <span class="no mono">STEP 01</span>
-        <h4 class="stencil">Sizing</h4>
-        <p>Hand-calculated burst pressure against membrane theory to bracket a target disk thickness before modeling.</p>
+    <div class="process-list">
+      <div class="process-step">
+        <div class="step-rail"><div class="step-no mono">01</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 class="stencil">System Requirements &amp; Constraints</h4>
+          <p>
+            Defined system-level requirements including expected CO₂ pressure range,
+            shear pin failure loads, allowable volume, and integration constraints
+            with avionics and recovery subsystems. The target pressure bounds were
+            estimated between 21.5 psi and 180 psi, representing the pressure
+            required to break the main coupler shear pins and the maximum
+            achievable pressure in the reduced volume.
+          </p>
+        </div>
       </div>
-      <div class="tl-step">
-        <span class="no mono">STEP 02</span>
-        <h4 class="stencil">FEA</h4>
-        <p>Ran nonlinear FEA to refine geometry and confirm the disk fails at the intended pressure, not before or after.</p>
+
+      <div class="process-step">
+        <div class="step-rail"><div class="step-no mono">02</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 class="stencil">Blast Disk Geometry</h4>
+          <p>
+            Designed a sliding disk geometry with a lip and shoulder interface.
+            The lip seats on top of the main parachute coupler tube while the
+            shoulder sits inside it, allowing pressure from the CO₂ Raptors to
+            push the disk into the coupler and shear the retention pins during
+            separation.
+          </p>
+        </div>
       </div>
-      <div class="tl-step">
-        <span class="no mono">STEP 03</span>
-        <h4 class="stencil">Bench Test</h4>
-        <p>Pressure-tested prototype disks to burst on a bench rig, comparing measured burst pressure to the FEA prediction.</p>
+
+      <div class="process-step">
+        <div class="step-rail"><div class="step-no mono">03</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 class="stencil">Pass-Through Integration</h4>
+          <p>
+            Incorporated two required pass-throughs: a shock cord routed through
+            a submersible cable gland and avionics wiring routed through a
+            breakaway VGA connector. Both interfaces had to preserve pressure
+            sealing while avoiding interference with the separation event.
+          </p>
+        </div>
       </div>
-      <div class="tl-step">
-        <span class="no mono">STEP 04</span>
-        <h4 class="stencil">Integration</h4>
-        <p>Machined and installed the final disk into the propulsion stack ahead of a static fire or flight.</p>
+
+      <div class="process-step">
+        <div class="step-rail"><div class="step-no mono">04</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 class="stencil">Material Selection &amp; FEA</h4>
+          <p>
+            Selected HDPE for its low-friction sliding behavior against the
+            avionics body tube and sufficient yield strength under expected
+            pressure loads. FEA was performed at a 60 psi pressure load with a
+            1-inch disk length, excluding the shoulder, resulting in a factor
+            of safety of 1.95.
+          </p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div class="step-rail"><div class="step-no mono">05</div></div>
+        <div class="step-body">
+          <h4 class="stencil">Manufacturing &amp; Test Planning</h4>
+          <p>
+            Planned fabrication from a 6-inch OD, 3-inch long HDPE disk. The
+            outer diameter is turned to 5.947 inches, with a 0.5-inch shoulder
+            turned to 5.8 inches. A miniature separation test with pressure
+            instrumentation was planned to experimentally determine maximum
+            pressure and refine final disk length.
+          </p>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- GALLERY -->
-  <section class="section">
-    <div class="section-head">
-      <h2 class="stencil">Drawings &amp; Media</h2>
-      <span class="tag mono">03 / REPLACE WITH REAL IMAGES</span>
-    </div>
-
-    <div class="gallery">
+    <!-- GALLERY -->
+    <div class="gallery" style="margin-top:20px;">
       <div class="plate">
-        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 8v8M24 32v8M8 24h8M32 24h8"/></svg>
-        <span class="mono">CAD SECTION VIEW</span>
+        <svg viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" rx="2"/><circle cx="24" cy="24" r="8"/><path d="M8 30l8-8 6 6 10-12 8 8"/></svg>
+        <span class="fname mono">images/blast-disk-cad.png</span>
       </div>
       <div class="plate">
         <svg viewBox="0 0 48 48"><rect x="10" y="10" width="28" height="28" rx="2"/><path d="M10 24h28M24 10v28"/></svg>
-        <span class="mono">FEA STRESS PLOT</span>
+        <span class="fname mono">images/blast-disk-fea.png</span>
       </div>
       <div class="plate">
         <svg viewBox="0 0 48 48"><rect x="12" y="14" width="24" height="20" rx="2"/><circle cx="24" cy="24" r="5"/></svg>
-        <span class="mono">BENCH TEST RIG</span>
+        <span class="fname mono">images/blast-disk-prototype.png</span>
+      </div>
+    </div>
+    <p class="fig-caption mono">FIG. 1–3 — CAD assembly, FEA stress plot (60 psi), and machined HDPE prototype. Drop your real files in at these paths.</p>
+
+    <div class="gallery">
+      <div class="plate" style="grid-column:1/-1;">
+        <svg viewBox="0 0 48 48"><path d="M8 24h6l4-10 6 20 4-14 4 8h8"/><circle cx="24" cy="24" r="18"/></svg>
+        <span class="fname mono">videos/fusion-toolpath.mp4</span>
+      </div>
+    </div>
+    <p class="fig-caption mono">FIG. 4 — Fusion 360 toolpath showing machining strategy for blast disk geometry.</p>
+  </section>
+
+  <!-- TECHNICAL DEPTH -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="stencil">Engineering Specifics</h2>
+      <span class="tag mono">03 / TECHNICAL DEPTH</span>
+    </div>
+
+    <div class="body-copy">
+      <p><b>Mechanical function:</b> When the CO₂ Raptors fire, gas rapidly fills the reduced volume between the aft avionics bulkhead and the blast disk. The resulting pressure load is transferred through the disk into the main parachute coupler tube, shearing retention pins and initiating separation.</p>
+      <p><b>Material selection:</b> HDPE was chosen for its low friction interface with the avionics body tube and adequate yield strength under expected pressure loads. Low friction was critical because the disk must slide cleanly during deployment without binding against the tube wall.</p>
+      <p><b>FEA validation:</b> The blast disk was analyzed under a 60 psi internal pressure load with a 1-inch disk length, excluding the shoulder. Results showed a factor of safety of 1.95, confirming structural integrity within the initial design case.</p>
+      <p><b>Pressure uncertainty:</b> The system operates within an estimated pressure range of 21.5–180 psi. Because these bounds depend on difficult-to-model separation conditions, a miniature separation test with pressure sensing was planned to validate the real pressure environment and refine final disk dimensions.</p>
+      <p><b>Interfaces:</b> The design integrates a sealed cable gland for the shock cord and a breakaway VGA connector for avionics wiring between the avionics bay and aft control stack. These features preserve pressure integrity while allowing the rocket sections to separate cleanly.</p>
+    </div>
+
+    <div class="callout wide">
+      <span class="mono label">// KEY INSIGHT</span>
+      <p>
+        Early design discussions focused on generating more separation energy,
+        but the more effective solution was <b>reducing the volume being
+        pressurized</b>. This shifted the problem from simply increasing
+        output pressure to designing a better mechanical interface for force
+        transfer.
+      </p>
+    </div>
+
+    <div class="gallery" style="margin-top:36px;">
+      <div class="plate" style="grid-column:1/-1;">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M18 24l4 4 8-10"/></svg>
+        <span class="fname mono">videos/separation-test.mp4</span>
+      </div>
+    </div>
+    <p class="fig-caption mono">FIG. 5 — CO₂-driven separation test demonstrating shear pin failure and disk motion.</p>
+  </section>
+
+  <!-- LESSONS -->
+  <section class="section">
+    <div class="section-head">
+      <h2 class="stencil">What I Learned</h2>
+      <span class="tag mono">04 / LESSONS</span>
+    </div>
+
+    <div class="lessons-grid">
+      <div class="lesson-card">
+        <span class="no mono">01</span>
+        <h4 class="stencil">Works in CAD ≠ works in reality</h4>
+        <p>Designing the blast disk required accounting for real machining constraints. Features that were trivial in CAD had to be simplified or reworked to be manufacturable on a lathe while maintaining tolerances and proper fit.</p>
+      </div>
+      <div class="lesson-card">
+        <span class="no mono">02</span>
+        <h4 class="stencil">Communication enables design</h4>
+        <p>Early coordination with the avionics team directly impacted what was possible. Switching from a U-bolt to an eye bolt created the space and routing needed for the blast disk to function within the recovery system.</p>
+      </div>
+      <div class="lesson-card">
+        <span class="no mono">03</span>
+        <h4 class="stencil">Simulation has limits in dynamic systems</h4>
+        <p>While FEA validated structural integrity, the actual pressure during separation depended on transient gas behavior and volume effects that were difficult to model. Instrumented testing was required to understand real performance.</p>
+      </div>
+      <div class="lesson-card">
+        <span class="no mono">04</span>
+        <h4 class="stencil">Pressure effectiveness is driven by volume</h4>
+        <p>Improving separation was not about generating more pressure, but about reducing the volume being pressurized. This allowed the CO₂ system to more efficiently translate energy into shear pin failure.</p>
       </div>
     </div>
   </section>
 
-  <!-- RESULTS -->
+  <!-- SKILLS -->
   <section class="section" style="border-bottom:none;">
     <div class="section-head">
-      <h2 class="stencil">Results</h2>
-      <span class="tag mono">04 / OUTCOME</span>
+      <h2 class="stencil">Skills Demonstrated</h2>
+      <span class="tag mono">05 / WHAT I APPLIED</span>
     </div>
-
-    <div class="results mono">
-      <div class="result-cell">
-        <span class="big">±[X]%</span>
-        <p>Measured burst pressure vs. FEA prediction across test articles.</p>
-      </div>
-      <div class="result-cell">
-        <span class="big">[X]</span>
-        <p>Prototype disks tested to failure before the flight-ready design.</p>
-      </div>
-      <div class="result-cell">
-        <span class="big">[X.X]×</span>
-        <p>Margin held between burst pressure and normal operating pressure.</p>
-      </div>
+    <div class="skills-used mono">
+      <span class="skill-tag">ONSHAPE CAD</span>
+      <span class="skill-tag">ANSYS FEA STRESS ANALYSIS</span>
+      <span class="skill-tag">MILL &amp; LATHE MACHINING</span>
+      <span class="skill-tag">FUSION TOOLPATH</span>
+      <span class="skill-tag">DESIGN FOR ASSEMBLY</span>
+      <span class="skill-tag">SYSTEMS ENGINEERING</span>
+      <span class="skill-tag">TECHNICAL DOCUMENTATION</span>
     </div>
   </section>
 
   <!-- NEXT PROJECT NAV -->
   <div class="next-nav mono">
     <a href="index.html#index"><span class="arrow">◄</span> INDEX OF DRAWINGS</a>
-    <a href="#">NEXT — DWG-02 LUNAR ROVER STACK <span class="arrow">►</span></a>
+    <a href="project-lunar-rover.html">NEXT — DWG-02 LUNAR ROVER STACK <span class="arrow">►</span></a>
   </div>
 
   <!-- TITLE BLOCK -->
@@ -581,7 +747,7 @@
       </div>
       <div class="tb-cell">
         <span class="k">DRAWING</span>
-        <span class="v">DWG-01 Blast Disk</span>
+        <span class="v">DWG-01 Blast Disk Recovery System</span>
       </div>
       <div class="tb-cell">
         <span class="k">CONTACT</span>
