@@ -711,14 +711,15 @@
   <div class="panel" id="contact">
     <div class="panel-head reveal"><h2>Contact</h2></div>
     <div class="contact-grid">
-      <form id="contactForm" class="reveal" action="https://formsubmit.co/forrest.li@duke.edu" method="POST">
-        <input type="hidden" name="_subject" value="New portfolio contact message">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
+      <form id="contactForm" class="reveal">
+        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+        <input type="hidden" name="subject" value="New portfolio contact message">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
         <div class="field"><label>Name</label><input type="text" name="name" required></div>
         <div class="field"><label>Email</label><input type="email" name="email" required></div>
         <div class="field"><label>Message</label><textarea name="message" required></textarea></div>
         <button class="submit-btn" type="submit">Send Message</button>
+        <div id="contactResult" role="status" aria-live="polite" style="margin-top:12px;font-family:var(--mono);font-size:12px;"></div>
       </form>
       <div class="contact-info reveal">
         <div class="row"><span>Email</span><span><a href="mailto:forrest.li@duke.edu">forrest.li@duke.edu</a></span></div>
@@ -950,7 +951,42 @@
     if(e.key === 'Escape') closeSkillModal();
   });
 
-  // Contact form submits directly through FormSubmit to forrest.li@duke.edu.
+  // Contact form: Web3Forms works on static hosts such as GitHub Pages.
+  // Replace YOUR_WEB3FORMS_ACCESS_KEY above with the key generated for forrest.li@duke.edu.
+  const contactForm = document.getElementById('contactForm');
+  const contactResult = document.getElementById('contactResult');
+  contactForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const submitBtn = contactForm.querySelector('.submit-btn');
+    const formData = new FormData(contactForm);
+    const accessKey = formData.get('access_key');
+    if(!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY'){
+      contactResult.textContent = 'Setup needed: add your Web3Forms access key to index.html.';
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    contactResult.textContent = '';
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+      const data = await response.json();
+      if(response.ok && data.success){
+        contactResult.textContent = 'Message sent! Thanks for reaching out.';
+        contactForm.reset();
+      } else {
+        contactResult.textContent = data.message || 'Message could not be sent. Please email me directly.';
+      }
+    } catch(err){
+      contactResult.textContent = 'Message could not be sent. Please email me directly.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    }
+  });
 </script>
 
 </body>
