@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lunar Rover Autonomy — Forrest Li</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F6FA; --bg-2:#E8EEF5; --card:#FFFFFF; --card-2:#F3F6FA;
+    --border:#DCE4EF; --ink:#152238; --ink-soft:#4E5C71; --ink-faint:#8C9AAD;
+    --accent:#2461E8; --accent-rgb:36,97,232; --accent-soft:rgba(36,97,232,0.10);
+    --accent-2:#F0663A; --accent-2-rgb:240,102,58;
+    --radius:14px; --maxw:1200px;
+    --shadow:0 1px 2px rgba(21,34,56,0.05), 0 14px 34px rgba(21,34,56,0.08);
+    --display:'Space Grotesk', sans-serif; --body:'Inter', -apple-system, sans-serif; --mono:'IBM Plex Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.6; -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden; }
+  a{color:inherit; text-decoration:none;}
+  .inline-link{ color:var(--accent); font-weight:600; border-bottom:1px solid rgba(var(--accent-rgb),0.35); }
+  .inline-link:hover{ border-color:var(--accent); }
+  /* ---------- AMBIENT BACKGROUND ---------- */
+  .blueprint-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(var(--accent-rgb),0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb),0.07) 1px, transparent 1px);
+    background-size:42px 42px; animation:gridPan 50s linear infinite;
+    -webkit-mask-image: radial-gradient(circle at 50% 10%, black, transparent 70%);
+    mask-image: radial-gradient(circle at 50% 10%, black, transparent 70%);
+  }
+  @keyframes gridPan{ from{background-position:0 0,0 0;} to{background-position:420px 420px,420px 420px;} }
+  .corner-mark{ position:fixed; color:var(--accent); opacity:.4; z-index:1; font-family:var(--mono); font-size:11px; }
+  .corner-mark.tl{ top:14px; left:14px; } .corner-mark.tr{ top:14px; right:14px; }
+  .corner-mark.bl{ bottom:14px; left:14px; } .corner-mark.br{ bottom:14px; right:14px; }
+  @media (max-width:700px){ .corner-mark{ display:none; } }
+  /* ---------- DRIVING ROVER (side ambient motif, curved path + LiDAR pulses) ---------- */
+  .orbit-wrap{ position:fixed; z-index:1; pointer-events:none; width:60px; }
+  .orbit-wrap svg{ display:block; width:100%; height:auto; overflow:visible; }
+  .orbit-wrap.spin-left{ left:clamp(6px,3vw,36px); animation:driveDownSine 17s ease-in-out infinite; }
+  .orbit-wrap.spin-right{ right:clamp(6px,3vw,36px); animation:driveUpSine 19s ease-in-out infinite; animation-delay:-7s; }
+  @keyframes driveDownSine{
+    0.00%{ top:-16.00vh; opacity:0.0; transform:translateX(0.00px) rotate(5.00deg); }
+    4.00%{ top:-11.04vh; opacity:0.6; transform:translateX(5.30px) rotate(4.38deg); }
+    8.00%{ top:-6.08vh; opacity:0.9; transform:translateX(9.29px) rotate(2.68deg); }
+    12.00%{ top:-1.12vh; opacity:0.9; transform:translateX(10.98px) rotate(0.31deg); }
+    16.00%{ top:3.84vh; opacity:0.9; transform:translateX(9.95px) rotate(-2.13deg); }
+    20.00%{ top:8.80vh; opacity:0.9; transform:translateX(6.47px) rotate(-4.05deg); }
+    24.00%{ top:13.76vh; opacity:0.9; transform:translateX(1.38px) rotate(-4.96deg); }
+    28.00%{ top:18.72vh; opacity:0.9; transform:translateX(-4.05px) rotate(-4.65deg); }
+    32.00%{ top:23.68vh; opacity:0.9; transform:translateX(-8.48px) rotate(-3.19deg); }
+    36.00%{ top:28.64vh; opacity:0.9; transform:translateX(-10.81px) rotate(-0.94deg); }
+    40.00%{ top:33.60vh; opacity:0.9; transform:translateX(-10.46px) rotate(1.55deg); }
+    44.00%{ top:38.56vh; opacity:0.9; transform:translateX(-7.53px) rotate(3.64deg); }
+    48.00%{ top:43.52vh; opacity:0.9; transform:translateX(-2.74px) rotate(4.84deg); }
+    52.00%{ top:48.48vh; opacity:0.9; transform:translateX(2.74px) rotate(4.84deg); }
+    56.00%{ top:53.44vh; opacity:0.9; transform:translateX(7.53px) rotate(3.64deg); }
+    60.00%{ top:58.40vh; opacity:0.9; transform:translateX(10.46px) rotate(1.55deg); }
+    64.00%{ top:63.36vh; opacity:0.9; transform:translateX(10.81px) rotate(-0.94deg); }
+    68.00%{ top:68.32vh; opacity:0.9; transform:translateX(8.48px) rotate(-3.19deg); }
+    72.00%{ top:73.28vh; opacity:0.9; transform:translateX(4.05px) rotate(-4.65deg); }
+    76.00%{ top:78.24vh; opacity:0.9; transform:translateX(-1.38px) rotate(-4.96deg); }
+    80.00%{ top:83.20vh; opacity:0.9; transform:translateX(-6.47px) rotate(-4.05deg); }
+    84.00%{ top:88.16vh; opacity:0.9; transform:translateX(-9.95px) rotate(-2.13deg); }
+    88.00%{ top:93.12vh; opacity:0.9; transform:translateX(-10.98px) rotate(0.31deg); }
+    92.00%{ top:98.08vh; opacity:0.9; transform:translateX(-9.29px) rotate(2.68deg); }
+    96.00%{ top:103.04vh; opacity:0.6; transform:translateX(-5.30px) rotate(4.38deg); }
+    100.00%{ top:108.00vh; opacity:0.0; transform:translateX(-0.00px) rotate(5.00deg); }
+  }
+  @keyframes driveUpSine{
+    0.00%{ top:108.00vh; opacity:0.0; transform:translateX(0.00px) rotate(-5.00deg); }
+    4.00%{ top:103.04vh; opacity:0.6; transform:translateX(5.30px) rotate(-4.38deg); }
+    8.00%{ top:98.08vh; opacity:0.9; transform:translateX(9.29px) rotate(-2.68deg); }
+    12.00%{ top:93.12vh; opacity:0.9; transform:translateX(10.98px) rotate(-0.31deg); }
+    16.00%{ top:88.16vh; opacity:0.9; transform:translateX(9.95px) rotate(2.13deg); }
+    20.00%{ top:83.20vh; opacity:0.9; transform:translateX(6.47px) rotate(4.05deg); }
+    24.00%{ top:78.24vh; opacity:0.9; transform:translateX(1.38px) rotate(4.96deg); }
+    28.00%{ top:73.28vh; opacity:0.9; transform:translateX(-4.05px) rotate(4.65deg); }
+    32.00%{ top:68.32vh; opacity:0.9; transform:translateX(-8.48px) rotate(3.19deg); }
+    36.00%{ top:63.36vh; opacity:0.9; transform:translateX(-10.81px) rotate(0.94deg); }
+    40.00%{ top:58.40vh; opacity:0.9; transform:translateX(-10.46px) rotate(-1.55deg); }
+    44.00%{ top:53.44vh; opacity:0.9; transform:translateX(-7.53px) rotate(-3.64deg); }
+    48.00%{ top:48.48vh; opacity:0.9; transform:translateX(-2.74px) rotate(-4.84deg); }
+    52.00%{ top:43.52vh; opacity:0.9; transform:translateX(2.74px) rotate(-4.84deg); }
+    56.00%{ top:38.56vh; opacity:0.9; transform:translateX(7.53px) rotate(-3.64deg); }
+    60.00%{ top:33.60vh; opacity:0.9; transform:translateX(10.46px) rotate(-1.55deg); }
+    64.00%{ top:28.64vh; opacity:0.9; transform:translateX(10.81px) rotate(0.94deg); }
+    68.00%{ top:23.68vh; opacity:0.9; transform:translateX(8.48px) rotate(3.19deg); }
+    72.00%{ top:18.72vh; opacity:0.9; transform:translateX(4.05px) rotate(4.65deg); }
+    76.00%{ top:13.76vh; opacity:0.9; transform:translateX(-1.38px) rotate(4.96deg); }
+    80.00%{ top:8.80vh; opacity:0.9; transform:translateX(-6.47px) rotate(4.05deg); }
+    84.00%{ top:3.84vh; opacity:0.9; transform:translateX(-9.95px) rotate(2.13deg); }
+    88.00%{ top:-1.12vh; opacity:0.9; transform:translateX(-10.98px) rotate(-0.31deg); }
+    92.00%{ top:-6.08vh; opacity:0.9; transform:translateX(-9.29px) rotate(-2.68deg); }
+    96.00%{ top:-11.04vh; opacity:0.6; transform:translateX(-5.30px) rotate(-4.38deg); }
+    100.00%{ top:-16.00vh; opacity:0.0; transform:translateX(-0.00px) rotate(-5.00deg); }
+  }
+  .radar-ring{ transform-origin:27px 13px; animation:radarPulse 2.2s ease-out infinite; opacity:0; }
+  .radar-ring.r1{ animation-delay:0s; }
+  .radar-ring.r2{ animation-delay:.7s; }
+  .radar-ring.r3{ animation-delay:1.4s; }
+  @keyframes radarPulse{
+    0%{ r:2.5; opacity:.85; stroke-width:1.4; }
+    100%{ r:13; opacity:0; stroke-width:.2; }
+  }
+  .tire{ opacity:.95; }
+  @media (max-width:900px){ .orbit-wrap{ display:none; } }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,4vw,40px); position:relative; z-index:1; }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  /* ---------- NAV ---------- */
+  nav{ padding:28px clamp(20px,4vw,40px) 0; position:relative; z-index:2; }
+  .back-link{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12.5px;
+    font-weight:600; color:var(--ink-soft); letter-spacing:.03em; transition:color .15s, transform .15s;
+  }
+  .back-link:hover{ color:var(--accent); transform:translateX(-2px); }
+  /* ---------- HERO ---------- */
+  .proj-hero{ padding:40px 0 8px; animation:rise .6s ease both; }
+  .proj-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:600; margin-bottom:12px;
+  }
+  .proj-hero h1{ font-family:var(--display); font-size:clamp(30px,5vw,46px); font-weight:700; letter-spacing:-0.01em; }
+  .proj-summary{ font-size:16px; color:var(--ink-soft); margin-top:12px; max-width:820px; }
+  .proj-meta{ display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; }
+  .proj-meta .m{ display:flex; flex-direction:column; gap:3px; }
+  .proj-meta .m span:first-child{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint); }
+  .proj-meta .m span:last-child{ font-size:13.5px; font-weight:600; }
+  .proj-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .proj-tags span{
+    font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-soft);
+    background:var(--card-2); border:1px solid var(--border); border-radius:6px; padding:5px 11px;
+  }
+  .hero-photo-grid{
+    margin-top:30px; display:grid; grid-template-columns:1fr 1fr; gap:20px;
+  }
+  @media (max-width:680px){ .hero-photo-grid{ grid-template-columns:1fr; } }
+  .hero-photo{
+    border-radius:var(--radius); background:var(--card-2);
+    border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .hero-photo-frame{
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12px; color:var(--ink-faint); text-align:center; padding:14px;
+    background:#0B1220;
+  }
+  .hero-photo img{ width:100%; height:100%; object-fit:contain; display:block; }
+  .hero-photo:not(.has-img) img{ display:none; }
+  .hero-photo.has-img .hero-photo-frame span{ display:none; }
+  .hero-photo figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:10px 14px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* ---------- SECTIONS ---------- */
+  .proj-section{ padding:46px 0; border-top:1px solid var(--border); }
+  .proj-section:first-of-type{ border-top:none; }
+  .section-label{
+    font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:14px;
+  }
+  .proj-section h2{ font-family:var(--display); font-size:23px; font-weight:700; margin-bottom:14px; }
+  .proj-section p{ font-size:14.5px; color:var(--ink-soft); max-width:860px; }
+  .proj-section p + p{ margin-top:12px; }
+  /* brief: spec rows */
+  .spec-list{ margin-top:22px; display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  @media (max-width:760px){ .spec-list{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:480px){ .spec-list{ grid-template-columns:1fr; } }
+  .spec-row{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13.5px;
+    padding:13px 16px; background:var(--card); border:1px solid var(--border); border-radius:8px;
+  }
+  .spec-row .name{ color:var(--ink-faint); font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  .spec-row .val{ font-weight:600; }
+  /* the plan: node graph diagram */
+  .node-diagram-frame{
+    margin-top:22px; border-radius:var(--radius); background:var(--card); border:1px solid var(--border);
+    box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column;
+  }
+  .node-diagram-frame svg{ display:block; width:100%; height:auto; }
+  .node-diagram-frame figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:10px 14px; border-top:1px solid var(--border); background:var(--card-2);
+  }
+  /* single large diagram frame (rqt graph, etc.) */
+  .diagram-frame{
+    margin-top:22px; border-radius:var(--radius); background:#0B1220; border:1px solid var(--border);
+    box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column;
+  }
+  .diagram-frame img{ width:100%; height:auto; display:block; }
+  .diagram-frame figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:10px 14px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* build: photo grid */
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-top:22px; }
+  .photo-item{
+    border-radius:10px; background:var(--card-2); border:1px solid var(--border);
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .photo-item-frame{
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;
+    color:var(--ink-faint); text-align:center; padding:10px; overflow:hidden; background:#0B1220;
+  }
+  .photo-item img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .photo-item.has-img img{ display:block; }
+  .photo-item.has-img .photo-item-frame span{ display:none; }
+  .photo-item figcaption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:8px 10px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* build: side-by-side autoplay videos */
+  .video-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px; }
+  @media (max-width:680px){ .video-grid{ grid-template-columns:1fr; } }
+  .video-item{
+    border-radius:10px; background:var(--card-2); border:1px solid var(--border);
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .video-item-frame{
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;
+    color:var(--ink-faint); text-align:center; padding:10px; overflow:hidden; background:#0B1220; position:relative;
+  }
+  .video-item video{ width:100%; height:100%; object-fit:cover; display:none; }
+  .video-item.has-vid video{ display:block; }
+  .video-item.has-vid .video-item-frame span{ display:none; }
+  .video-item figcaption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:8px 10px; border-top:1px solid var(--border); background:var(--card);
+  }
+  .video-single{ margin:22px auto 0; max-width:100%; width:min(760px, 100%); }
+  .video-single .video-item-frame{ aspect-ratio:auto; padding:0; }
+  .video-single .video-item-frame span{ padding:60px 10px; }
+  .video-single video{ width:100%; height:auto; object-fit:contain; }
+  /* testing: result stats */
+  .stat-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-top:22px; }
+  .stat-card{
+    background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .stat-card .num{ font-family:var(--display); font-size:26px; font-weight:700; color:var(--accent); }
+  .stat-card .label{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; margin-top:4px; }
+  /* honest reality-check callout */
+  .honest-card{
+    background:var(--card); border:1px solid rgba(var(--accent-2-rgb),0.4); border-radius:var(--radius);
+    padding:22px 24px; margin-top:20px; box-shadow:var(--shadow); position:relative;
+  }
+  .honest-card .honest-label{
+    font-family:var(--mono); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--accent-2); margin-bottom:10px; display:flex; align-items:center; gap:7px;
+  }
+  .honest-card .honest-label .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent-2); display:inline-block; }
+  .honest-card p{ color:var(--ink-soft); }
+  /* reflection */
+  .reflect-card{
+    background:var(--card); border:1px dashed rgba(var(--accent-rgb),0.35); border-radius:var(--radius);
+    padding:22px 24px; margin-top:20px; box-shadow:var(--shadow);
+  }
+  /* resources */
+  .res-links{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .res-links a{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; padding:9px 16px; border-radius:999px;
+    border:1px solid var(--border); background:var(--card); color:var(--accent); transition:all .18s;
+  }
+  .res-links a:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  footer{ text-align:center; padding:34px 24px; font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.04em; position:relative; z-index:1; }
+</style>
+</head>
+<body>
+<div class="blueprint-grid"></div>
+<span class="corner-mark tl">+</span><span class="corner-mark tr">+</span>
+<span class="corner-mark bl">+</span><span class="corner-mark br">+</span>
+<!-- Ambient rover driving down a curved path, left margin, LiDAR pinging blue -->
+<div class="orbit-wrap spin-left">
+  <svg viewBox="0 0 54 96" xmlns="http://www.w3.org/2000/svg">
+    <circle class="radar-ring r1" cx="27" cy="13" r="2.5" fill="none" stroke="#2461E8"/>
+    <circle class="radar-ring r2" cx="27" cy="13" r="2.5" fill="none" stroke="#2461E8"/>
+    <circle class="radar-ring r3" cx="27" cy="13" r="2.5" fill="none" stroke="#2461E8"/>
+    <line x1="27" y1="17" x2="27" y2="30" stroke="#152238" stroke-width="1.4"/>
+    <circle cx="27" cy="13" r="3" fill="#2461E8" stroke="#152238" stroke-width="1"/>
+    <rect class="tire" x="5.5" y="34" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="7" y1="38" x2="11" y2="38" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="7" y1="45" x2="11" y2="45" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="41.5" y="34" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="43" y1="38" x2="47" y2="38" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="43" y1="45" x2="47" y2="45" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="5.5" y="63" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="7" y1="67" x2="11" y2="67" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="7" y1="74" x2="11" y2="74" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="41.5" y="63" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="43" y1="67" x2="47" y2="67" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="43" y1="74" x2="47" y2="74" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect x="15" y="30" width="24" height="48" rx="6" fill="#FFFFFF" stroke="#152238" stroke-width="1.5"/>
+    <rect x="19" y="40" width="16" height="10" rx="2" fill="#8FD3FF" stroke="#152238" stroke-width="1"/>
+    <circle cx="27" cy="36" r="1.8" fill="#F0663A"/>
+  </svg>
+</div>
+<!-- Ambient rover driving up a curved path, right margin, LiDAR pinging orange -->
+<div class="orbit-wrap spin-right">
+  <svg viewBox="0 0 54 96" xmlns="http://www.w3.org/2000/svg">
+    <circle class="radar-ring r1" cx="27" cy="13" r="2.5" fill="none" stroke="#F0663A"/>
+    <circle class="radar-ring r2" cx="27" cy="13" r="2.5" fill="none" stroke="#F0663A"/>
+    <circle class="radar-ring r3" cx="27" cy="13" r="2.5" fill="none" stroke="#F0663A"/>
+    <line x1="27" y1="17" x2="27" y2="30" stroke="#152238" stroke-width="1.4"/>
+    <circle cx="27" cy="13" r="3" fill="#F0663A" stroke="#152238" stroke-width="1"/>
+    <rect class="tire" x="5.5" y="34" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="7" y1="38" x2="11" y2="38" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="7" y1="45" x2="11" y2="45" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="41.5" y="34" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="43" y1="38" x2="47" y2="38" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="43" y1="45" x2="47" y2="45" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="5.5" y="63" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="7" y1="67" x2="11" y2="67" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="7" y1="74" x2="11" y2="74" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect class="tire" x="41.5" y="63" width="7" height="15" rx="3" fill="#152238"/>
+    <line x1="43" y1="67" x2="47" y2="67" stroke="#4E5C71" stroke-width="0.8"/>
+    <line x1="43" y1="74" x2="47" y2="74" stroke="#4E5C71" stroke-width="0.8"/>
+    <rect x="15" y="30" width="24" height="48" rx="6" fill="#FFFFFF" stroke="#152238" stroke-width="1.5"/>
+    <rect x="19" y="40" width="16" height="10" rx="2" fill="#8FD3FF" stroke="#152238" stroke-width="1"/>
+    <circle cx="27" cy="36" r="1.8" fill="#2461E8"/>
+  </svg>
+</div>
+<nav>
+  <a class="back-link" href="portfolio.html">← Back to portfolio</a>
+</nav>
+<div class="wrap">
+  <!-- ============ HERO ============ -->
+  <section class="proj-hero">
+    <div class="proj-eyebrow">Project / Robotics &amp; Autonomy</div>
+    <h1>Lunar Rover Autonomy Stack</h1>
+    <p class="proj-summary">
+      A ROS2 autonomy stack - LiDAR-based odometry, SLAM, and Nav2 path planning - built for a
+      senior robotics project team's lunar rover, under Dr. Shiobhan Oca. My job was to
+      take a rover that could only be driven by hand and make it capable of mapping and navigating
+      on its own with the sole input being LiDAR scans.
+    </p>
+    <div class="proj-meta">
+      <div class="m"><span>Role</span><span>Autonomy Lead</span></div>
+      <div class="m"><span>Team</span><span>Independent Project</span></div>
+      <div class="m"><span>Advisor</span><span>Dr. Shiobhan Oca</span></div>
+      <div class="m"><span>Status</span><span>Working in simulation - hardware incomplete</span></div>
+    </div>
+    <div class="proj-tags">
+      <span>ROS2</span><span>LiDAR</span><span>RF2O Odometry</span><span>SLAM Toolbox</span><span>Nav2</span><span>URDF</span><span>Gazebo</span>
+    </div>
+    <div class="hero-photo-grid">
+      <figure class="hero-photo has-img">
+        <div class="hero-photo-frame">
+          <span>[ image ]</span>
+          <img src="images/rover_urdf.png" alt="Rover URDF model rendered in RViz">
+        </div>
+        <figcaption>The rover's URDF, modeled joint-by-joint to match the physical chassis</figcaption>
+      </figure>
+      <figure class="hero-photo has-img">
+        <div class="hero-photo-frame">
+          <span>[ image ]</span>
+          <img src="images/rover-gazebo.png" alt="Rover building a costmap of a room while navigating">
+        </div>
+        <figcaption>The rover mapping a room in real time using the LiDAR + SLAM pipeline</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ THE BRIEF ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">01 — The Brief</div>
+    <h2>The problem</h2>
+    <p>
+      This was my first exposure to ROS2. The team's rover existed as a physical platform that could
+      already be tele-operated, but it had no way to perceive its environment or move on its own.
+      My job was to design and build the full autonomy pipeline: take in raw LiDAR data, estimate the
+      rover's motion without wheel encoders, build a map of its surroundings, and plan and execute
+      paths through that map — all running on ROS2 and ultimately deployable to the rover's onboard
+      computer.
+    </p>
+    <figure class="video-item video-single has-vid">
+      <div class="video-item-frame">
+        <span>[ video — manual/tele-op run ]</span>
+        <video src="videos/rover-move.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <figcaption>The rover being driven manually via controller — the starting point before any autonomy</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ THE PLAN ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">02 — The Plan</div>
+    <h2>Proposed pipeline</h2>
+    <p>
+    Starting from a manually controlled rover, the goal was to build a ROS2 pipeline
+    that could map and navigate using LiDAR as its primary source of perception.
+    </p>
+
+    <div class="spec-list">
+    <div class="spec-row"><span class="name">Sensing</span><span class="val">2D LiDAR</span></div>
+    <div class="spec-row"><span class="name">Odometry</span><span class="val">RF2O (laser-based, no encoders)</span></div>
+    <div class="spec-row"><span class="name">Mapping</span><span class="val">SLAM Toolbox (online async)</span></div>
+    <div class="spec-row"><span class="name">Navigation</span><span class="val">Nav2 (planner + controller servers)</span></div>
+    <div class="spec-row"><span class="name">Simulation</span><span class="val">Custom URDF + Gazebo</span></div>
+    </div>
+
+    <p>
+    LiDAR scans fed RF2O for odometry and SLAM Toolbox for mapping, while the URDF
+    provided the transform tree needed by the rest of the stack. Nav2 generated
+    <code>/cmd_vel</code> commands, which I translated into serial motor commands
+    with a custom <code>cmd_vel_converter</code> node.
+    </p>
+
+
+    <div class="node-diagram-frame">
+      <svg viewBox="0 0 1260 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#152238"/>
+          </marker>
+          <marker id="arrowAccent" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#8C9AAD"/>
+          </marker>
+        </defs>
+
+        <!-- URDF / TF edges -->
+        <line x1="170" y1="50" x2="198" y2="50" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="172" y="40" font-family="IBM Plex Mono, monospace" font-size="11" fill="#2461E8" font-weight="600">urdf</text>
+
+        <path d="M290,80 C290,160 320,180 348,241" fill="none" stroke="#8C9AAD" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#arrowAccent)"/>
+        <path d="M290,80 C330,150 480,190 598,231" fill="none" stroke="#8C9AAD" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#arrowAccent)"/>
+        <text x="400" y="165" font-family="IBM Plex Mono, monospace" font-size="11" fill="#8C9AAD" font-weight="600">/tf</text>
+
+        <!-- sensing edges -->
+        <line x1="85" y1="230" x2="85" y2="318" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="98" y="278" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2461E8" font-weight="600">/scan</text>
+
+        <path d="M150,350 C210,350 210,300 278,313" fill="none" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="165" y="375" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2461E8" font-weight="600">/odom</text>
+
+        <path d="M150,200 C210,200 210,240 278,255" fill="none" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="165" y="190" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2461E8" font-weight="600">/scan</text>
+
+        <line x1="450" y1="280" x2="528" y2="280" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="458" y="270" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2461E8" font-weight="600">/map</text>
+
+        <line x1="740" y1="280" x2="813" y2="280" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="743" y="270" font-family="IBM Plex Mono, monospace" font-size="11" fill="#2461E8" font-weight="600">/cmd_vel</text>
+
+        <line x1="1010" y1="280" x2="1058" y2="280" stroke="#152238" stroke-width="1.6" marker-end="url(#arrow)"/>
+        <text x="1010" y="270" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#F0663A" font-weight="600">serial</text>
+
+        <!-- URDF / TF nodes -->
+        <rect x="20" y="20" width="150" height="60" rx="10" fill="#FFFFFF" stroke="#152238" stroke-width="1.6"/>
+        <text x="95" y="45" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">Robot Description</text>
+        <text x="95" y="62" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8C9AAD">URDF · links, joints</text>
+
+        <rect x="198" y="20" width="180" height="60" rx="10" fill="#FFFFFF" stroke="#152238" stroke-width="1.6"/>
+        <text x="288" y="45" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">robot_state_publisher</text>
+        <text x="288" y="62" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8C9AAD">publishes /tf from the URDF</text>
+
+        <!-- sensing / pipeline nodes -->
+        <rect x="20" y="170" width="130" height="60" rx="10" fill="#FFFFFF" stroke="#152238" stroke-width="1.6"/>
+        <text x="85" y="195" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">2D LiDAR</text>
+        <text x="85" y="212" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8C9AAD">sensor</text>
+
+        <rect x="20" y="320" width="130" height="60" rx="10" fill="#FFFFFF" stroke="#152238" stroke-width="1.6"/>
+        <text x="85" y="345" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">RF2O</text>
+        <text x="85" y="362" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8C9AAD">laser odometry</text>
+
+        <rect x="280" y="245" width="170" height="70" rx="10" fill="#FFFFFF" stroke="#2461E8" stroke-width="1.8"/>
+        <text x="365" y="275" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">SLAM Toolbox</text>
+        <text x="365" y="293" text-anchor="middle"  ont-family="IBM Plex Mono, monospace" font-size="10" fill="#8C9AAD">online async mapping</text>
+
+        <rect x="530" y="235" width="210" height="90" rx="10" fill="#FFFFFF" stroke="#2461E8" stroke-width="1.8"/>
+        <text x="635" y="270" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="#152238">Nav2</text>
+        <text x="635" y="288" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8C9AAD">costmaps · planner</text>
+        <text x="635" y="302" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8C9AAD">· controller server</text>
+
+        <rect x="815" y="235" width="195" height="90" rx="10" fill="#FFFFFF" stroke="#F0663A" stroke-width="1.8"/>
+        <text x="912" y="263" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="700" fill="#152238">cmd_vel_converter</text>
+        <text x="912" y="282" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#F0663A">Differential Drive Calculator</text>
+        <text x="912" y="298" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#F0663A">Twist → motor cmds</text>
+
+        <rect x="1060" y="245" width="150" height="70" rx="10" fill="#FFFFFF" stroke="#152238" stroke-width="1.6"/>
+        <text x="1135" y="270" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="700" fill="#152238">Rover Base</text>
+        <text x="1135" y="287" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#8C9AAD">stepper motors +</text>
+        <text x="1135" y="299" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#8C9AAD">microcontrollers</text>
+      </svg>
+      <figcaption>Proposed node graph — the URDF drives /tf, LiDAR drives odometry and SLAM, and a self-written cmd_vel_converter bridges Nav2's output to the stepper motor microcontrollers</figcaption>
+    </div>
+    <p style="margin-top:18px;">
+      This was the proposed pipeline going in: a small, deliberately simple node graph compared to
+      what actually ends up running once all the nodes are put together (see Section 04).
+    </p>
+  </section>
+
+  <!-- ============ MODELING THE ROVER ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">03 — Simulation</div>
+    <h2>Building it in simulation first</h2>
+    <p>
+      Before touching the physical rover, I built a URDF describing its chassis, wheels, and sensor
+      mounts so I could develop and sanity check the autonomy stack in Gazebo. This let me iterate on
+      the LiDAR placement, tune the navigation stack's parameters, and catch obvious errors long
+      before they cost time on the actual hardware; especially useful since I was learning ROS2
+      and the Nav2 stack at the same time as building the pipeline.
+    </p>
+    <div class="photo-grid">
+      <figure class="photo-item has-img">
+        <div class="photo-item-frame">
+          <span>[ image ]</span>
+          <img src="images/rover_urdf.png" alt="Rover URDF model">
+        </div>
+        <figcaption>URDF model of the rover chassis and wheel assemblies</figcaption>
+      </figure>
+      <figure class="photo-item has-img">
+        <div class="photo-item-frame">
+          <span>[ image ]</span>
+          <img src="images/rover-gazebo.png" alt="Rover mapping a room using SLAM">
+        </div>
+        <figcaption>SLAM-generated map of a room, built live as the rover explored it</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ SYSTEM / GRAPH ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">04 — Wiring It Together</div>
+    <h2>The full ROS2 graph</h2>
+    <p>
+      Once the individual pieces worked: RF2O producing odometry, SLAM Toolbox producing a map,
+      Nav2 producing plans, the real complexity was in connecting them into a single working system:
+      dozens of nodes talking over topics, actions, and lifecycle transitions The graph below is the full rqt_graph
+      output for the running stack. It's not meant to be legible at this size; it's here to show
+      just how many moving parts a "simple" navigate-to-goal command actually depends on.
+    </p>
+    <div class="diagram-frame">
+      <img src="images/rover_graph.png" alt="Full ROS2 rqt_graph showing every node and topic in the navigation stack">
+      <figcaption>Full rqt_graph of the running Nav2 + SLAM + RF2O stack — the reality behind the simplified diagram in Section 02</figcaption>
+    </div>
+  </section>
+
+  <!-- ============ REALITY CHECK ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">05 — Reality Check</div>
+    <h2>Did it work?</h2>
+    <p>
+      In simulation, yes — the rover could localize, build a map of a room, and navigate to a goal
+      pose using the pipeline above. On the physical rover, it never got there.
+    </p>
+    <div class="honest-card">
+      <div class="honest-label"><span class="dot"></span>What actually happened</div>
+      <p>
+        The hardware itself had integration and power distribution problems that were outside my
+        control as the software lead. The drive motors didn't reliably respond to commands; at times
+        the wheels simply wouldn't move when the autonomy stack sent them a velocity command, which
+        made it impossible to validate closed-loop navigation on the real rover. I could confirm that
+        LiDAR data, odometry, and mapping were all working correctly on the physical platform; I
+        could not get consistent enough motor response to confirm autonomous driving worked end-to-end
+        outside of simulation.
+      </p>
+    </div>
+    <p style="margin-top:18px;">
+      This served as useful it's a useful lesson that autonomy software is only as
+      reliable as the hardware it's commanding.
+    </p>
+  </section>
+
+  <!-- ============ REFLECTION ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">06 — Looking Ahead</div>
+    <h2>What I'd do differently</h2>
+    <div class="reflect-card">
+
+    <p>
+        If I picked this project back up, I’d change two things. First, I’d push for hardware-in-the-loop testing much earlier; even just verifying that a raw <code>/cmd_vel</code> command reliably turned the wheels before investing heavily in SLAM and navigation tuning. Second, I’d structure the ROS2 workspace more deliberately from the start. Since I was learning ROS2 while building the system, the final setup accumulated unnecessary launch steps, manual remappings, and configuration between nodes. With what I know now, I could make the entire stack much cleaner, easier to launch, and easier to debug.
+    </p>
+
+
+    </div>
+  </section>
+</div>
+<footer>© 2026 Forrest Li</footer>
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
