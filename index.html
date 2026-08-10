@@ -322,22 +322,27 @@
   /* ---------- ABOUT ---------- */
 
   /* ---------- ABOUT STORY ---------- */
-  .about-story{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr); gap:30px; align-items:start; }
+  .about-story{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr); gap:72px; align-items:start; }
   .about-copy{ max-width:700px; }
   .about-copy .about-lede{ font-family:var(--display); font-size:clamp(21px,2.5vw,29px); line-height:1.3; font-weight:700; color:var(--ink); margin-bottom:18px; }
   .about-copy p{ max-width:680px; }
   .about-milestones{ display:flex; gap:8px; flex-wrap:wrap; margin-top:22px; }
   .about-milestones span{ font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:var(--card); }
-  .launch-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .launch-card{ background:#0B1220; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .launch-story{ margin-top:28px; padding-top:20px; border-top:1px solid var(--border); position:relative; max-width:680px; }
+  .launch-arrow{ position:absolute; right:-64px; top:68%; width:58px; height:34px; pointer-events:none; z-index:20; }
+  .launch-arrow .arrow-label{ position:absolute; right:4px; top:-20px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; color:var(--accent); white-space:nowrap; }
+  .launch-arrow .arrow-line{ position:absolute; left:0; top:14px; width:54px; height:3px; background:var(--accent); transform:rotate(-5deg); transform-origin:right center; border-radius:999px; }
+  .launch-arrow .arrow-line::after{ content:''; position:absolute; right:-1px; top:-6px; width:12px; height:12px; border-top:3px solid var(--accent); border-right:3px solid var(--accent); transform:rotate(45deg); }
+  @media(max-width:820px){ .about-story{ gap:30px; } .launch-arrow{ display:none; } }
+  .launch-story h3{ font-family:var(--display); font-size:18px; margin-top:5px; }
+  .launch-story p{ font-size:13px; margin-top:6px; }
   .launch-video{ position:relative; background:#0B1220; display:grid; place-items:center; overflow:hidden; }
   .launch-video video{ width:100%; height:auto; max-height:72vh; object-fit:contain; display:block; background:#0B1220; }
   .launch-video .video-placeholder{ position:absolute; inset:0; display:grid; place-items:center; padding:28px; color:#AEBBD0; font-family:var(--mono); font-size:11px; text-align:center; pointer-events:none; }
   .launch-video video:not([src]) + .video-placeholder{ display:grid; }
   .launch-video video[src] + .video-placeholder{ display:none; }
-  .launch-meta{ padding:16px 18px 18px; }
   .launch-label{ font-family:var(--mono); font-size:10px; font-weight:700; color:var(--accent); letter-spacing:.09em; text-transform:uppercase; }
-  .launch-meta h3{ font-family:var(--display); font-size:17px; margin-top:5px; }
-  .launch-meta p{ font-size:12.5px; margin-top:6px; }
   .volume-warning{ margin-top:11px; display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10.5px; font-weight:600; color:#B84A29; background:rgba(var(--accent-2-rgb),.08); border:1px solid rgba(var(--accent-2-rgb),.22); border-radius:7px; padding:7px 9px; }
   @media(max-width:820px){ .about-story{ grid-template-columns:1fr; } .launch-card{ max-width:620px; } }
   .spec-list{ margin-top:26px; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:10px; }
@@ -368,9 +373,10 @@
   .timeline-dot{ position:absolute; top:25px; width:15px; height:15px; border-radius:50%; background:var(--bg); border:3px solid var(--accent); z-index:3; }
   .timeline-item:nth-child(odd) .timeline-dot{ right:-50px; }
   .timeline-item:nth-child(even) .timeline-dot{ left:-50px; }
-  .timeline-logo{ width:100%; height:150px; border-radius:10px; background:var(--card-2); border:1px solid var(--border); display:grid; place-items:center; overflow:hidden; margin-bottom:15px; }
+  .timeline-logo{ width:100%; height:240px; border-radius:10px; background:var(--card-2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:15px; position:relative; }
   .timeline-item:nth-child(odd) .timeline-logo{ margin-left:0; }
-  .timeline-logo img{ width:100%; height:100%; object-fit:contain; padding:16px 22px; background:#fff; }
+  .timeline-logo img{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:88%; height:82%; max-width:88%; max-height:82%; object-fit:contain; object-position:50% 50%; padding:0; background:#fff; }
+  .timeline-item:first-child .timeline-logo img{ position:absolute; inset:0; transform:none; width:100%; height:100%; max-width:none; max-height:none; object-fit:cover; object-position:center center; padding:0; }
   .timeline-logo span{ font:700 14px/1.3 var(--mono); color:var(--ink-faint); text-align:center; letter-spacing:.06em; }
   .timeline-top{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:5px; }
   .timeline-item:nth-child(odd) .timeline-top{ justify-content:flex-end; }
@@ -400,10 +406,13 @@
   .proj-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:8px; }
   .proj-card{
     background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow);
-    transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow); position:relative; cursor:pointer;
+    transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease, filter .22s ease;
   }
   .proj-card:hover{ transform:translateY(-5px); border-color:var(--accent); box-shadow:0 18px 36px rgba(21,34,56,0.12); }
+  .proj-card::after{ content:'Read more →'; position:absolute; inset:0; display:grid; place-items:center; background:rgba(21,34,56,.72); color:#fff; font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; opacity:0; transition:opacity .22s ease; pointer-events:none; }
+  .proj-card:hover::after, .proj-card:focus-visible::after{ opacity:1; }
+  .proj-card:focus-visible{ outline:3px solid rgba(var(--accent-rgb),.28); outline-offset:3px; }
   .proj-thumb{
     width:100%; aspect-ratio:16/10; flex-shrink:0; background:var(--card-2); overflow:hidden;
     border-bottom:1px solid var(--border); position:relative;
@@ -514,14 +523,10 @@
 <div class="hero-content">
   <div class="photo-card">[ Photo ]</div>
   <div class="callout callout-photo">
-    <span class="callout-dot"></span><span class="callout-line"></span>
-    <span class="callout-label">Fig. 01 — Portrait</span>
   </div>
   <div class="intro-row">
     <div class="intro">
       <div class="callout callout-name">
-        <span class="callout-dot"></span><span class="callout-line"></span>
-        <span class="callout-label">Designation</span>
       </div>
       <div class="eyebrow">Portfolio</div>
       <h1>Forrest Li</h1>
@@ -530,6 +535,9 @@
       <div class="links-row">
         <a class="pill-link" href="https://linkedin.com/in/[you]" target="_blank">LinkedIn</a>
         <a class="pill-link" href="#" onclick="showTab('resume'); return false;">Resume</a>
+      </div>
+      <div class="meta-row">
+        <div class="avail"><span class="dot"></span> Open to Internships — Summer 2027</div>
       </div>
     </div>
 
@@ -569,10 +577,6 @@
     <button class="toggle-btn" onclick="toggleWelcome()">Show more</button>
   </div>
 
-  <div class="meta-row">
-    <div class="avail"><span class="dot"></span> Open to [Internship / Full-Time] — [Summer 2027]</div>
-  </div>
-
   <div class="tabs">
     <div class="tabs-inner" id="tabsInner">
       <button class="tab active" data-target="about" onclick="showTab('about')">About</button>
@@ -592,6 +596,13 @@
         <p>From a young age, I spent time working at my dad’s phone repair shop, surrounded by devices being opened, diagnosed, repaired, and put back together. Seeing the electronics inside the technology I used every day gave me an early curiosity for how things worked, and the confidence to learn by getting hands-on.</p>
         <p>That curiosity became a real passion during high school, when I founded my school’s rocketry club. It was my first experience taking an engineering idea all the way into the real world: designing, building, testing, failing, iterating, and eventually watching something we built leave the launch rail.</p>
         <p>Since then, I’ve kept chasing that same feeling through mechanical design, robotics, rocketry, and products of my own. I’m most excited by projects where mechanical systems, electronics, and software come together—and where an idea can become a working prototype you can actually hold, test, and improve.</p>
+        <div class="launch-story">
+          <div class="launch-label">The moment it clicked</div>
+          <h3>From an idea to launch.</h3>
+          <p>This is a moment I will never forget: my first successful launch.</p>
+          <div class="volume-warning">🔊 Volume warning — this launch gets loud.</div>
+          <div class="launch-arrow" aria-hidden="true"><span class="arrow-label">WATCH LAUNCH</span><span class="arrow-line"></span></div>
+        </div>
       </div>
 
       <figure class="launch-card reveal">
@@ -600,12 +611,6 @@
           <video src="videos/webster-rocket.mp4" controls playsinline preload="metadata" aria-label="Rocket launch video"></video>
           <div class="video-placeholder">Add your launch video at<br><strong>images/rocket-launch.mp4</strong></div>
         </div>
-        <figcaption class="launch-meta">
-          <div class="launch-label">The moment it clicked</div>
-          <h3>From an idea to launch.</h3>
-          <p>This is a moment I will never forget: my first successful launch.</p>
-          <div class="volume-warning">🔊 Volume warning — this launch gets loud.</div>
-        </figcaption>
       </figure>
     </div>
 
@@ -618,49 +623,49 @@
       <div class="timeline">
         <article class="timeline-item">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/pc-corner.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>PC<br>CORNER</span>'"></div>
+          <div class="timeline-logo"><img src="images/pc_corner.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>PC<br>CORNER</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">Growing up</span><span class="timeline-track engineering">Engineering</span></div>
           <div class="timeline-body"><h4>PC Corner</h4><div class="timeline-role">My dad’s phone repair shop</div><p>My first exposure to hands-on technology. Watching phones and electronics get opened, diagnosed, repaired, and rebuilt sparked my curiosity about how the devices around me actually worked.</p></div>
         </article>
         <article class="timeline-item">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/rit.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>RIT</span>'"></div>
+          <div class="timeline-logo"><img src="images/RIT.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>RIT</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">Jul — Aug 2023</span><span class="timeline-track research">Research / AI</span></div>
           <div class="timeline-body"><h4>Rochester Institute of Technology</h4><div class="timeline-role">Data Collector · Internship</div><p>Operated drones and vision sensors to collect real-world data supporting the development of an AI perception system.</p></div>
         </article>
         <article class="timeline-item">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/thomas-rocketry.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>THOMAS<br>ROCKETRY</span>'"></div>
+          <div class="timeline-logo"><img src="images/thomas_rocketry.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>THOMAS<br>ROCKETRY</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">2023 — 2025</span><span class="timeline-track engineering">Engineering</span></div>
-          <div class="timeline-body"><h4>Thomas Rocketry</h4><div class="timeline-role">Founder · Junior & Senior Year</div><p>Founded my high school rocketry club and got my first real taste of engineering as an iterative process—designing, building, testing, failing, and eventually launching what we built.</p></div>
+          <div class="timeline-body"><h4>Thomas Rocketry</h4><div class="timeline-role">Founder · Junior & Senior Year</div><p>Founded my high school rocketry club and got my first real taste of engineering as an iterative process: designing, building, testing, failing, and eventually launching what we built.</p></div>
         </article>
         <article class="timeline-item">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/lle.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>LLE</span>'"></div>
+          <div class="timeline-logo"><img src="images/lle.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>LLE</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">Jul 2024 — Jan 2025</span><span class="timeline-track research">Research</span></div>
-          <div class="timeline-body"><h4>Laboratory for Laser Energetics</h4><div class="timeline-role">Project Assistant · High School</div><p>Developed a MATLAB program to extract implosion velocity for inertial-confinement-fusion research, connecting computation with a real experimental physics problem.</p></div>
+          <div class="timeline-body"><h4>Laboratory for Laser Energetics</h4><div class="timeline-role">Project Assistant · High School</div><p>Developed a MATLAB program to extract implosion velocity for inertial-confinement-fusion research, connecting computation with a real experimental physics problem.</p><div class="skill-modal-links"><a href="icf-paper.pdf" target="_blank">Read Paper →</a></div></div>
         </article>
         <article class="timeline-item current duke-aero-journey">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/duke-aero.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>DUKE<br>AERO</span>'"></div>
+          <div class="timeline-logo"><img src="images/aero.jpg" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>DUKE<br>AERO</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">Sep 2025 — Present</span><span class="timeline-track engineering">Engineering</span></div>
           <div class="timeline-body">
             <h4>Duke AERO</h4>
             <div class="aero-progression">
               <div class="aero-phase">
                 <span class="aero-phase-dot"></span>
-                <div><div class="timeline-role">Recovery Team Member · Freshman Year</div><div class="aero-phase-date">Sep 2025 — Jun 2026</div><p>Joined the recovery team and began designing, analyzing, machining, and testing flight hardware—including the CO₂-driven blast disk separation system.</p></div>
+                <div><div class="timeline-role">Recovery Team Member · Freshman Year</div><div class="aero-phase-date">Sep 2025 — Jun 2026</div><p>Joined the recovery team and began designing, analyzing, machining, and testing flight hardware; noteably the CO₂-driven blast disk separation system.</p></div>
               </div>
               <div class="aero-phase current-phase">
                 <span class="aero-phase-dot"></span>
-                <div><div class="timeline-role">Recovery Team Lead · Sophomore Year</div><div class="aero-phase-date">Jul 2026 — Present</div><p>Promoted to lead a seven-member recovery subteam responsible for the design, analysis, manufacturing, testing, and integration of rocket recovery systems.</p></div>
+                <div><div class="timeline-role">Recovery Team Lead · Sophomore Year</div><div class="aero-phase-date">Jul 2026 — Present</div><p>Promoted to lead the recovery subteam responsible for the design, analysis, manufacturing, testing, and integration of rocket recovery systems.</p></div>
               </div>
             </div>
           </div>
         </article>
         <article class="timeline-item current">
           <span class="timeline-dot"></span>
-          <div class="timeline-logo"><img src="images/logos/duke-biostat.png" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>DUKE<br>BIOSTAT</span>'"></div>
+          <div class="timeline-logo"><img src="images/biostat.jpg" alt="" onerror="this.remove();this.parentElement.innerHTML='<span>DUKE<br>BIOSTAT</span>'"></div>
           <div class="timeline-top"><span class="timeline-date">Sep 2025 — Present</span><span class="timeline-track research">Research / AI</span></div>
           <div class="timeline-body"><h4>Duke Biostatistics & Bioinformatics</h4><div class="timeline-role">Undergraduate Research Assistant</div><p>Working on computational biology and AI research, including DeepSence-related work, reproducibility of senescent-cell identification, and benchmarking LLM prompting strategies for data-science code generation.</p></div>
         </article>
@@ -673,36 +678,33 @@
     <div class="panel-head reveal"><h2>Featured Projects</h2></div>
     <p class="projects-intro reveal">Selected work across product development, mechanical design, and robotics — from embedded sensing hardware to flight-tested aerospace components and autonomous systems.</p>
     <div class="proj-grid reveal">
-      <div class="proj-card">
-        <div class="proj-thumb"><img src="images/tachyon-device.jpg" alt="Tachyon velocity based training device"></div>
+      <a class="proj-card" href="project-vbt.html" aria-label="Read more about Tachyon — VBT Device">
+        <div class="proj-thumb"><img src="images/vbt_pcbv1.jpeg" alt="Tachyon velocity based training device"></div>
         <div class="proj-info">
           <div class="proj-kicker">01 / Product Development</div>
           <h3>Tachyon — VBT Device</h3>
           <p>A compact velocity-based training device that measures barbell motion and delivers real-time rep feedback through embedded sensing and a companion app.</p>
-          <div class="proj-tags"><span>Embedded Systems</span><span>IMU</span><span>BLE</span><span>Product Design</span></div>
-          <a class="proj-link" href="project-vbt.html">View project →</a>
+          <div class="proj-tags"><span>Embedded Systems</span><span>PCB</span><span>KiCAD</span><span>Product Design</span></div>
         </div>
-      </div>
-      <div class="proj-card">
+      </a>
+      <a class="proj-card" href="project-blast-disk.html" aria-label="Read more about Blast Disk — Duke AERO">
         <div class="proj-thumb"><img src="images/blast-disk-prototype.png" alt="Machined Blast Disk for Duke AERO"></div>
         <div class="proj-info">
           <div class="proj-kicker">02 / Mechanical Design</div>
           <h3>Blast Disk — Duke AERO</h3>
           <p>A rocket separation pressure interface designed, analyzed, machined, and successfully flight tested for Duke AERO's Devil's Advocate at IREC 2026.</p>
           <div class="proj-tags"><span>Onshape CAD</span><span>Ansys FEA</span><span>CNC Machining</span><span>Rocketry</span></div>
-          <a class="proj-link" href="project-blast-disk.html">View project →</a>
         </div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-thumb"><img src="images/lunar-rover.jpg" alt="Autonomous lunar rover project"></div>
+      </a>
+      <a class="proj-card" href="project-lunar-rover.html" aria-label="Read more about Lunar Rover Autonomy">
+        <div class="proj-thumb"><img src="images/rover-gazebo.png" alt="Autonomous lunar rover project"></div>
         <div class="proj-info">
           <div class="proj-kicker">03 / Robotics</div>
           <h3>Lunar Rover Autonomy</h3>
           <p>An autonomous rover platform integrating mechanical design, sensing, ROS-based control, navigation, and simulation for lunar-style terrain.</p>
-          <div class="proj-tags"><span>ROS</span><span>Gazebo</span><span>Autonomy</span><span>Mechatronics</span></div>
-          <a class="proj-link" href="project-lunar-rover.html">View project →</a>
+          <div class="proj-tags"><span>ROS2</span><span>Gazebo</span><span>Autonomy</span><span>Robotics</span></div>
         </div>
-      </div>
+      </a>
     </div>
     <div class="all-projects reveal"><a href="projects.html">View all projects →</a></div>
   </div>
@@ -712,7 +714,7 @@
     <div class="panel-head reveal"><h2>Contact</h2></div>
     <div class="contact-grid">
       <form id="contactForm" class="reveal">
-        <input type="hidden" name="access_key" value="cda98cfc-f5d0-4d2c-b7cd-f77c2de0695a">
+        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
         <input type="hidden" name="subject" value="New portfolio contact message">
         <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
         <div class="field"><label>Name</label><input type="text" name="name" required></div>
@@ -731,14 +733,6 @@
 
   <!-- RESUME -->
   <div class="panel" id="resume">
-    <div class="panel-head reveal"><h2>Resume</h2></div>
-    <p class="reveal">[A short line pointing people to the download — coursework, internships, and project history in full.]</p>
-    <div class="resume-stats reveal">
-      <div><strong data-count="3">0</strong><span>Years Experience</span></div>
-      <div><strong data-count="12">0</strong><span>Projects</span></div>
-      <div><strong data-count="3.8" data-decimal="1">0</strong><span>GPA</span></div>
-      <div><strong data-count="2">0</strong><span>Internships</span></div>
-    </div>
 
     <!-- RESUME-PDF-PLACEHOLDER: put your resume PDF in the same folder as this
          file and change "your-resume.pdf" (both places below) to its filename. -->
@@ -749,7 +743,7 @@
         </div>
       </object>
     </div>
-    <a class="download-btn reveal" href="your-resume.pdf" download>Download PDF ↓</a>
+    <a class="download-btn reveal" href="resume.pdf" download>Download PDF ↓</a>
   </div>
 
 </div>
