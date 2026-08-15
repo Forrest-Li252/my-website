@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Posture Pro — Nitinol-Based Posture Corrector — Forrest Li
+  </title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+  <style>
+   :root{--bg:#F3F6FA;--card:#fff;--border:#DCE4EF;--ink:#152238;--soft:#4E5C71;--faint:#8C9AAD;--accent:#2461E8;--accent-rgb:36,97,232;--orange:#F0663A;--radius:14px;--shadow:0 1px 2px rgba(21,34,56,.05),0 14px 34px rgba(21,34,56,.08);--display:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;overflow-x:hidden}a{color:inherit;text-decoration:none}.grid{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(var(--accent-rgb),.07) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),.07) 1px,transparent 1px);background-size:42px 42px;animation:pan 50s linear infinite;mask-image:radial-gradient(circle at 50% 10%,black,transparent 70%)}@keyframes pan{to{background-position:420px 420px,420px 420px}}.corner{position:fixed;color:var(--accent);opacity:.4;font:11px var(--mono);z-index:2}.tl{top:14px;left:14px}.tr{top:14px;right:14px}.bl{bottom:14px;left:14px}.br{bottom:14px;right:14px}.wrap{max-width:1000px;margin:auto;padding:0 clamp(20px,4vw,40px);position:relative;z-index:1}nav{padding:28px clamp(20px,4vw,40px) 0;position:relative;z-index:2}.nav-row{display:flex;justify-content:space-between;align-items:center}.back,.projects-link{font:600 12.5px var(--mono)}.back{color:var(--soft)}.projects-link{color:var(--accent);padding:8px 13px;border:1px solid rgba(var(--accent-rgb),.3);background:#fff;border-radius:999px}.hero{padding:40px 0 24px}.eyebrow,.label{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}h1{font:700 clamp(30px,5vw,46px)/1.08 var(--display);margin-top:12px;max-width:850px}.summary{font-size:16px;color:var(--soft);max-width:790px;margin-top:14px}.meta{display:flex;flex-wrap:wrap;gap:12px 30px;margin-top:26px}.m{display:flex;flex-direction:column;gap:3px}.m span:first-child{font:10.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--faint)}.m span:last-child{font-size:13.5px;font-weight:600}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.tags span,.chips span{font:600 10.5px var(--mono);color:var(--soft);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px}.section{padding:46px 0;border-top:1px solid var(--border)}.section h2{font:700 23px var(--display);margin:12px 0 14px}.section p{font-size:14.5px;color:var(--soft);max-width:790px}.section p+p{margin-top:12px}.media{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}.frame{background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}.frame img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}.media figcaption{padding:9px 12px;border-top:1px solid var(--border);font:10.5px var(--mono);color:var(--soft);text-align:center}.hero-media{max-width:720px;margin:30px auto 0}.hero-media .frame{aspect-ratio:4/3}.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.photo-grid .frame{aspect-ratio:4/3}.flow{display:flex;align-items:stretch;margin-top:26px}.step{position:relative;flex:1;background:#fff;border:1px solid var(--border);padding:17px 8px;text-align:center;box-shadow:var(--shadow);font:600 10px var(--mono);color:var(--soft)}.step:first-child{border-radius:10px 0 0 10px}.step:last-child{border-radius:0 10px 10px 0}.step+.step{border-left:0}.step:not(:last-child):after{content:'→';position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--bg);color:var(--accent);font:700 15px var(--mono);border:1px solid var(--border)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}.card .num{font:700 10px var(--mono);color:var(--accent);letter-spacing:.08em}.card h3{font:700 16px var(--display);margin:8px 0}.card p{font-size:13px}.callout{max-width:790px;margin:24px auto 0;background:#fff;border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow)}.callout .kicker{font:700 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}.callout h3{font:700 17px var(--display);margin-bottom:8px}.video{max-width:720px;margin:24px auto 0}.video video{display:block;width:100%;max-height:560px;background:#0B1220}.reflect{background:#fff;border:1px dashed rgba(var(--accent-rgb),.35);border-radius:var(--radius);padding:22px 24px;margin-top:20px;box-shadow:var(--shadow)}.ip{border-left:3px solid var(--accent)}footer{text-align:center;padding:34px;font:11px var(--mono);color:var(--faint)}.reveal{opacity:0;transform:translateY(14px);transition:.5s}.reveal.in{opacity:1;transform:none}.lightbox{position:fixed;inset:0;background:rgba(10,18,32,.88);display:none;align-items:center;justify-content:center;padding:32px;z-index:9999;cursor:zoom-out}.lightbox.open{display:flex}.lightbox img{max-width:94vw;max-height:90vh;object-fit:contain;background:#fff;border-radius:12px}
+@media(max-width:700px){.photo-grid,.cards{grid-template-columns:1fr}.flow{flex-direction:column}.step,.step:first-child,.step:last-child{border-radius:0}.step:first-child{border-radius:10px 10px 0 0}.step:last-child{border-radius:0 0 10px 10px}.step+.step{border-left:1px solid var(--border);border-top:0}.step:not(:last-child):after{content:'↓';right:auto;left:50%;top:auto;bottom:-13px;transform:translateX(-50%)}.corner{display:none}}
+  
+  /* animated posture concept v4: device-only, side-by-side V straps (no figure) */
+  .pp2{margin:26px auto 0;max-width:560px}
+  .pp2-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .pp2-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px 14px;box-shadow:var(--shadow);text-align:center}
+  .pp2-panel svg{width:100%;max-width:180px;height:auto;display:block;margin:4px auto 2px}
+  .pp2-panel-label{font:700 10px var(--mono);letter-spacing:.08em;color:var(--soft)}
+  .pp2-status{display:flex;align-items:center;justify-content:center;gap:7px;height:12px}
+  .pp2-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:pp2Dot 5s ease-in-out infinite,pp2Pulse 1.4s ease-in-out infinite}
+  .pp2-status-text{position:relative;display:inline-block;font:700 10px var(--mono);letter-spacing:.08em;height:11px}
+  .pp2-status-text span{position:absolute;left:0;top:0;white-space:nowrap}
+  .pp2-status-text .s1{color:var(--orange);animation:pp2FadeA 5s ease-in-out infinite}
+  .pp2-status-text .s2{color:var(--accent);animation:pp2FadeB 5s ease-in-out infinite}
+  .pp2-arm{transform-origin:90px 158px;animation:pp2ArmScale 5s ease-in-out infinite}
+  .pp2-strap-anim{animation:pp2StrapColor 5s ease-in-out infinite}
+  .pp2-phase{position:relative;text-align:center;height:12px;margin-top:6px}
+  .pp2-phase span{position:absolute;left:0;width:100%;font:700 9px var(--mono);letter-spacing:.05em;color:var(--soft)}
+  .pp2-phase .m{animation:pp2FadeA 5s ease-in-out infinite}
+  .pp2-phase .a{animation:pp2FadeB 5s ease-in-out infinite}
+  .pp2-caption{font:10px var(--mono);color:var(--soft);margin-top:6px}
+  @keyframes pp2FadeA{0%,28%{opacity:1}42%,78%{opacity:0}92%,100%{opacity:1}}
+  @keyframes pp2FadeB{0%,28%{opacity:0}42%,78%{opacity:1}92%,100%{opacity:0}}
+  @keyframes pp2Dot{0%,28%{background:var(--orange)}42%,78%{background:var(--accent)}92%,100%{background:var(--orange)}}
+  @keyframes pp2Pulse{0%,100%{transform:scale(.85)}50%{transform:scale(1.25)}}
+  @keyframes pp2ArmScale{0%,28%{transform:scale(1)}42%,78%{transform:scale(.7)}92%,100%{transform:scale(1)}}
+  @keyframes pp2StrapColor{0%,28%{stroke:var(--ink);filter:none}42%,78%{stroke:var(--orange);filter:drop-shadow(0 0 5px rgba(240,102,58,.6))}92%,100%{stroke:var(--ink);filter:none}}
+  @media(max-width:480px){.pp2-grid{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){.pp2-dot,.pp2-status-text span,.pp2-arm,.pp2-strap-anim,.pp2-phase span{animation:none}.pp2-arm{transform:scale(.7)}.pp2-strap-anim{stroke:var(--orange)}.pp2-phase .a{opacity:1}.pp2-phase .m{opacity:0}.pp2-status-text .s2{opacity:1}.pp2-status-text .s1{opacity:0}}
+
+/* integrated sensing-to-actuation visual */
+.how-card{margin-top:26px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.how-title{font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.how-grid{display:grid;grid-template-columns:.85fr 34px .85fr 34px 1.25fr 34px 1.5fr;align-items:center}
+.how-box{min-height:108px;border:1px solid var(--border);border-radius:11px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;text-align:center}
+.how-box strong{font:700 11px var(--mono);letter-spacing:.04em;color:var(--ink)}
+.how-box span{font-size:11.5px;color:var(--soft);line-height:1.4;margin-top:7px}
+.how-arrow{text-align:center;color:var(--accent);font:700 20px var(--mono)}
+.how-actuator{min-height:108px;border:1px solid rgba(var(--accent-rgb),.25);border-radius:11px;background:#fff;padding:8px 8px 5px;text-align:center}
+.how-actuator svg{display:block;width:100%;max-width:180px;height:88px;margin:auto}
+.how-actuator-label{font:700 10px var(--mono);letter-spacing:.05em;color:var(--soft)}
+.how-v-left,.how-v-right{transform-origin:90px 74px;animation:howPull 5s ease-in-out infinite}
+.how-wire{animation:howWire 5s ease-in-out infinite}
+.how-status{animation:howStatus 5s ease-in-out infinite}
+@keyframes howPull{0%,28%{transform:scale(1)}42%,78%{transform:scale(.72)}92%,100%{transform:scale(1)}}
+@keyframes howWire{0%,28%{stroke:var(--ink);filter:none}42%,78%{stroke:var(--orange);filter:drop-shadow(0 0 4px rgba(240,102,58,.55))}92%,100%{stroke:var(--ink);filter:none}}
+@keyframes howStatus{0%,28%{fill:var(--soft)}42%,78%{fill:var(--orange)}92%,100%{fill:var(--soft)}}
+@media(max-width:760px){.how-grid{grid-template-columns:1fr;gap:8px}.how-arrow{transform:rotate(90deg);height:24px;line-height:24px}.how-box{min-height:82px}.how-actuator{min-height:120px}}
+@media(prefers-reduced-motion:reduce){.how-v-left,.how-v-right,.how-wire,.how-status{animation:none}.how-v-left,.how-v-right{transform:scale(.72)}.how-wire{stroke:var(--orange)}}
+
+</style>
+ </head>
+ <body>
+  <div class="grid">
+  </div>
+  <span class="corner tl">
+   +
+  </span>
+  <span class="corner tr">
+   +
+  </span>
+  <span class="corner bl">
+   +
+  </span>
+  <span class="corner br">
+   +
+  </span>
+  <nav>
+   <div class="nav-row">
+    <a class="back" href="index.html">
+     ← Back to portfolio
+    </a>
+    <a class="projects-link" href="projects.html">
+     See All Projects
+    </a>
+   </div>
+  </nav>
+  <div class="wrap">
+   <section class="hero">
+    <div class="eyebrow">
+     Independent R&amp;D / Wearable Mechatronics
+    </div>
+    <h1>
+     Posture Pro — Nitinol-Based Active Posture Corrector
+    </h1>
+    <p class="summary">
+     A proof-of-concept wearable exploring active posture correction using IMU-based slouch detection and electrically actuated nitinol. Unlike passive posture braces that continuously restrict movement, Posture Pro detects poor posture and selectively tensions two shoulder straps only when correction is needed with a novel nitinol based acturator, creating a compact and silent active-feedback system.
+    </p>
+    <div class="meta">
+     <div class="m">
+      <span>
+       Role
+      </span>
+      <span>
+       Lead Developer
+      </span>
+     </div>
+     <div class="m">
+      <span>
+       Team
+      </span>
+      <span>
+       2-person team
+      </span>
+     </div>
+     <div class="m">
+      <span>
+       Timeline
+      </span>
+      <span>
+       Summer 2026
+      </span>
+     </div>
+     <div class="m">
+      <span>
+       Status
+      </span>
+      <span>
+       Proof of Concept
+      </span>
+     </div>
+    </div>
+    <div class="tags">
+     <span>
+      Wearable Design
+     </span>
+     <span>
+      Smart Materials
+     </span>
+     <span>
+      Embedded Systems
+     </span>
+     <span>
+      KiCAD
+     </span>
+     <span>
+      Control Systems
+     </span>
+    </div>
+    <figure class="media hero-media">
+     <div class="frame">
+      <img alt="Posture Pro wearable proof-of-concept viewed from the back" src="images/posture-back-concept.JPG"/>
+     </div>
+     <figcaption>
+      Posture Pro wearable proof-of-concept featuring a central electronics module and shoulder-mounted tensioning tabs.
+     </figcaption>
+    </figure>
+   </section>
+   <section class="section reveal">
+     <div class="label">01 — The Idea</div>
+     <h2>A posture corrector with an active pull</h2>
+     <p>
+      Typical posture correctors use passive elastic straps that continuously resist forward shoulder movement. Posture Pro instead makes that corrective force active, applying tension only when poor posture is detected. The actuator is built around <strong>nitinol</strong>, a nickel-titanium shape-memory alloy (SMA) that undergoes a solid-state phase transformation when heated, returning toward its trained shape and producing contraction. By electrically heating the wire through Joule heating, this behavior can be used as a compact linear actuator without motors or gears. The sensing-to-actuation workflow is shown below:
+     </p>
+
+     <div class="how-card" aria-label="Posture Pro sensing-to-actuation workflow">
+      <div class="how-title">How it works</div>
+      <div class="how-grid">
+       <div class="how-box"><strong>IMU</strong><span>Detects a slouched orientation</span></div>
+       <div class="how-arrow">→</div>
+       <div class="how-box"><strong>MCU</strong><span>Commands the actuator when correction is needed</span></div>
+       <div class="how-arrow">→</div>
+       <div class="how-box"><strong>NITINOL ACTIVATES</strong><span>Joule heating → phase transformation → contraction</span></div>
+       <div class="how-arrow">→</div>
+       <div class="how-actuator">
+        <svg viewBox="0 0 180 100" role="img" aria-label="Animated shoulder strap contraction">
+         <g class="how-v-left"><line class="how-wire" x1="90" y1="74" x2="34" y2="18" stroke="var(--ink)" stroke-width="8" stroke-linecap="round"/><circle cx="34" cy="18" r="5" fill="var(--ink)"/></g>
+         <g class="how-v-right"><line class="how-wire" x1="90" y1="74" x2="146" y2="18" stroke="var(--ink)" stroke-width="8" stroke-linecap="round"/><circle cx="146" cy="18" r="5" fill="var(--ink)"/></g>
+         <rect x="72" y="68" width="36" height="25" rx="6" fill="#fff" stroke="var(--accent)" stroke-width="2.3"/>
+         <text x="90" y="84" text-anchor="middle" font-family="var(--mono)" font-size="7.5" font-weight="700" fill="var(--accent)">MCU</text>
+         <text class="how-status" x="90" y="10" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="var(--soft)">CORRECTIVE PULL</text>
+        </svg>
+        <div class="how-actuator-label">SHOULDER STRAPS TENSION</div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="section reveal">
+     <div class="label">
+      02 — Engineering the Actuator
+     </div>
+     <h2>Thought Process</h2>
+     <p>
+      Wire diameter was one of the first major design decisions because it directly affects the actuator's pull-force capacity, electrical demand, and thermal response. Fort Wayne Metals recommends an application stress of 100–150 MPa for optimal actuation performance and provides approximate activation currents for each wire diameter. Using that stress range with each wire's cross-sectional area (F = σA) gives a useful first-order estimate of pull force. Thicker wire can support more force, but it requires substantially more current and generally takes longer to cool and reset after a correction. For a battery-powered wearable, the goal was therefore to select the thinnest wire that could still provide useful corrective force.
+     </p>
+
+     <div class="media" style="margin-top:24px;overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+       <thead>
+        <tr style="background:var(--bg);text-align:left">
+         <th style="padding:13px 16px;border-bottom:1px solid var(--border)">Wire diameter</th>
+         <th style="padding:13px 16px;border-bottom:1px solid var(--border)">Activation current</th>
+         <th style="padding:13px 16px;border-bottom:1px solid var(--border)">Estimated pull force (100–150 MPa)</th>
+         <th style="padding:13px 16px;border-bottom:1px solid var(--border)">Cooling / surface area</th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)">0.0079 in</td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)">≈ 0.6 A / wire</td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)">≈ 0.7–1.1 lbf</td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)">Fast cooling; highest surface-area-to-volume ratio</td>
+        </tr>
+        <tr style="background:rgba(var(--accent-rgb),.07)">
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>0.0098 in ≈ 0.010 in</strong></td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>≈ 0.8 A / wire</strong></td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>≈ 1.1–1.7 lbf</strong></td>
+         <td style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>Fast cooling while retaining useful force</strong></td>
+        </tr>
+        <tr>
+         <td style="padding:12px 16px">0.0157 in</td>
+         <td style="padding:12px 16px">≈ 1.7 A / wire</td>
+         <td style="padding:12px 16px">≈ 2.8–4.2 lbf</td>
+         <td style="padding:12px 16px">Slower cooling; lower surface-area-to-volume ratio</td>
+        </tr>
+       </tbody>
+      </table>
+      <figcaption>
+       Approximate activation currents follow the manufacturer's actuator guidance. The 0.010 in class provided the most useful balance between force, electrical demand, and thermal response.
+       <a href="https://fwmetals.com/resources/nitinol-actuator-technical-information" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600">Source: Fort Wayne Metals ↗</a>
+      </figcaption>
+     </div>
+
+     <div class="callout" style="border-left-color:var(--accent)">
+      <div class="kicker" style="color:var(--accent)">Design Decision</div>
+      <h3>Use thin wire, then multiply the available force through routing</h3>
+      <p>
+       I selected approximately <strong>0.010 in nitinol</strong> rather than moving to a thicker, higher-current wire. The actuator uses <strong>eight active 1 ft nitinol wires</strong>, split evenly between the left and right sides of the wearable. On each side, two 1 ft wires run outward in parallel and are connected in series with two additional 1 ft wires running back toward the central electronics. This creates a four-wire out-and-back actuator on each side while allowing pairs of thin nitinol wires to share the mechanical load.
+      </p>
+      <p>
+       The opposite side uses the same arrangement, giving <strong>eight active 1 ft wire sections in total</strong>. In the ideal mechanical case, the parallel wire pairs increase the available force while retaining the faster thermal response of the thinner wire. The actual force delivered to the shoulder straps depends on equal preload, routing geometry, friction, and the mechanical attachment points.
+      </p>
+     </div>
+
+     <figure class="media" style="max-width:860px;margin:24px auto 0">
+      <div class="frame" style="aspect-ratio:1700/728;background:#fff">
+       <img alt="Hand calculation and routing sketch for the eight-wire Posture Pro nitinol actuator" src="images/posture-hand-draw.jpeg"/>
+      </div>
+      <figcaption>
+       Left: Concept diagram showing the actuator routing. Red represents the nitinol wires, blue represents electrical connections, and green indicates how current splits through the system. Right: Preliminary electrical calculations; a more detailed analysis is provided below.
+      </figcaption>
+     </figure>
+
+     <div class="callout">
+      <div class="kicker">First-Order Electrical Model</div>
+      <h3>Routing determines the equivalent resistance — and therefore the supply voltage</h3>
+      <p>
+       Once the wire diameter and routing were chosen, I estimated the electrical requirement from the wire geometry. Starting with the resistivity relation,
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:14px">
+       R = ρL / A
+      </p>
+      <p>
+       Using an estimated nitinol resistivity of <strong>ρ ≈ 8.0 × 10<sup>−7</sup> Ω·m</strong>, a wire length of <strong>L = 1 ft = 0.3048 m</strong>, and a diameter of approximately <strong>d = 0.0098 in = 2.49 × 10<sup>−4</sup> m</strong>, the wire cross-sectional area is:
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:14px">
+       A = πd<sup>2</sup>/4 ≈ 4.87 × 10<sup>−8</sup> m<sup>2</sup>
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:8px">
+       R ≈ (8.0 × 10<sup>−7</sup> Ω·m)(0.3048 m) / (4.87 × 10<sup>−8</sup> m<sup>2</sup>) ≈ <strong>5.0 Ω</strong>
+      </p>
+      <p>
+       This first-order estimate was also checked experimentally with a multimeter, which measured approximately <strong> 5.2 Ω</strong> across a 1 ft section. On each side, the two outgoing 1 ft wires are in parallel, and that parallel pair is connected in series with the two parallel return wires:
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:14px">
+       R<sub>side</sub> ≈ (5 Ω ∥ 5 Ω) + (5 Ω ∥ 5 Ω) = 2.5 Ω + 2.5 Ω = 5 Ω
+      </p>
+      <p>
+       The left and right sides use the same four-wire topology. If both sides are driven in parallel from the same source, the complete actuator resistance is:
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:14px">
+       R<sub>eq</sub> ≈ 5 Ω ∥ 5 Ω = 2.5 Ω
+      </p>
+      <p>
+       Because each 0.010 in wire requires approximately <strong>0.8 A</strong> for activation, each two-wire parallel pair requires approximately <strong>1.6 A</strong>. That same 1.6 A flows through both series-connected parallel pairs on a side. With both sides driven simultaneously, the source therefore supplies approximately <strong>3.2 A total</strong>. The corresponding first-order supply estimate is:
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:14px">
+       V = I<sub>total</sub>R<sub>eq</sub> ≈ (3.2 A)(2.5 Ω) ≈ 8 V
+      </p>
+      <p style="font-family:var(--mono);color:var(--ink);margin-top:8px">
+       P = VI ≈ (8 V)(3.2 A) ≈ 25.6 W
+      </p>
+      <p>
+       This gave an initial design target of approximately <strong>8 V, 3.2 A, and 26 W</strong> when both sides are activated simultaneously. The calculation is intentionally first-order; connection resistance, actual wire length, temperature-dependent resistance, and assembly tolerances shift the measured value in the physical actuator.
+      </p>
+     </div>
+
+     <div class="callout" style="border-left-color:var(--accent)">
+      <div class="kicker" style="color:var(--accent)">Expected Mechanical Output</div>
+      <h3>≈ 4.4–6.8 lbf per shoulder and ≈ 0.48–0.60 in of contraction</h3>
+      <p>Each 0.010 in nitinol strand has an estimated force capacity of approximately <strong>1.1–1.7 lbf</strong>. With two strands acting in parallel on each shoulder, the ideal combined pull is approximately <strong>4.4–6.8 lbf per shoulder</strong>. For a 1 ft active wire, roughly <strong>4–5% recoverable strain</strong> corresponds to approximately <strong>0.48–0.60 in of theoretical contraction</strong>.</p>
+      <p>This force estimate depends on the parallel wires being cut and preloaded to essentially the <strong>same tension</strong>. If one strand is even slightly slack, it will not share the load equally, so the theoretical force addition no longer holds (Foreshadowing...).
+     </div>
+    </section>
+    <section class="section reveal">
+    <div class="label">
+     03 — Product Vision
+    </div>
+    <h2>
+     A wearable built around one central module
+    </h2>
+    <p>
+     The prototype used off-the-shelf hardware to validate the idea, but the intended form factor is much simpler: one small enclosure centered on the upper back, with two straps routed over the shoulders like a backpack. The enclosure would contain the IMU, microcontroller, battery, and nitinol drive electronics.
+    </p>
+    <div class="photo-grid">
+     <figure class="media">
+      <div class="frame">
+       <img alt="Side view of Posture Pro wearable concept" src="images/posture-side-concept.JPG"/>
+      </div>
+      <figcaption>
+       Side view showing the shoulder-strap routing and central back module.
+      </figcaption>
+     </figure>
+     <figure class="media">
+      <div class="frame">
+       <img alt="Posture Pro strap and enclosure concept laid flat" src="images/posture-concept.png"/>
+      </div>
+      <figcaption>
+       Proof-of-concept harness: two shoulder loops, a central enclosure, and waist stabilization strap.
+      </figcaption>
+     </figure>
+    </div>
+   </section>
+   <section class="section reveal">
+    <div class="label">
+     04 — Electronics &amp; Actuation
+    </div>
+    <h2>
+     From posture sensing to shape-memory contraction
+    </h2>
+    <p>
+     The first electronics build prioritized accessibility and iteration over size. A microcontroller and IMU provided the sensing and control layer, while the nitinol actuator was powered separately through MOSFET switching. The MOSFET gates were controlled by the MCU, allowing the microcontroller to complete the high-current actuator circuit when poor posture was detected. A TP4056 handled LiPo charging, while an LTC1871 boost converter stepped the battery voltage up to the level required to drive the nitinol wires.
+    <div class="photo-grid">
+     <figure class="media">
+      <div class="frame">
+       <img alt="Posture Pro prototype electronics including microcontroller, battery, power electronics, and IMU" src="images/posture-electronics.png"/>
+      </div>
+      <figcaption>
+       Complete development electronics used to test sensing, switching, and nitinol activation.
+      </figcaption>
+     </figure>
+     <figure class="media">
+      <div class="frame">
+       <img alt="Posture Pro electrical schematic" src="images/posture-schematic.png"/>
+      </div>
+      <figcaption>
+       Prototype schematic showing the microcontroller, IMU, MOSFET-switched nitinol banks, and battery power path.
+      </figcaption>
+     </figure>
+    </div>
+   </section>
+   <section class="section reveal">
+    <div class="label">
+     05 — Testing
+    </div>
+    <h2>
+     First prove that the actuator can pull
+    </h2>
+    <p>
+     Before relying on the wearable geometry, I tested the nitinol actuation independently. The electronics were mounted on the table while the nitinol wires were suspended. When energized, the wires produced a small but visible upward pull.
+    </p>
+    <div class="video media">
+     <video controls loop muted playsinline preload="auto">
+      <source src="videos/posture-pull-test.MOV" type="video/mp4"/>
+      Your browser does not support the test video.
+     </video>
+     <figcaption>
+      Benchtop pull test: Joule heating the suspended nitinol produced observable upward motion.
+     </figcaption>
+    </div>
+    <div class="callout">
+     <div class="kicker">
+      Proof of Principle
+     </div>
+     <h3>
+      The electrical-to-mechanical chain worked.
+     </h3>
+     <p>
+      The test demonstrated that the electronics could activate the nitinol and produce mechanical contraction, with the wire becoming noticeably hot during activation. However, the resulting pull was not straight upward because the individual wires were not preloaded to the same tension; some strands remained partially slack and therefore did not share the load evenly. Achieving consistent preload proved difficult with 0.010 in nitinol wire, particularly when securing the extremely thin strands into screw terminals and copper lugs.
+     </p>
+    </div>
+   </section>
+   <section class="section reveal">
+    <div class="label">
+     06 — What Didn't Work
+    </div>
+    <h2>
+     The real challenge was force transfer
+    </h2>
+    <p>
+     The proof of concept revealed several practical limitations that would need to be solved before the architecture could become a reliable wearable.
+    </p>
+    <div class="cards">
+     <div class="card">
+      <div class="num">
+       01 / PRIMARY LIMITATION
+      </div>
+      <h3>
+       Uneven wire tension
+      </h3>
+      <p>
+       The nitinol was only about 0.01 in in diameter, making repeatable cutting, termination, and assembly difficult. Small length differences created unequal preload between parallel wires, so they did not share force evenly and contraction was transferred inefficiently to the straps.
+      </p>
+     </div>
+     <div class="card">
+      <div class="num">
+       02 / ELECTRICAL
+      </div>
+      <h3>
+       Wire-to-wire contact
+      </h3>
+      <p>
+       The extremely thin wires were difficult to keep separated. When sections touched, unintended electrical paths could form, so the full intended wire length did not heat consistently. A future design needs reliable electrical and physical isolation between actuator paths.
+      </p>
+     </div>
+     <div class="card">
+      <div class="num">
+       03 / PACKAGING
+      </div>
+      <h3>
+       Oversized electronics
+      </h3>
+      <p>
+       The development-board stack was useful for proving the architecture but far too large for a practical wearable. The sensing, MCU, switching, charging, and power circuitry ultimately need to be consolidated into a compact custom PCB.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section class="section reveal">
+    <div class="label">
+     07 — Next Iteration
+    </div>
+    <h2>
+     From proof of concept toward a product
+    </h2>
+    <div class="cards">
+     <div class="card">
+      <div class="num">
+       MECHANICAL
+      </div>
+      <h3>
+       Controlled preload
+      </h3>
+      <p>
+       Use a fixture or adjustable termination system to establish repeatable nitinol lengths and pretension before the actuator is integrated into the straps.
+      </p>
+     </div>
+     <div class="card">
+      <div class="num">
+       ELECTRICAL
+      </div>
+      <h3>
+       Isolated actuator paths
+      </h3>
+      <p>
+       Physically separate or individually insulate the nitinol conductors so the designed current path remains consistent during heating and contraction.
+      </p>
+     </div>
+     <div class="card">
+      <div class="num">
+       HARDWARE
+      </div>
+      <h3>
+       Integrated electronics
+      </h3>
+      <p>
+       Replace the development boards with a compact PCB combining the MCU, IMU, power switching, battery management, and connectors inside the central back module.
+      </p>
+     </div>
+    </div>
+    <div class="callout ip">
+     <div class="kicker">
+      IP Direction
+     </div>
+     <h3>
+      Evaluate the concept for patent protection
+     </h3>
+     <p>
+      The posture-correction problem itself is well established; the potential novelty is in the solution: combining posture sensing with compact nitinol actuation to actively tension a wearable harness. A future development step is a formal prior-art search to determine whether this specific implementation contains protectable claims. Patentability has not yet been established.
+     </p>
+    </div>
+   </section>
+   <section class="section reveal">
+    <div class="label">
+     08 — Reflection
+    </div>
+    <h2>
+     Final Thoughts
+    </h2>
+    <div class="reflect">
+     <p>
+      This project was a valuable introduction to working with smart materials and showed me how much more intricate a nitinol-based system can be than it first appears. At this scale, small differences in wire length, preload, termination, and routing had a noticeable effect on the actuator’s behavior. It reinforced that when working with extremely thin wires and small displacements, precision in fabrication and assembly matters just as much as the underlying design.
+     </p>
+    </div>
+   </section>
+  </div>
+  <div class="lightbox" id="lb">
+   <img alt="" id="lbi"/>
+  </div>
+  <footer>
+   © 2026 Forrest Li
+  </footer>
+  <script>
+   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08});document.querySelectorAll('.reveal').forEach(e=>obs.observe(e));const lb=document.getElementById('lb'),lbi=document.getElementById('lbi');document.querySelectorAll('.frame img').forEach(img=>img.onclick=()=>{lbi.src=img.src;lbi.alt=img.alt;lb.classList.add('open')});lb.onclick=()=>lb.classList.remove('open');document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
+  </script>
+ </body>
+</html>
