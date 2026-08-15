@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blast Disk — Duke Aero — Forrest Li</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F6FA; --bg-2:#E8EEF5; --card:#FFFFFF; --card-2:#F3F6FA;
+    --border:#DCE4EF; --ink:#152238; --ink-soft:#4E5C71; --ink-faint:#8C9AAD;
+    --accent:#2461E8; --accent-rgb:36,97,232; --accent-soft:rgba(36,97,232,0.10);
+    --accent-2:#F0663A; --accent-2-rgb:240,102,58;
+    --radius:14px; --maxw:1000px;
+    --shadow:0 1px 2px rgba(21,34,56,0.05), 0 14px 34px rgba(21,34,56,0.08);
+    --display:'Space Grotesk', sans-serif; --body:'Inter', -apple-system, sans-serif; --mono:'IBM Plex Mono', monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.6; -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden; }
+  a{color:inherit; text-decoration:none;}
+  .inline-link{ color:var(--accent); font-weight:600; border-bottom:1px solid rgba(var(--accent-rgb),0.35); }
+  .inline-link:hover{ border-color:var(--accent); }
+  /* ---------- AMBIENT BACKGROUND (same as main site) ---------- */
+  .blueprint-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(var(--accent-rgb),0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-rgb),0.07) 1px, transparent 1px);
+    background-size:42px 42px; animation:gridPan 50s linear infinite;
+    -webkit-mask-image: radial-gradient(circle at 50% 10%, black, transparent 70%);
+    mask-image: radial-gradient(circle at 50% 10%, black, transparent 70%);
+  }
+  @keyframes gridPan{ from{background-position:0 0,0 0;} to{background-position:420px 420px,420px 420px;} }
+  .corner-mark{ position:fixed; color:var(--accent); opacity:.4; z-index:1; font-family:var(--mono); font-size:11px; }
+  .corner-mark.tl{ top:14px; left:14px; } .corner-mark.tr{ top:14px; right:14px; }
+  .corner-mark.bl{ bottom:14px; left:14px; } .corner-mark.br{ bottom:14px; right:14px; }
+  @media (max-width:700px){ .corner-mark{ display:none; } }
+  /* ---------- SIDE ROCKETS ---------- */
+  .rocket-wrap{
+    position:fixed; z-index:1; pointer-events:none; width:52px;
+  }
+  .rocket-wrap svg{ display:block; width:100%; height:auto; overflow:visible; }
+  .rocket-wrap.launch{ left:clamp(10px,3vw,40px); animation:launchUp 9s linear infinite; }
+  .rocket-wrap.fall{ right:clamp(10px,3vw,40px); animation:fallDown 11s linear infinite; animation-delay:-3s; }
+  @keyframes launchUp{
+    0%{ top:108vh; opacity:0; transform:translateX(0) rotate(0deg); }
+    6%{ opacity:1; }
+    50%{ transform:translateX(6px) rotate(1.5deg); }
+    94%{ opacity:1; }
+    100%{ top:-24vh; opacity:0; transform:translateX(-4px) rotate(-1deg); }
+  }
+  @keyframes fallDown{
+    0%{ top:-24vh; opacity:0; transform:translateX(0) rotate(0deg); }
+    6%{ opacity:1; }
+    30%{ transform:translateX(-10px) rotate(-4deg); }
+    50%{ transform:translateX(8px) rotate(4deg); }
+    70%{ transform:translateX(-8px) rotate(-3deg); }
+    94%{ opacity:1; }
+    100%{ top:108vh; opacity:0; transform:translateX(6px) rotate(3deg); }
+  }
+  .rocket-flame{ transform-origin:20px 78px; animation:flameFlicker .35s ease-in-out infinite alternate; }
+  @keyframes flameFlicker{ from{ transform:scaleY(1) scaleX(1); opacity:.95; } to{ transform:scaleY(1.22) scaleX(.88); opacity:1; } }
+  .chute-canopy{ transform-origin:26px 18px; animation:chuteSway 1.8s ease-in-out infinite alternate; }
+  @keyframes chuteSway{ from{ transform:rotate(-3deg); } to{ transform:rotate(3deg); } }
+  @media (max-width:900px){ .rocket-wrap{ display:none; } }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,4vw,40px); position:relative; z-index:1; }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  /* ---------- NAV ---------- */
+  nav{ padding:28px clamp(20px,4vw,40px) 0; position:relative; z-index:2; }
+  .back-link{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12.5px;
+    font-weight:600; color:var(--ink-soft); letter-spacing:.03em; transition:color .15s, transform .15s;
+  }
+  .back-link:hover{ color:var(--accent); transform:translateX(-2px); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .projects-link{ display:inline-flex; align-items:center; font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--accent); letter-spacing:.03em; padding:8px 13px; border:1px solid rgba(var(--accent-rgb),0.3); background:var(--card); border-radius:999px; box-shadow:0 1px 2px rgba(21,34,56,0.05); transition:all .15s; }
+  .projects-link:hover{ border-color:var(--accent); transform:translateY(-1px); box-shadow:var(--shadow); }
+  @media (max-width:520px){ .projects-link{ font-size:11.5px; padding:7px 10px; } }
+  /* ---------- HERO ---------- */
+  .proj-hero{ padding:40px 0 8px; animation:rise .6s ease both; }
+  .proj-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:600; margin-bottom:12px;
+  }
+  .proj-hero h1{ font-family:var(--display); font-size:clamp(30px,5vw,46px); font-weight:700; letter-spacing:-0.01em; }
+  .proj-summary{ font-size:16px; color:var(--ink-soft); margin-top:12px; max-width:640px; }
+  .proj-meta{ display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:26px; }
+  .proj-meta .m{ display:flex; flex-direction:column; gap:3px; }
+  .proj-meta .m span:first-child{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint); }
+  .proj-meta .m span:last-child{ font-size:13.5px; font-weight:600; }
+  .proj-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .proj-tags span{
+    font-family:var(--mono); font-size:11px; font-weight:600; color:var(--ink-soft);
+    background:var(--card-2); border:1px solid var(--border); border-radius:6px; padding:5px 11px;
+  }
+  .hero-photo-grid{
+    margin-top:30px; display:grid; grid-template-columns:1fr 1fr; gap:20px;
+  }
+  @media (max-width:680px){ .hero-photo-grid{ grid-template-columns:1fr; } }
+  .hero-photo{
+    border-radius:var(--radius); background:var(--card-2);
+    border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .hero-photo-frame{
+    min-height:220px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12px; color:var(--ink-faint); text-align:center; padding:14px;
+  }
+  .hero-photo img{ width:100%; height:auto; display:block; }
+  .hero-photo:not(.has-img) img{ display:none; }
+  .hero-photo.has-img .hero-photo-frame span{ display:none; }
+  .hero-photo figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:10px 14px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* ---------- SECTIONS ---------- */
+  .proj-section{ padding:46px 0; border-top:1px solid var(--border); }
+  .proj-section:first-of-type{ border-top:none; }
+  .section-label{
+    font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:14px;
+  }
+  .proj-section h2{ font-family:var(--display); font-size:23px; font-weight:700; margin-bottom:14px; }
+  .proj-section p{ font-size:14.5px; color:var(--ink-soft); max-width:680px; }
+  .proj-section p + p{ margin-top:12px; }
+  /* brief: spec rows */
+  .spec-list{ margin-top:22px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:10px; }
+  .spec-row{
+    display:flex; justify-content:space-between; align-items:center; font-size:13.5px;
+    padding:13px 16px; background:var(--card); border:1px solid var(--border); border-radius:8px;
+  }
+  .spec-row .name{ color:var(--ink-faint); font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  .spec-row .val{ font-weight:600; }
+  /* approach: problem -> solution cards */
+  .challenge-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; margin-top:24px; }
+  @media (max-width:680px){ .challenge-grid{ grid-template-columns:1fr; } }
+  .challenge-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column;
+    position:relative; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .challenge-card:hover{ transform:translateY(-3px); box-shadow:0 4px 10px rgba(21,34,56,0.08), 0 20px 40px rgba(21,34,56,0.14); }
+  .chal-overlay{
+    position:absolute; inset:0; z-index:3; display:flex; align-items:center; justify-content:center;
+    background:rgba(21,34,56,0.8); opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .challenge-card:hover .chal-overlay{ opacity:1; }
+  .chal-overlay span{
+    font-family:var(--mono); font-size:13.5px; font-weight:600; color:#fff; letter-spacing:.04em;
+    display:inline-flex; align-items:center; gap:6px; transform:translateY(4px); transition:transform .2s ease;
+  }
+  .challenge-card:hover .chal-overlay span{ transform:translateY(0); }
+  .chal-thumb{
+    aspect-ratio:5/4; background:var(--card-2); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+    font-family:var(--mono); font-size:11px; color:var(--ink-faint); text-align:center; padding:10px;
+  }
+  .chal-thumb.has-img{ background:#fff; }
+  .chal-thumb img{ width:100%; height:100%; object-fit:contain; display:none; }
+  .chal-thumb.has-img img{ display:block; }
+  .chal-thumb.has-img span{ display:none; }
+  .chal-num-badge{
+    position:absolute; top:10px; left:10px; font-family:var(--mono); font-size:10.5px; font-weight:600;
+    color:var(--accent); background:var(--card); border:1px solid var(--border); border-radius:5px;
+    padding:2px 7px; z-index:1;
+  }
+  .chal-thumb-caption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:7px 12px; border-bottom:1px solid var(--border); background:var(--card-2);
+  }
+  .chal-body{ padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .chal-line{ font-size:13.5px; line-height:1.45; }
+  .chal-line .tag{
+    font-family:var(--mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+    margin-right:6px; padding:1.5px 0;
+  }
+  .chal-line.problem .tag{ color:var(--ink-faint); }
+  .chal-line.solution .tag{ color:var(--accent-2); }
+  .chal-line.solution{ font-weight:600; }
+
+  /* challenge detail modal */
+  .chal-modal-overlay{
+    display:none; position:fixed; inset:0; z-index:100; background:rgba(21,34,56,0.45);
+    backdrop-filter:blur(2px); align-items:center; justify-content:center; padding:24px;
+  }
+  .chal-modal-overlay.open{ display:flex; animation:fadeIn .18s ease both; }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .chal-modal{
+    position:relative; background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); max-width:760px; width:100%; max-height:88vh; overflow-y:auto;
+    animation:rise .25s ease both;
+  }
+  .chal-modal-photos{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+  .chal-modal-photo{
+    aspect-ratio:5/4; background:var(--card-2);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12px;
+    color:var(--ink-faint); text-align:center; overflow:hidden; padding:10px;
+  }
+  .chal-modal-photo.has-img{ background:#fff; }
+  .chal-modal-photo img{ width:100%; height:100%; object-fit:contain; display:none; }
+  .chal-modal-photo.has-img img{ display:block; }
+  .chal-modal-photo.has-img span{ display:none; }
+  @media (max-width:560px){ .chal-modal-photos{ grid-template-columns:1fr !important; } }
+  .chal-modal-photo-wrap{ display:flex; flex-direction:column; }
+  .chal-modal-photo-wrap figcaption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:7px 10px; background:var(--card); border-bottom:1px solid var(--border);
+  }
+  .chal-modal-body{ padding:26px 30px 30px; }
+  .chal-modal-close{
+    position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
+    border:1px solid var(--border); background:var(--card); color:var(--ink-soft);
+    font-size:17px; line-height:1; cursor:pointer; transition:all .15s; z-index:2;
+  }
+  .chal-modal-close:hover{ border-color:var(--accent); color:var(--accent); }
+  .chal-modal-label{
+    font-family:var(--mono); font-size:10.5px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--ink-faint); margin-bottom:6px;
+  }
+  .chal-modal-body h3{ font-family:var(--display); font-size:19px; font-weight:700; margin-bottom:16px; }
+  .chal-modal-block{ margin-bottom:18px; }
+  .chal-modal-block:last-child{ margin-bottom:0; }
+  .chal-modal-block .chal-modal-label.solution{ color:var(--accent-2); }
+  .chal-modal-block p{ font-size:14px; color:var(--ink-soft); }
+
+  /* build: photo grid */
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-top:22px; }
+  .photo-item{
+    border-radius:10px; background:var(--card-2); border:1px solid var(--border);
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .photo-item-frame{
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;
+    color:var(--ink-faint); text-align:center; padding:10px; overflow:hidden;
+  }
+  .photo-item img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .photo-item.has-img img{ display:block; }
+  .photo-item.has-img .photo-item-frame span{ display:none; }
+  .photo-item figcaption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:8px 10px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* build: side-by-side autoplay videos */
+  .video-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px; }
+  @media (max-width:680px){ .video-grid{ grid-template-columns:1fr; } }
+  .video-item{
+    border-radius:10px; background:var(--card-2); border:1px solid var(--border);
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .video-item-frame{
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px;
+    color:var(--ink-faint); text-align:center; padding:10px; overflow:hidden; background:#0B1220; position:relative;
+  }
+  .video-item video{ width:100%; height:100%; object-fit:cover; display:none; }
+  .video-item.has-vid video{ display:block; }
+  .video-item.has-vid .video-item-frame span{ display:none; }
+  .video-item figcaption{
+    font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); text-align:center;
+    padding:8px 10px; border-top:1px solid var(--border); background:var(--card);
+  }
+  /* testing: single autoplay video */
+  .video-single{ margin:22px auto 0; max-width:520px; }
+  /* testing: result stats */
+  .stat-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-top:22px; }
+  .stat-card{
+    background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .stat-card .num{ font-family:var(--display); font-size:26px; font-weight:700; color:var(--accent); }
+  .stat-card .label{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.05em; margin-top:4px; }
+  /* reflection */
+  .reflect-card{
+    background:var(--card); border:1px dashed rgba(var(--accent-rgb),0.35); border-radius:var(--radius);
+    padding:22px 24px; margin-top:20px; box-shadow:var(--shadow);
+  }
+  /* resources */
+  .res-links{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .res-links a{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; padding:9px 16px; border-radius:999px;
+    border:1px solid var(--border); background:var(--card); color:var(--accent); transition:all .18s;
+  }
+  .res-links a:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  footer{ text-align:center; padding:34px 24px; font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.04em; position:relative; z-index:1; }
+</style>
+</head>
+<body>
+<div class="blueprint-grid"></div>
+<span class="corner-mark tl">+</span><span class="corner-mark tr">+</span>
+<span class="corner-mark bl">+</span><span class="corner-mark br">+</span>
+<!-- Rocket launching upward, left margin -->
+<div class="rocket-wrap launch">
+  <svg viewBox="0 0 52 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- flame -->
+    <g class="rocket-flame">
+      <path d="M20 76 C16 84 14 92 15 99 C18 94 20 92 20 92 C20 92 22 94 25 99 C26 92 24 84 20 76 Z" fill="#F0663A"/>
+      <path d="M20 78 C18 84 17 90 18 96 C19.5 92 20 90 20 90 C20 90 20.5 92 22 96 C23 90 22 84 20 78 Z" fill="#FBBF8A"/>
+    </g>
+    <!-- fins -->
+    <path d="M13 58 L2 74 L13 70 Z" fill="#2461E8"/>
+    <path d="M27 58 L38 74 L27 70 Z" fill="#2461E8"/>
+    <!-- body -->
+    <path d="M20 3 C28 14 30 30 30 48 L30 70 L10 70 L10 48 C10 30 12 14 20 3 Z" fill="#FFFFFF" stroke="#152238" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- nose cone accent -->
+    <path d="M20 3 C25 11 27.5 20 28.5 30 L11.5 30 C12.5 20 15 11 20 3 Z" fill="#F0663A" stroke="#152238" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- window -->
+    <circle cx="20" cy="44" r="6.5" fill="#8FD3FF" stroke="#152238" stroke-width="1.6"/>
+    <circle cx="20" cy="44" r="6.5" fill="none" stroke="#FFFFFF" stroke-width="1" opacity=".6"/>
+    <!-- body stripe -->
+    <rect x="10" y="58" width="20" height="4" fill="#2461E8"/>
+  </svg>
+</div>
+<!-- Split model rocket drifting down, parachute holding both halves, right margin -->
+<div class="rocket-wrap fall">
+  <svg viewBox="0 0 52 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- parachute canopy -->
+    <g class="chute-canopy">
+      <path d="M4 24 C4 6 48 6 48 24 C40 18 34 22 26 22 C18 22 12 18 4 24 Z" fill="#2461E8" stroke="#152238" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M12 22 C16 12 36 12 40 22" fill="none" stroke="#152238" stroke-width="1" opacity=".5"/>
+      <path d="M4 24 C10 20 16 23 26 22 C26 20 20 13 13 13.5" fill="#F0663A" opacity=".85"/>
+      <path d="M48 24 C42 20 36 23 26 22 C26 20 32 13 39 13.5" fill="#F0663A" opacity=".85"/>
+    </g>
+    <!-- shroud lines converging to a single confluence point -->
+    <line x1="8" y1="24" x2="26" y2="36" stroke="#152238" stroke-width="1.1"/>
+    <line x1="44" y1="24" x2="26" y2="36" stroke="#152238" stroke-width="1.1"/>
+    <line x1="18" y1="22" x2="26" y2="36" stroke="#152238" stroke-width="1.1"/>
+    <line x1="34" y1="22" x2="26" y2="36" stroke="#152238" stroke-width="1.1"/>
+    <circle cx="26" cy="36" r="1.6" fill="#152238"/>
+    <!-- shock cords: one to the nose half, one to the body half -->
+    <line x1="26" y1="36" x2="14" y2="30" stroke="#152238" stroke-width="1.3"/>
+    <line x1="26" y1="36" x2="29" y2="49" stroke="#152238" stroke-width="1.3"/>
+
+    <!-- nose cone half, tip pointing down, hanging on its own cord -->
+    <path d="M8.5 32 C8.5 37.5 10.5 42.5 14 48 C17.5 42.5 19.5 37.5 19.5 32 Z" fill="#F0663A" stroke="#152238" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M8.5 32 L11 28.5 L13.5 33 L16 28 L19.5 32" fill="none" stroke="#152238" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- body + fin half, hanging on the other cord -->
+    <path d="M20 50 L23 45 L26 51 L29 45 L32 51 L35 45 L38 50 L40 50 L40 82 L20 82 Z" fill="#FFFFFF" stroke="#152238" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M20 60 L12 68 L20 66 Z" fill="#2461E8"/>
+    <path d="M40 60 L48 68 L40 66 Z" fill="#2461E8"/>
+    <circle cx="30" cy="63" r="5" fill="#8FD3FF" stroke="#152238" stroke-width="1.3"/>
+    <rect x="20" y="73" width="20" height="3.5" fill="#2461E8"/>
+  </svg>
+</div>
+<nav>
+  <div class="nav-row">
+    <a class="back-link" href="index.html">← Back to portfolio</a>
+    <a class="projects-link" href="projects.html">See All Projects</a>
+  </div>
+</nav>
+<div class="wrap">
+  <!-- ============ HERO ============ -->
+  <section class="proj-hero">
+    <div class="proj-eyebrow">Project / Rocketry</div>
+    <h1>Blast Disk — Duke Aero</h1>
+    <p class="proj-summary">
+      A rocket separation interface designed, analyzed, and fabricated for Duke AERO's "Devil's Advocate" (IREC 2026).
+      My first machined part, and my first of many future contributions to Duke AERO.
+    </p>
+    <div class="proj-meta">
+      <div class="m"><span>Role</span><span>Mechanical Design Engineer</span></div>
+      <div class="m"><span>Team</span><span>Duke AERO — Recovery</span></div>
+      <div class="m"><span>Timeline</span><span>Fall 2025 – Spring 2026</span></div>
+      <div class="m"><span>Status</span><span>Flight tested — Successful</span></div>
+    </div>
+    <div class="proj-tags">
+      <span>Onshape CAD</span><span>Ansys FEA</span><span>Fusion CAM</span><span>CNC Machining</span><span>Mechanical Testing</span>
+    </div>
+    <div class="hero-photo-grid">
+      <figure class="hero-photo has-img">
+        <div class="hero-photo-frame">
+          <span>[ image ]</span>
+          <img src="images/blast-disk-prototype.png"
+              alt="Blast Disk Top View">
+        </div>
+        <figcaption>Blast Disk Top View </figcaption>
+      </figure>
+      <figure class="hero-photo has-img">
+    <div class="hero-photo-frame">
+        <span>[ image — second hero photo ]</span>
+        <img src="images/blast-disk-bottom.jpg"
+             alt="Blast Disk Bottom View">
+        </div>
+        <figcaption>Blast Disk Bottom View</figcaption>
+    </figure>
+    </div>
+  </section>
+  <!-- ============ THE BRIEF ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">01 — The Brief</div>
+    <h2>The problem</h2>
+    <p>
+      Duke Aero's separation system required a redesigned pressure interface to reliably transmit
+      CO<sub>2</sub>-generated force from the
+      <a
+        href="https://www.tinderrocketry.com/the-raptor-co2-ejection"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-link"
+      >
+        Tinder Rocketry RAPTOR CO<sub>2</sub> Ejection System ↗
+      </a>
+      to the shear pins within a tightly constrained packaging envelope. Key design challenges
+      included uncertainty in the transient CO<sub>2</sub> pressure available during deployment,
+      minimizing friction within the separation mechanism, and maintaining a pressure-tight seal
+      while accommodating cable pass-throughs.
+    </p>
+  </section>
+  <!-- ============ APPROACH ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">02 — Approach</div>
+    <h2>Four Problems, Four Decisions</h2>
+    <!-- Cards are generated by JS from the `challengesData` array near the
+         bottom of this file (search CHALLENGES-DATA) — edit content there. -->
+    <div class="challenge-grid" id="challengeGrid"></div>
+  </section>
+
+  <!-- Challenge detail modal -->
+  <div class="chal-modal-overlay" id="chalModalOverlay" onclick="if(event.target===this) closeChallengeModal()">
+    <div class="chal-modal" role="dialog" aria-modal="true">
+      <button class="chal-modal-close" onclick="closeChallengeModal()" aria-label="Close">×</button>
+      <div class="chal-modal-photos" id="chalModalPhotos"></div>
+      <div class="chal-modal-body">
+        <h3 id="chalModalTitle"></h3>
+        <div class="chal-modal-block">
+          <div class="chal-modal-label">Problem</div>
+          <p id="chalModalProblem"></p>
+        </div>
+        <div class="chal-modal-block">
+          <div class="chal-modal-label solution">Solution</div>
+          <p id="chalModalSolution"></p>
+        </div>
+        <div class="chal-modal-block">
+          <div class="chal-modal-label">Why/how</div>
+          <p id="chalModalWhy"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ============ BUILD / FABRICATION ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">03 — Build</div>
+    <h2>Machining it</h2>
+    <p>
+      Once the design was finalized, I generated the machining toolpaths in Fusion 360 CAM and
+      manufactured the blast disk on a CNC mill. Since this was my first machining project, I
+      learned how to calibrate the machine, set work offsets, and verify the setup before cutting.
+      The circular stock was secured using V-jaws to maintain concentricity while machining the
+      profile and features.
+    </p>
+    <div class="video-grid">
+      <figure class="video-item has-vid">
+        <div class="video-item-frame">
+          <span>[ Fusion toolpath simulation ]</span>
+          <video src="videos/fusion-toolpath.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <figcaption>Fusion toolpath simulation</figcaption>
+      </figure>
+      <figure class="video-item has-vid">
+        <div class="video-item-frame">
+          <span>[ CNC mill cutting the disk ]</span>
+          <video src="videos/blast-disk-mill.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <figcaption>CNC mill cutting the disk</figcaption>
+      </figure>
+    </div>
+  </section>
+  <section class="proj-section reveal">
+    <div class="section-label">04 — Testing &amp; Results</div>
+    <h2>Did it work?</h2>
+
+    <p>
+      Before flight, the complete separation system was validated through three full-scale
+      ground tests. Each test resulted in a successful separation, giving the team confidence
+      that the blast disk, pressure seal, and CO₂ deployment system would perform reliably
+      under launch conditions. The design was subsequently flown at the 2026 International
+      Rocket Engineering Competition (IREC), where a successful seperation event occured (hard to see on video).
+    </p>
+
+    <div class="video-grid">
+      <figure class="video-item has-vid">
+        <div class="video-item-frame">
+          <video src="videos/separation-test.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <figcaption>Ground separation test demonstrating reliable CO₂-actuated deployment.</figcaption>
+      </figure>
+      <figure class="video-item has-vid">
+        <div class="video-item-frame">
+          <video src="videos/blast-launch.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <figcaption>IREC 2026 launch.</figcaption>
+      </figure>
+    </div>
+  </section>
+  <!-- ============ REFLECTION ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">05 — Looking Ahead</div>
+    <h2>Future Steps</h2>
+    <div class="reflect-card">
+      <p>With the blast disk successfully validated in ground testing and at IREC 2026, I'll be serving as Recovery Team Lead for Duke AERO during the 2026–27 season. One of the team's primary goals is developing a two-stage rocket, which will require a redesigned recovery architecture and an updated blast disk to accommodate the new packaging constraints. Building on the lessons learned from this project, I'll be leading the redesign of the separation system to improve manufacturability, reliability, and integration within the new vehicle.</p>
+    </div>
+  </section>
+  <!-- ============ RESOURCES ============ -->
+  <section class="proj-section reveal">
+    <div class="section-label">06 — Resources</div>
+    <h2>Dig deeper</h2>
+    <div class="res-links">
+      <a href="https://docs.google.com/presentation/d/177TMPkwaQiTOOME4GEtkVjRIZY8IhNcfiAlUGxIR7zY/edit?usp=sharing">IREC Recovery Podium Presentation →</a>
+      <a href="https://dukerocketry.com/">Duke Aero →</a>
+    </div>
+  </section>
+</div>
+<footer>© [Year] [Your Name]</footer>
+<script>
+  // ---- CHALLENGES-DATA ----
+  // Edit this array to change what shows up in the "Four problems, four
+  // decisions" grid. Each entry:
+  //   num:      badge shown on the thumbnail, e.g. "01"
+  //   photos:   array of image paths/URLs for the popup — use 1, 2, or 3 entries,
+  //             the popup lays them out side by side automatically. Leave an
+  //             entry as "" to show a placeholder for that slot.
+  //   photoCaptions: array of caption strings, same length/order as photos.
+  //             photoCaptions[0] is also used under the card-face thumbnail.
+  //   problem:  ONE short sentence for the card face
+  //   solution: ONE short sentence for the card face
+  //   problemFull / solutionFull / why: longer text shown in the "Read more" popup
+  const challengesData = [
+    {
+      num: '04',
+      photos: ['images/blast-decision-matrix.png'],
+      photoCaptions: ['Material trade study for the blast disk sliding interface'],
+
+      problem: 'The disk needed to slide reliably within the body tube.',
+
+      solution: 'Selected HDPE for the sliding interface.',
+
+      problemFull: 'Friction within the separation mechanism reduced the already-uncertain CO₂ deployment force, increasing the risk of an incomplete separation.',
+
+      solutionFull: 'Compared aluminum, Delrin (POM), and HDPE before selecting HDPE for the final design.',
+
+      why: 'A material trade study evaluated aluminum, Delrin, and HDPE. HDPE offered the lowest sliding friction and lowest density while still providing more than enough compressive strength to withstand the expected axial loads, even under worst-case conditions. It also simplified machining compared to aluminum, reducing manufacturing effort while improving deployment reliability (see Section 03).'
+    },
+    {
+      num: '03',
+      photos: ['images/blast-disk-fea.png'],
+      photoCaptions: ['Parametric Ansys FEA across the estimated pressure range'],
+
+      problem: 'The CO₂ pressure during deployment was uncertain.',
+
+      solution: 'Designed using parametric FEA over the full pressure range.',
+
+      problemFull: 'The transient pressure generated by the RAPTOR CO₂ system was difficult to predict, requiring the blast disk to remain structurally sound across a wide range of possible loading conditions.',
+
+      solutionFull: 'Performed a parametric Ansys FEA study across the estimated 21–180 psi pressure range and designed for the worst-case loading condition with a factor of safety of 2.',
+
+      why: 'Rather than validating the design at a single pressure, the parametric FEA model allowed rapid iteration of disk thickness and local geometry across the entire expected operating range. The analysis showed that the region surrounding the VGA connector required additional reinforcement, while the outer portions of the disk could be reduced in thickness to save weight without compromising structural integrity.'
+    },
+    {
+      num: '02',
+      photos: ['images/blast-disk-cad.png'],
+      photoCaptions: ['CAD section showing the sealed cable pass-throughs'],
+
+      problem: 'The assembly needed a pressure-tight seal while routing cables and the shock cord.',
+
+      solution: 'Integrated a cable gland and sealed VGA connector.',
+
+      problemFull: 'The blast disk had to maintain an airtight CO₂ chamber while simultaneously routing the shock cord and avionics wiring through the interface. The previous design routed wires through an open slot, creating a significant leakage path.',
+
+      solutionFull: 'Integrated a cable gland for the shock cord and a sealed VGA connector for the electronics.',
+
+      why: 'After researching commercial sealing solutions, I selected a cable gland to seal the shock cord pass-through and a VGA connector to carry the avionics wiring through the bulkhead. Together, these COTS components eliminated the leakage path present in the previous design while maintaining a fully pressure-tight separation interface.'
+    },
+    {
+      num: '01',
+      photos: ['images/blast-disk-old.png', 'images/blast_assembly.png'],
+      photoCaptions: [
+        'Blast Disk Within 2024–25 Rocket Assembly',
+        'Blast Disk Within 2025–26 Rocket Assembly'
+      ],
+
+      problem: 'The previous two-piece blast disk exceeded the available packaging envelope.',
+
+      solution: 'Redesigned the interface into a single-piece blast disk.',
+
+      problemFull: 'The previous blast disk assembly consisted of two separate components, occupying more axial space than the updated recovery system could accommodate. The reduced packaging envelope required a more compact design without sacrificing structural integrity or separation performance.',
+
+      solutionFull: 'Redesigned the assembly into a single-piece blast disk by modifying the avionics aft bulkhead to use an eye bolt instead of a U-bolt, eliminating an entire interface while maintaining the required load path.',
+
+      why: 'Replacing the U-bolt with an eye bolt allowed the blast disk to become a single integrated component, reducing axial length and overall part count. The more compact design also reduced the volume of the pressurized CO₂ chamber, allowing pressure to build more quickly during deployment and improving the reliability of the separation event.'
+    }
+  ];
+
+  function renderChallenges(){
+    const grid = document.getElementById('challengeGrid');
+    if(!grid) return;
+    // Cards display in reverse order (04 → 01) — each card keeps its own
+    // `num` label from the data below, only the display order is flipped.
+    [...challengesData].reverse().forEach((c) => {
+      const thumbPhoto = (c.photos && c.photos[0]) ? c.photos[0] : '';
+      const thumbCaption = (c.photoCaptions && c.photoCaptions[0]) ? c.photoCaptions[0] : '[ Caption ]';
+      const card = document.createElement('div');
+      card.className = 'challenge-card';
+      card.innerHTML = `
+        <div class="chal-thumb${thumbPhoto ? ' has-img' : ''}">
+          <span>[ image — e.g. FEA stress plot ]</span>
+          ${thumbPhoto ? `<img src="${thumbPhoto}" alt="${c.solution}">` : ''}
+          <span class="chal-num-badge">${c.num}</span>
+        </div>
+        <figcaption class="chal-thumb-caption">${thumbCaption}</figcaption>
+        <div class="chal-body">
+          <div class="chal-line problem"><span class="tag">Problem</span>${c.problem}</div>
+          <div class="chal-line solution"><span class="tag">Solution</span>${c.solution}</div>
+        </div>
+        <div class="chal-overlay"><span>Read more →</span></div>`;
+      card.addEventListener('click', () => openChallengeModal(c));
+      grid.appendChild(card);
+    });
+  }
+
+  function setModalPhoto(el, src, alt){
+    if(src){
+      el.innerHTML = `<img src="${src}" alt="${alt}">`;
+      el.classList.add('has-img');
+    } else {
+      el.innerHTML = '<span>[ image ]</span>';
+      el.classList.remove('has-img');
+    }
+  }
+
+  function openChallengeModal(c){
+    document.getElementById('chalModalTitle').textContent = `Problem ${c.num}`;
+    document.getElementById('chalModalProblem').textContent = c.problemFull;
+    document.getElementById('chalModalSolution').textContent = c.solutionFull;
+    document.getElementById('chalModalWhy').textContent = c.why;
+
+    // photos.length controls how many image slots this popup shows (1, 2, 3...)
+    const photos = (c.photos && c.photos.length) ? c.photos : [''];
+    const captions = (c.photoCaptions && c.photoCaptions.length) ? c.photoCaptions : [];
+    const photosEl = document.getElementById('chalModalPhotos');
+    photosEl.style.gridTemplateColumns = `repeat(${photos.length}, 1fr)`;
+    photosEl.innerHTML = '';
+    photos.forEach((src, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'chal-modal-photo-wrap';
+      const slot = document.createElement('div');
+      slot.className = 'chal-modal-photo';
+      setModalPhoto(slot, src, c.solution);
+      const caption = document.createElement('figcaption');
+      caption.textContent = captions[i] || '[ Caption ]';
+      wrap.appendChild(slot);
+      wrap.appendChild(caption);
+      photosEl.appendChild(wrap);
+    });
+
+    document.getElementById('chalModalOverlay').classList.add('open');
+  }
+
+  function closeChallengeModal(){
+    document.getElementById('chalModalOverlay').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeChallengeModal();
+  });
+
+  renderChallenges();
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

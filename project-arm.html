@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Adaptive Motion Stabilization Device — EGR 101 — Forrest Li
+  </title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+   :root{
+  --bg:#F3F6FA;
+  --bg2:#E8EEF5;
+  --card:#fff;
+  --border:#DCE4EF;
+  --ink:#152238;
+  --soft:#4E5C71;
+  --faint:#8C9AAD;
+  --accent:#2461E8;
+  --accent-rgb:36,97,232;
+  --orange:#F0663A;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(21,34,56,.05),0 14px 34px rgba(21,34,56,.08);
+  --display:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+  --mono:'IBM Plex Mono',monospace}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0}
+html{
+  scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden}
+.grid{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(rgba(var(--accent-rgb),.07) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),.07) 1px,transparent 1px);
+  background-size:42px 42px;
+  animation:pan 50s linear infinite;
+  mask-image:radial-gradient(circle at 50% 10%,black,transparent 70%)}
+@keyframes pan{
+to{
+  background-position:420px 420px,420px 420px}
+}
+.corner{
+  position:fixed;
+  color:var(--accent);
+  opacity:.4;
+  font:11px var(--mono);
+  z-index:2}
+.tl{
+  top:14px;
+  left:14px}
+.tr{
+  top:14px;
+  right:14px}
+.bl{
+  bottom:14px;
+  left:14px}
+.br{
+  bottom:14px;
+  right:14px}
+.wrap{
+  max-width:1000px;
+  margin:auto;
+  padding:0 clamp(20px,4vw,40px);
+  position:relative;
+  z-index:1}
+nav{
+  padding:28px clamp(20px,4vw,40px) 0;
+  position:relative;
+  z-index:2}
+.back{
+  font:600 12.5px var(--mono);
+  color:var(--soft)}
+.back:hover{
+  color:var(--accent)}
+/* ambient arm mechanism */.arm-motif{
+  position:fixed;
+  width:110px;
+  top:50%;
+  transform:translateY(-50%);
+  opacity:.7;
+  z-index:1;
+  pointer-events:none}
+.arm-motif.left{
+  left:18px}
+.arm-motif.right{
+  right:18px;
+  transform:translateY(-50%) scaleX(-1)}
+.arm-motif svg{
+  width:100%;
+  overflow:visible}
+.joint{
+  transform-origin:55px 132px;
+  animation:flex 4s ease-in-out infinite alternate}
+.arm-motif.right .joint{
+  animation-delay:-2s}
+.pulse{
+  animation:pulse 2s ease-out infinite;
+  transform-origin:center}
+@keyframes flex{
+from{
+  transform:rotate(-13deg)}
+to{
+  transform:rotate(13deg)}
+}
+@keyframes pulse{
+0%{
+  opacity:.8;
+  transform:scale(.6)}
+100%{
+  opacity:0;
+  transform:scale(1.8)}
+}
+@media(max-width:1120px){
+.arm-motif{
+  display:none}
+}
+.hero{
+  padding:40px 0 18px}
+.eyebrow,.label{
+  font:600 11px var(--mono);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent)}
+.hero h1{
+  font:700 clamp(30px,5vw,46px) var(--display);
+  line-height:1.08;
+  margin-top:12px;
+  max-width:820px}
+.summary{
+  font-size:16px;
+  color:var(--soft);
+  max-width:760px;
+  margin-top:14px}
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 30px;
+  margin-top:26px}
+.m{
+  display:flex;
+  flex-direction:column;
+  gap:3px}
+.m span:first-child{
+  font:10.5px var(--mono);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--faint)}
+.m span:last-child{
+  font-size:13.5px;
+  font-weight:600}
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:22px}
+.tags span{
+  font:600 11px var(--mono);
+  color:var(--soft);
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:5px 11px}
+.hero-grid,.photo-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:30px}
+.media{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow)}
+.frame{
+  aspect-ratio:4/3;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--faint);
+  font:11px var(--mono);
+  text-align:center;
+  padding:18px}
+.frame img{
+  width:100%;
+  height:100%;
+  object-fit:contain}
+.media figcaption{
+  padding:9px 12px;
+  border-top:1px solid var(--border);
+  font:10.5px var(--mono);
+  color:var(--soft);
+  text-align:center}
+.section{
+  padding:46px 0;
+  border-top:1px solid var(--border)}
+.section h2{
+  font:700 23px var(--display);
+  margin:12px 0 14px}
+.section p{
+  font-size:14.5px;
+  color:var(--soft);
+  max-width:760px}
+.section p+p{
+  margin-top:12px}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:24px}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  box-shadow:var(--shadow)}
+.card .num{
+  font:700 10px var(--mono);
+  color:var(--accent);
+  letter-spacing:.08em}
+.card h3{
+  font:700 16px var(--display);
+  margin:8px 0}
+.card p{
+  font-size:13px}
+.contrib{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:22px}
+.contrib .card{
+  position:relative}
+.contrib .card:before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:18px;
+  bottom:18px;
+  width:3px;
+  background:var(--accent);
+  border-radius:0 3px 3px 0}
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px}
+.chips span{
+  font:10px var(--mono);
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:5px 9px;
+  color:var(--soft)}
+.reflect{
+  background:var(--card);
+  border:1px dashed rgba(var(--accent-rgb),.35);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  margin-top:20px;
+  box-shadow:var(--shadow)}
+.resources{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px}
+.resources a{
+  font:600 12px var(--mono);
+  color:var(--accent);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:9px 15px}
+.resources a:hover{
+  border-color:var(--accent)}
+footer{
+  text-align:center;
+  padding:34px;
+  font:11px var(--mono);
+  color:var(--faint)}
+.reveal{
+  opacity:0;
+  transform:translateY(14px);
+  transition:.5s}
+.reveal.in{
+  opacity:1;
+  transform:none}
+@media(max-width:700px){
+.hero-grid,.photo-grid,.cards,.contrib{
+  grid-template-columns:1fr}
+.corner{
+  display:none}
+}
+  
+/* Click-to-enlarge image lightbox */
+.frame img{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;background:rgba(10,18,32,.88);display:none;align-items:center;justify-content:center;padding:32px;z-index:9999;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(94vw,1400px);max-height:90vh;object-fit:contain;background:#fff;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+.lightbox-close{position:absolute;top:18px;right:24px;border:0;background:transparent;color:#fff;font:400 38px/1 var(--body);cursor:pointer}
+
+  /* See All Projects navigation */
+  .nav-row{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .projects-link{display:inline-flex;align-items:center;font:600 12.5px var(--mono);color:var(--accent);letter-spacing:.03em;padding:8px 13px;border:1px solid rgba(var(--accent-rgb),.3);background:var(--card,#fff);border-radius:999px;box-shadow:0 1px 2px rgba(21,34,56,.05);transition:all .15s;}
+  .projects-link:hover{border-color:var(--accent);transform:translateY(-1px);}
+  @media(max-width:520px){.projects-link{font-size:11.5px;padding:7px 10px;}}
+</style>
+</head>
+<body>
+<div class="grid">
+</div>
+<span class="corner tl">
+   +
+  </span>
+<span class="corner tr">
+   +
+  </span>
+<span class="corner bl">
+   +
+  </span>
+<span class="corner br">
+   +
+  </span>
+<div aria-hidden="true" class="arm-motif left">
+<svg viewbox="0 0 110 270">
+<rect fill="#fff" height="18" rx="7" stroke="#152238" stroke-width="1.5" width="74" x="18" y="180">
+</rect>
+<rect fill="#fff" height="38" rx="7" stroke="#152238" stroke-width="1.5" width="40" x="35" y="198">
+</rect>
+<g class="joint">
+<line stroke="#152238" stroke-linecap="round" stroke-width="9" x1="55" x2="55" y1="132" y2="185">
+</line>
+<line stroke="#2461E8" stroke-linecap="round" stroke-width="12" x1="55" x2="82" y1="132" y2="72">
+</line>
+<circle cx="55" cy="132" fill="#fff" r="13" stroke="#F0663A" stroke-width="3">
+</circle>
+<circle cx="82" cy="72" fill="#fff" r="9" stroke="#152238" stroke-width="2">
+</circle>
+</g>
+<circle class="pulse" cx="55" cy="132" fill="none" r="18" stroke="#2461E8" stroke-width="2">
+</circle>
+<text fill="#8C9AAD" font-family="IBM Plex Mono" font-size="7" text-anchor="middle" x="55" y="258">
+     ADAPTIVE SUPPORT
+    </text>
+</svg>
+</div>
+<div aria-hidden="true" class="arm-motif right">
+<svg viewbox="0 0 110 270">
+<rect fill="#fff" height="18" rx="7" stroke="#152238" stroke-width="1.5" width="74" x="18" y="180">
+</rect>
+<rect fill="#fff" height="38" rx="7" stroke="#152238" stroke-width="1.5" width="40" x="35" y="198">
+</rect>
+<g class="joint">
+<line stroke="#152238" stroke-linecap="round" stroke-width="9" x1="55" x2="55" y1="132" y2="185">
+</line>
+<line stroke="#2461E8" stroke-linecap="round" stroke-width="12" x1="55" x2="82" y1="132" y2="72">
+</line>
+<circle cx="55" cy="132" fill="#fff" r="13" stroke="#F0663A" stroke-width="3">
+</circle>
+<circle cx="82" cy="72" fill="#fff" r="9" stroke="#152238" stroke-width="2">
+</circle>
+</g>
+<circle class="pulse" cx="55" cy="132" fill="none" r="18" stroke="#F0663A" stroke-width="2">
+</circle>
+</svg>
+</div>
+<nav>
+  <div class="nav-row">
+<a class="back" href="index.html">
+    ← Back to portfolio
+   </a>
+
+    <a class="projects-link" href="projects.html">See All Projects</a>
+  </div>
+</nav>
+<div class="wrap">
+<section class="hero">
+<div class="eyebrow">
+     Project / Medical Technology — EGR 101
+    </div>
+<h1>
+     Adaptive Motion Stabilization Device for Spasticity
+    </h1>
+<p class="summary">
+     A client-centered arm-support device combining mechanical stability with servo–IMU-based motion control, designed with a local occupational therapist to help a first-grade student with dystonia participate more independently in hands-on learning.
+    </p>
+<div class="meta">
+<div class="m">
+<span>
+       Role
+      </span>
+<span>
+       Mechanical Design Lead
+      </span>
+</div>
+<div class="m">
+<span>
+       Course
+      </span>
+<span>
+       EGR 101
+      </span>
+</div>
+<div class="m">
+<span>
+       Timeline
+      </span>
+<span>
+       Fall 2025
+      </span>
+</div>
+<div class="m">
+<span>
+       Outcome
+      </span>
+<span>Working prototype demonstration</span>
+</div>
+</div>
+<div class="tags">
+<span>
+      Client-Centered Design
+     </span>
+<span>
+      CAD
+     </span>
+<span>
+      3D Printing
+     </span>
+<span>
+      Servo Control
+     </span>
+<span>
+      Rapid Prototyping
+     </span>
+</div>
+<div class="hero-grid" style="grid-template-columns:minmax(0,680px);justify-content:center;">
+<figure class="media">
+<div class="frame">
+<img alt="Arm Support Prorotype Moutned on Wheelchair" src="images/arm.jpeg"/>
+</div>
+<figcaption>Arm Support Prorotype Moutned on Wheelchair</figcaption>
+</figure>
+</div>
+</section>
+<section class="section reveal">
+<div class="label">
+     01 — The Brief
+    </div>
+<h2>
+     Designing around a real user
+    </h2>
+<p>
+     Our team worked with a local occupational therapist to develop an arm-support system for a first-grade student with dystonia. The goal was not simply to restrain unwanted motion; the device needed to provide useful stability while preserving the freedom required for classroom activities and hands-on learning.
+    </p>
+<p>
+     That made comfort, adjustability, and controlled motion core engineering requirements alongside the mechanical and electronic performance of the prototype.
+    </p>
+</section>
+<section class="section reveal">
+<div class="label">
+     02 — Design Approach
+    </div>
+<h2>
+     Stability without taking away motion
+    </h2>
+<div class="cards">
+<div class="card">
+<div class="num">
+       01 / SUPPORT
+      </div>
+<h3>
+       Comfortable arm interfaces
+      </h3>
+<p>
+       Elbow and forearm supports were designed with dedicated Velcro and padding slots so the device could stabilize the arm without creating hard contact points.
+      </p>
+</div>
+<div class="card">
+<div class="num">
+       02 / CONTROL
+      </div>
+<h3>
+       Adaptive friction
+      </h3>
+<p>
+       A servo housing supported the adaptive friction mechanism, pairing the mechanical structure with IMU-informed motion control.
+      </p>
+</div>
+<div class="card">
+<div class="num">
+       03 / FIT
+      </div>
+<h3>
+       Adjustable geometry
+      </h3>
+<p>
+      Telescoping elements, Turnbuckles, and adjustable supports helped the device adapt to the student's position and accommodate growth over time.
+      </p>
+</div>
+</div>
+</section>
+<section class="section reveal">
+<div class="label">
+     03 — My Contributions
+    </div>
+<h2>
+     Mechanical design lead
+    </h2>
+<p>
+     I led the rapid prototyping with CAD modeling and 3D-printing effort and designed the forward assembly of the device, while also contributing to electronics integration and the broader mechanical architecture.
+    </p>
+<div class="contrib">
+<div class="card">
+<h3>
+       Forward assembly
+      </h3>
+<p>
+       Designed the servo housing, elbow support, forearm support, extending piece, and the turnbuckle-based elbow-to-forearm adjustment.
+      </p>
+<div class="chips">
+</div>
+</div>
+<div class="card">
+<h3>
+       Motion &amp; adjustability
+      </h3>
+<p>
+       Supported the development of the major moving subsystems, including bearing-based yaw rotation and telescoping mechanisms for positional adjustment.
+      </p>
+<div class="chips">
+      
+</div>
+</div>
+</div>
+<div class="photo-grid">
+<figure class="media">
+<div class="frame">
+<img alt="CAD model of the servo housing and friction mechanism" src="images/arm-servo.png"/>
+</div>
+<figcaption>
+       Servo housing for the adaptive friction mechanism
+      </figcaption>
+</figure>
+<figure class="media">
+<div class="frame">
+<img alt="CAD model of the complete adaptive arm assembly" src="images/arm_cad_assembly.png"/>
+</div>
+<figcaption>
+       Complete CAD assembly of the adaptive arm-support system
+      </figcaption>
+</figure>
+</div>
+</section>
+<section class="section reveal">
+<div class="label">
+     04 — Adaptability
+    </div>
+<h2>
+     Designed to grow with the student
+    </h2>
+<p>A major part of the design philosophy was avoiding a one-size, one-time solution. I focused on making the structure adjustable so it could continue to fit the student as their body size, seating position, and support needs changed.</p>
+<div class="reflect">
+<p>The turnbuckle controls the elbow-to-forearm distance, allowing the forearm length of the device to grow with the student. The forearm-support slider independently adjusts how much of the forearm is supported, while the elbow support maintains a consistent interface at the joint. Together, these systems make the arm-support geometry adaptable rather than fixed to a single body size.</p>
+</div>
+<div class="photo-grid"><figure class="media"><div class="frame"><img alt="CAD model of the adjustable forearm support" src="images/arm-extending-forearm.png"/></div><figcaption>Forearm-support slider adjusts the amount of forearm support</figcaption></figure><figure class="media"><div class="frame"><img alt="CAD model of the turnbuckle adjustment mechanism" src="images/arm-turnbuckle.png"/></div><figcaption>Turnbuckle adjusts elbow-to-forearm distance as the student grows</figcaption></figure></div></section>
+<section class="section reveal">
+<div class="label">05 — Prototype &amp; Demo</div>
+<h2>
+     From CAD to a working demonstration
+    </h2>
+<p>The final prototype brought the mechanical support structure and servo–IMU control concept together into a working demonstration. The video below shows the arm-support system in operation alongside the project poster documenting the client need, design decisions, and prototype development process.</p>
+<div class="hero-grid">
+<figure class="media">
+<div class="frame">
+<img alt="Adaptive Motion Stabilization Device project poster" src="images/Arm-poster.png"/>
+</div>
+<figcaption>
+       Project poster presented at the Pratt Design Expo
+      </figcaption>
+</figure>
+<figure class="media">
+<div class="frame"><video controls="" preload="metadata" src="videos/arm_demo.mp4" style="width:100%;height:100%;object-fit:contain;"></video></div>
+<figcaption>Working prototype demonstration</figcaption>
+</figure>
+</div>
+</section>
+<section class="section reveal">
+<div class="label">
+     06 — Reflection
+    </div>
+<h2>
+     What I took away
+    </h2>
+<div class="reflect">
+<p>
+      This project was an early lesson in client-centered engineering: a technically functional mechanism is only useful if it also fits the person, task, and environment it is designed for. Leading the mechanical design strengthened my skills in collaborative engineering, CAD modeling, rapid 3D-printed iteration, and designing around human needs rather than around a mechanism alone.
+     </p>
+</div>
+</section>
+<section class="section reveal">
+
+
+<div class="lightbox" id="imageLightbox" aria-hidden="true" role="dialog" aria-label="Expanded image">
+<button class="lightbox-close" type="button" aria-label="Close expanded image">&times;</button>
+<img id="lightboxImage" alt=""/>
+</div>
+<footer>
+   © 2026 Forrest Li
+  </footer>
+<script>
+   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08});document.querySelectorAll('.reveal').forEach(e=>obs.observe(e));
+   const lightbox=document.getElementById('imageLightbox'),lightboxImage=document.getElementById('lightboxImage');
+   document.querySelectorAll('.frame img').forEach(img=>img.addEventListener('click',()=>{lightboxImage.src=img.src;lightboxImage.alt=img.alt||'';lightbox.classList.add('open');lightbox.setAttribute('aria-hidden','false');}));
+   const closeLightbox=()=>{lightbox.classList.remove('open');lightbox.setAttribute('aria-hidden','true');lightboxImage.src='';};
+   lightbox.addEventListener('click',e=>{if(e.target!==lightboxImage)closeLightbox();});
+   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&lightbox.classList.contains('open'))closeLightbox();});
+  </script>
+</body>
+</html>
