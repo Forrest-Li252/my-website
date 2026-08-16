@@ -226,7 +226,7 @@
     background:var(--card-2); display:none;
   }
   .skill-modal-photo.has-img{ display:block; }
-  .skill-modal-photo img{ width:100%; display:block; }
+  .skill-modal-photo img, .skill-modal-photo video{ width:100%; display:block; }
   .skill-modal-links{ margin-top:18px; display:flex; flex-wrap:wrap; gap:8px; }
   .skill-modal-links a{
     font-family:var(--mono); font-size:12px; font-weight:600; padding:8px 14px; border-radius:999px;
@@ -853,46 +853,58 @@
   //   projects:(optional) array of {label, url} links shown as pills in the popup
   const skillsData = [
     {
-      icon: '⚙️',
+      icon: '🛠️',
       name: 'Machining',
-      desc: "I did my first machining in freshman year for Duke Aero, when I was in charge of designing, analyzing, and fabricating a blast disk.",
-      photo: '',
-      projects: [ { label: 'Duke Aero — Blast Disk', url: '[link]' } ]
+      desc: "I gained hands-on machining experience with Duke AERO, manufacturing flight hardware and learning to turn CAD designs into precise, testable parts.",
+      photo: 'videos/blast-disk-mill.mp4',
+      projects: [ { label: 'Duke Aero — Blast Disk', url: 'project-blast-disk.html' } ]
     },
     {
-      icon: '🧩',
-      name: 'CAD / SolidWorks',
-      desc: '[A sentence or two about your CAD experience — first real project, what you modeled, any complex assemblies.]',
-      photo: '',
-      projects: [ { label: '[Project name]', url: '[link]' } ]
+      icon: '📐',
+      name: 'CAD',
+      desc: 'CAD is central to how I develop ideas, using Fusion 360, SolidWorks, and Onshape to move from early concepts to detailed parts and assemblies. Below is a sneak peak on a cycloidal drive I made for an upcoming project',
+      photo: 'images/cycloidal.png',
+      projects: [
+        { label: 'Duke Aero — Blast Disk', url: 'project-blast-disk.html' },
+        { label: 'Lunar Rover Autonomy', url: 'project-lunar-rover.html' },
+        { label: 'Adaptive Motion Stabilization Device', url: 'project-arm.html' }
+      ]
     },
     {
-      icon: '💻',
+      icon: '🎛️',
       name: 'Embedded / Controls',
-      desc: '[A sentence or two about your embedded systems / controls experience.]',
-      photo: '',
-      projects: [ { label: '[Project name]', url: '[link]' } ]
+      desc: 'Connecting software and hardware is something I have been working very hard at, as I believe that being able to bridge AI and hardware will be a paramount skill in the future.',
+      photo: 'images/rover_graph.png',
+      projects: [
+        { label: 'Tachyon — VBT Device', url: 'project-vbt.html' },
+        { label: 'Posture Pro', url: 'project-posture.html' },
+        { label: 'Lunar Rover Autonomy', url: 'project-lunar-rover.html' }
+      ]
     },
     {
-      icon: '🌀',
-      name: 'CFD / FEA',
-      desc: '[A sentence or two about your simulation and analysis experience.]',
-      photo: '',
-      projects: [ { label: '[Project name]', url: '[link]' } ]
+      icon: '📊',
+      name: 'FEA',
+      desc: 'My first use of FEA was for Duke AERO (Blast Disk). More to come!',
+      photo: 'images/blast-disk-fea.png',
+      projects: [ { label: 'Duke Aero — Blast Disk', url: 'project-blast-disk.html' } ]
     },
     {
-      icon: '🖨️',
+      icon: '🧰',
       name: 'Rapid Prototyping',
-      desc: '[A sentence or two about your 3D printing / prototyping experience.]',
-      photo: '',
-      projects: [ { label: '[Project name]', url: '[link]' } ]
+      desc: 'Rapid prototyping is one of my favorite things, being able to quickly iterate and test ideas is what makes engineering so great.',
+      photo: 'images/arm_cad_assembly.png',
+      projects: [
+        { label: 'Posture Pro', url: 'project-posture.html' },
+        { label: 'Adaptive Motion Stabilization Device', url: 'project-arm.html' },
+        { label: 'Tachyon — VBT Device', url: 'project-vbt.html' }
+      ]
     },
     {
       icon: '🔌',
       name: 'PCB Design',
-      desc: '[A sentence or two about your PCB / electronics experience.]',
-      photo: '',
-      projects: [ { label: '[Project name]', url: '[link]' } ]
+      desc: 'I first learned PCB design on KiCAD for Tachyon; I am to do more of it as I conitnue to bridge hardware and software',
+      photo: 'images/vbt_pcbv1.jpeg',
+      projects: [ { label: 'Tachyon — VBT Device', url: 'project-vbt.html' } ]
     }
   ];
 
@@ -928,7 +940,10 @@
 
     const photoEl = document.getElementById('skillModalPhoto');
     if(skill.photo){
-      photoEl.innerHTML = `<img src="${skill.photo}" alt="${skill.name}">`;
+      const isVideo = /\.(mp4|webm|ogg)$/i.test(skill.photo);
+      photoEl.innerHTML = isVideo
+        ? `<video src="${skill.photo}" controls playsinline preload="metadata" aria-label="${skill.name} video"></video>`
+        : `<img src="${skill.photo}" alt="${skill.name}">`;
       photoEl.classList.add('has-img');
     } else {
       photoEl.innerHTML = '';
