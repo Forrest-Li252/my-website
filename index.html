@@ -134,6 +134,9 @@
     font-family:var(--mono); font-size:11px; color:var(--ink-faint); text-align:center;
     animation:rise .6s ease both;
   }
+  .photo-card img{
+    width:100%; height:100%; object-fit:cover; object-position:center; display:block;
+  }
   .intro{ padding-top:104px; animation:rise .6s ease .1s both; position:relative; }
   .eyebrow{
     font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
@@ -521,7 +524,7 @@
 </div>
 
 <div class="hero-content">
-  <div class="photo-card">[ Photo ]</div>
+  <div class="photo-card"><img src="images/portrait.jpeg" alt="Portrait of Forrest Li"></div>
   <div class="callout callout-photo">
   </div>
   <div class="intro-row">
@@ -866,7 +869,6 @@
       photo: 'images/cycloidal.png',
       projects: [
         { label: 'Duke Aero — Blast Disk', url: 'project-blast-disk.html' },
-        { label: 'Lunar Rover Autonomy', url: 'project-lunar-rover.html' },
         { label: 'Adaptive Motion Stabilization Device', url: 'project-arm.html' }
       ]
     },
